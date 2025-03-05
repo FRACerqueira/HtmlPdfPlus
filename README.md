@@ -1,6 +1,6 @@
 # <img align="left" width="150" height="150" src="./docs/images/Icon.png">Welcome to HtmlPdfPlus
 
-## **Lightweight and scalable HTML to PDF converter in .NET.** 
+### **Lightweight and scalable HTML to PDF converter in .NET.** 
 
 ![GitHub license](https://img.shields.io/github/license/fracerqueira/HtmlPdfPlus)
 
