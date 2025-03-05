@@ -1,4 +1,4 @@
-# <img align="left" width="150" height="150" src="./docs/images/icon.png">Welcome to HtmlPdfPlus
+# <img align="left" width="150" height="150" src="./docs/images/Icon.png">Welcome to HtmlPdfPlus
 
 **Lightweight and scalable HTML to PDF converter in .NET.**  over Open Source library with an [MIT license](https://en.wikipedia.org/wiki/MIT_License).
 
