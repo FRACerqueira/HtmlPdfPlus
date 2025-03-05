@@ -69,15 +69,15 @@ It is possible to generate a PDF in three ways:
 
 #### 1) Via http using client-server mode
 
-<img width="800" height="850"  src="./docs/images/swimlanes.io.Http.png">
+<img width="800" height="959"  src="./docs/images/swimlanes.io.Http.png">
 
 #### 2) Via any process using client-server mode
 
-<img width="800" height="850" src="./docs/images/swimlanes.io.AnyProcess.png">
+<img width="800" height="1050" src="./docs/images/swimlanes.io.AnyProcess.png">
 
 #### 3) Via any process using ony-server mode
 
-<img width="800" height="500" src="./docs/images/swimlanes.io.OnlyServer.png">
+<img width="800" height="480" src="./docs/images/swimlanes.io.OnlyServer.png">
 
 ## Examples
 [**Top**](#table-of-contents)
