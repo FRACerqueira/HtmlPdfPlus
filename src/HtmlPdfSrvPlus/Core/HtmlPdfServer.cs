@@ -111,7 +111,8 @@ namespace HtmlPdfSrvPlus.Core
                 {
                     var taskinput = Task.Run(async () =>
                     {
-                        requestHtmlPdf.ChangeHtml(await _inputparam(requestHtmlPdf.Html, requestHtmlPdf.InputParam, executeToken.Token));
+                        requestHtmlPdf.ChangeHtml(await _inputparam(requestHtmlPdf.Html, requestHtmlPdf.InputParam, executeToken.Token), 
+                            _pdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml));
                     }, executeToken.Token);
 
                     var completed = await Task.WhenAny(taskinput, Task.Delay(requestHtmlPdf.Timeout, executeToken.Token));

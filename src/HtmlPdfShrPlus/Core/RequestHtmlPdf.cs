@@ -76,19 +76,22 @@ namespace HtmlPdfShrPlus.Core
         /// Changes the Html to render on browser.
         /// </summary>
         /// <param name="value">The Html value</param>
+        /// <param name="minify">Minify content value</param>
         /// <exception cref="ArgumentException">Thrown when value is null or empty</exception>
-        public void ChangeHtml(string value)
+        public void ChangeHtml(string value, bool minify)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
                 throw new ArgumentException("Html is required and must not be empty.", nameof(value));
             }
-            var minified = Uglify.Html(value);
-            if (minified.HasErrors)
+            if (minify)
             {
-                throw new ArgumentException($"config Html has error! :  {string.Join(";", minified.Errors)}");
+                Html = Uglify.Html(value).Code;
             }
-            Html = minified.Code;
+            else
+            {
+                Html = value;
+            }
         }
 
         /// <summary>

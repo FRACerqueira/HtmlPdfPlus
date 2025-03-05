@@ -102,11 +102,11 @@ namespace HtmlPdfSrvPlus.Core
             {
                 if (!string.IsNullOrEmpty(cfg.PageConfig.Header))
                 {
-                    cfg.PageConfig.Header = Uglify.Html(cfg.PageConfig.Header).ToString();
+                    cfg.PageConfig.Header = Uglify.Html(cfg.PageConfig.Header).Code;
                 }
                 if (!string.IsNullOrEmpty(cfg.PageConfig.Footer))
                 {
-                    cfg.PageConfig.Footer = Uglify.Html(cfg.PageConfig.Footer).ToString();
+                    cfg.PageConfig.Footer = Uglify.Html(cfg.PageConfig.Footer).Code;
                 }
             }
             _pageconfig = cfg.PageConfig;

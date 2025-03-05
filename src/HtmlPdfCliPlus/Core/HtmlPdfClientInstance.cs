@@ -40,21 +40,11 @@ namespace HtmlPdfCliPlus.Core
             {
                 if (!string.IsNullOrEmpty(cfg.PageConfig.Header))
                 {
-                    var minified = Uglify.Html(cfg.PageConfig.Header);
-                    if (minified.HasErrors)
-                    {
-                        throw new ArgumentException($"config Html-Header has error! :  {string.Join(";",minified.Errors)}");
-                    }
-                    cfg.PageConfig.Header = minified.Code;
+                    cfg.PageConfig.Header = Uglify.Html(cfg.PageConfig.Header).Code;
                 }
                 if (!string.IsNullOrEmpty(cfg.PageConfig.Footer))
                 {
-                    var minified = Uglify.Html(cfg.PageConfig.Footer);
-                    if (minified.HasErrors)
-                    {
-                        throw new ArgumentException($"config Html-Fotter has error! :  {string.Join(";", minified.Errors)}");
-                    }
-                    cfg.PageConfig.Footer = minified.Code;
+                     cfg.PageConfig.Footer = Uglify.Html(cfg.PageConfig.Footer).Code;
                 }
             }
             _pdfPageConfig = cfg.PageConfig;
@@ -68,12 +58,14 @@ namespace HtmlPdfCliPlus.Core
             {
                 throw new ArgumentNullException(nameof(value), "value is null or empty");
             }
-            var minified = Uglify.Html(value);
-            if (minified.HasErrors)
+            if (disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml))
             {
-                throw new ArgumentException($"config Html has error! :  {string.Join(";", minified.Errors)}");
+                _html = value;
             }
-            _html = disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml) ? value : minified.Code;
+            else
+            {
+                _html = Uglify.Html(value).Code;
+            }
             return this;
         }
 
@@ -85,12 +77,14 @@ namespace HtmlPdfCliPlus.Core
                 throw new ArgumentNullException(nameof(template), "template is null or empty");
             }
             var aux = RazorHelpper.CompileTemplate(template, razordata);
-            var minified = Uglify.Html(aux);
-            if (minified.HasErrors)
+            if (disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml))
             {
-                throw new ArgumentException($"config Html has error! :  {string.Join(";", minified.Errors)}");
+                _html = aux;
             }
-            _html = disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml) ? aux : minified.Code;
+            else
+            {
+                _html = Uglify.Html(aux).Code;
+            }
             return this;
         }
 

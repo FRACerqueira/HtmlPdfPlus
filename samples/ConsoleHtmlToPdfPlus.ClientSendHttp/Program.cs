@@ -78,10 +78,7 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
             var order1 = new Order("Roberto Rivellino", "Rua S&atilde;o Jorge, 777", "+55 11 912345678", lstprod);
 
             pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
-                                 .PageConfig((cfg) =>
-                                 {
-                                     cfg.Margins(10);
-                                 })
+                                 .PageConfig((cfg) => cfg.Margins(10))
                                  .Logger(HostApp.Services.GetService<ILogger<Program>>())
                                  .FromRazor(TemplateRazor(), order1)
                                  .Timeout(5000)

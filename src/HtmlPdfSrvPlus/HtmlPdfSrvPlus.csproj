@@ -21,7 +21,8 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Copyright>© 2025 - Fernando Cerqueira</Copyright>
 		<RepositoryUrl>https://github.com/FRACerqueira/HtmlPdfPlus</RepositoryUrl>
-		<PackageTags>html pdf dotnet .net razor</PackageTags>
+		<PackageTags>html pdf pdf-converter dotnet .net razor</PackageTags>
+		<PackageId>HtmlPdfPlus.Server</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

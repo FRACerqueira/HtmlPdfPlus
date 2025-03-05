@@ -30,6 +30,6 @@ namespace HtmlPdfPlus
         /// <summary>
         /// Disable all log
         /// </summary>
-        DisableLogging = 4,
+        DisableLogging = 4
     }
 }

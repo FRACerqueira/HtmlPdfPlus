@@ -125,12 +125,7 @@ namespace HtmlPdfPlus
             var aux = string.IsNullOrEmpty(html) ? string.Empty : html;
             if (minify)
             {
-                var minified = Uglify.Html(aux);
-                if (minified.HasErrors)
-                {
-                    throw new ArgumentException($"HTML has errors: {string.Join(";", minified.Errors)}");
-                }
-                aux = minified.Code;
+                aux = Uglify.Html(aux).Code;
             }
             return aux;
         }
