@@ -23,6 +23,7 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
 - [Installing](#installing)
 - [Usage](#usage)
 - [Examples](#examples)
+- [Documentation](./src/docs/docindex.md)
 - [Code of Conduct](#code-of-conduct)
 - [Contributing](#contributing)
 - [License](#license)

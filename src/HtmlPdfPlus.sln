@@ -33,10 +33,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerHtmlToPdf.GenericS
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{501D5A85-0D42-4552-A312-5BC766C94607}"
 	ProjectSection(SolutionItems) = preProject
+		docs\docindex.md = docs\docindex.md
 		..\README.md = ..\README.md
 		..\docs\swimlanes.io.AnyProcess.txt = ..\docs\swimlanes.io.AnyProcess.txt
 		..\docs\swimlanes.io.http.txt = ..\docs\swimlanes.io.http.txt
 		..\docs\swimlanes.io.OnlyServer.txt = ..\docs\swimlanes.io.OnlyServer.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDocMarkdownGenerator", "XmlDocMarkdownGenerator\XmlDocMarkdownGenerator.csproj", "{DEC330F7-463D-4490-BC99-4F139ADB0BC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XmlDocMarkdown", "XmlDocMarkdown", "{A9894106-2EBA-4867-AE60-869D39CC2294}"
+	ProjectSection(SolutionItems) = preProject
+		docs\assemblies\HtmlPdfPlus.Client.md = docs\assemblies\HtmlPdfPlus.Client.md
+		docs\assemblies\HtmlPdfPlus.Server.md = docs\assemblies\HtmlPdfPlus.Server.md
+		docs\assemblies\HtmlPdfPlus.Shared.md = docs\assemblies\HtmlPdfPlus.Shared.md
 	EndProjectSection
 EndProject
 Global
@@ -93,6 +103,10 @@ Global
 		{A804B249-F62B-438F-B767-3BF6FE61B54D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A804B249-F62B-438F-B767-3BF6FE61B54D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A804B249-F62B-438F-B767-3BF6FE61B54D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEC330F7-463D-4490-BC99-4F139ADB0BC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEC330F7-463D-4490-BC99-4F139ADB0BC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEC330F7-463D-4490-BC99-4F139ADB0BC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEC330F7-463D-4490-BC99-4F139ADB0BC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,5 +121,6 @@ Global
 		{891AC1A4-0E42-4ADD-BF31-1707541F3E50} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
 		{CCD6E39C-00F8-4F62-8013-7248B8EE04CF} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
 		{A804B249-F62B-438F-B767-3BF6FE61B54D} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
+		{A9894106-2EBA-4867-AE60-869D39CC2294} = {501D5A85-0D42-4552-A312-5BC766C94607}
 	EndGlobalSection
 EndGlobal
