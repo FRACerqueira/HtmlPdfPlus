@@ -49,7 +49,7 @@ Install-Package HtmlPdfPlus.Client [-pre]
 dotnet add package HtmlPdfPlus.Client [--prerelease]
 ```
 
-**_Note:  [-pre]/[--prerelease] usage for pre-release versions_**
+**Server library** can be installed via NuGet or line command. 
 
 
 ```
@@ -65,17 +65,19 @@ dotnet add package HtmlPdfPlus.Server [--prerelease]
 ## Usage
 [**Top**](#table-of-contents)
 
-It is possible to generate a PDF in three ways:
+It is possible to generate a PDF in two ways:
 
-#### 1) Via http using client-server mode
+### 1) Using client-server mode
+
+#### 1.1) Via http
 
 <img width="800" height="959"  src="./docs/images/swimlanes.io.Http.png">
 
-#### 2) Via any process using client-server mode
+#### 1.2) Via any process
 
 <img width="800" height="1050" src="./docs/images/swimlanes.io.AnyProcess.png">
 
-#### 3) Via any process using ony-server mode
+### 2) Using ony-server
 
 <img width="800" height="480" src="./docs/images/swimlanes.io.OnlyServer.png">
 
@@ -84,9 +86,20 @@ It is possible to generate a PDF in three ways:
 
 For more examples, please refer to the [Samples directory](../Samples) :
 
-- [Console HtmlToPdfPlus OnlyAtServer V1](../Samples/ConsoleHtmlToPdfPlus.OnlyAtServerV1)
 
-
+- Server Only
+	- [Console HtmlToPdfPlus OnlyAtServer V1](../Samples/ConsoleHtmlToPdfPlus.OnlyAtServer/v1)
+	- [Console HtmlToPdfPlus OnlyAtServer V2](../Samples/ConsoleHtmlToPdfPlus.OnlyAtServer/v2)
+- Client-Server
+	- [Console HtmlToPdfPlus Client by Http](../Samples/ConsoleHtmlToPdfPlus.ClientSendHttp)
+	- [Server HtmlToPdfPlus Generic](../Samples/WebHtmlToPdf.GenericServer)
+- Client-Server Custom
+	- [Console HtmlToPdfPlus Client Custom by Http](../Samples/ConsoleHtmlToPdfPlus.ClientCustomSendHttp)
+	- [Server HtmlToPdfPlus Custom Save File](../Samples/WebHtmlToPdf.CustomSaveFileServer)
+- Client-Server TCP
+	- [Console HtmlToPdfPlus Client Tcp](../Samples/ConsoleHtmlToPdfPlus.ClientSendTcp)
+	- [Server Console HtmlToPdfPlus Tcp](../Samples/TcpServerHtmlToPdf.GenericServer)
+	
 ## Code of Conduct
 [**Top**](#table-of-contents)
 
