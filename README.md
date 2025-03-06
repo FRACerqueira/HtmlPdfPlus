@@ -10,23 +10,26 @@
 
 #### | Server -> [![NuGet Server](https://img.shields.io/nuget/v/HtmlPdfPlus.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Server/) [![NuGet Server](https://img.shields.io/nuget/dt/HtmlPdfPlus.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Server/)
 
+## Table of Contents
+
+- [Project Description](#project-description)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installing](#installing)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Documentation](#documentation)
+- [Code of Conduct](#code-of-conduct)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Project Description
 HtmlPdfPlus is a modern and lightweight library that allows you to convert HTML or RAZOR pages to PDF with high fidelity. It is a scalable and flexible solution that can be used in client-server mode or only server. It supports CSS and JavaScript, and it is easy to integrate with your application. You can customize the PDF settings, such as page size and margins, and add headers and footers to your PDF files. HtmlPdfPlus is a powerful tool that can help you generate PDF files from HTML or RAZOR pages with ease.
 
 This library was built using the [Playwright](https://playwright.dev/dotnet/) (engine to automate **Chromium, Firefox, and WebKit** with a single API). Playwright is built to enable cross-browser web automation that is evergreen, capable, reliable, and fast. 
 
 The current version (V.1.50.0) of **Playwright** supports **only the Chromium browser** for the PDF API.
-
-
-## Table of Contents
-
-- [Features](#features)
-- [Installing](#installing)
-- [Usage](#usage)
-- [Examples](#examples)
-- [Documentation](./src/docs/docindex.md)
-- [Code of Conduct](#code-of-conduct)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 [**Top**](#table-of-contents)
@@ -42,11 +45,21 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
 - Communicate with the server using REST API (with compressed request) or user custom protocol
 - Minify HTML and CSS
 - Compress PDF using GZip over network (Only type bytes array output)
-
+- Extension on server side to customize the conversion process (before and after conversion)
+    - BeforePDF : Normalize HTML, Replace tokens, etc
+    - AfterPDF : Save file, Send to cloud, etc
+- Disable features to improve/ balance performance (minify, compress, etc)
 
 #### What's new in the latest version
 
 - Initial version
+
+## Prerequisites
+[**Top**](#table-of-contents)
+
+- .NET 8 or .NET 9 SDK
+- Visual Studio 2022 or later
+- Playwright (for PDF generation)
 
 
 ## Installing
@@ -73,6 +86,15 @@ dotnet add package HtmlPdfPlus.Server [--prerelease]
 ```
 
 **_Note:  [-pre]/[--prerelease] usage for pre-release versions_**
+
+## Getting Started
+[**Top**](#table-of-contents)
+
+Follow these steps to get started with HtmlPdfPlus:
+
+1. Install the necessary packages using NuGet.
+2. Configure the services in your application.
+3. Use the provided API to convert HTML to PDF.
 
 ## Usage
 [**Top**](#table-of-contents)
@@ -276,6 +298,14 @@ For more examples, please refer to the [Samples directory](../Samples) :
  	- [Server Console HtmlToPdfPlus Tcp](../Samples/TcpServerHtmlToPdf.GenericServer)
 	    - Performs generate pdf in bytes array via tcp-server
 
+        - 
+## Documentation
+[**Top**](#table-of-contents)
+
+The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface:
+
+The documentation is available in the [Docs directory](./src/docs/docindex.md).
+
 ## Code of Conduct
 [**Top**](#table-of-contents)
 
@@ -296,3 +326,18 @@ This project is licensed under the MIT License - see the [License](LICENSE.md) f
 
 - [NUglify](https://github.com/trullock/NUglify) released under the [BSD-Clause 2 license](http://opensource.org/licenses/BSD-2-Clause).
    - The original Microsoft Ajax Minifier was released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
+
+## FAQ
+[**Top**](#table-of-contents)
+
+**Q: What browsers are supported for PDF generation?**
+A: Currently, only the Chromium browser is supported for the PDF API.
+
+**Q: Can I customize the PDF settings?**
+A: Yes, you can customize settings such as page size, margins, headers, and footers.
+
+**Q: Is there support for asynchronous operations?**
+A: Yes, the API supports asynchronous operations.
+
+**Q: How can I contribute to the project?**
+A: Please refer to the [Contributing](CONTRIBUTING.md) section for details on how to contribute.
