@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
-    <PackageReference Include="NUglify" Version="1.21.13" />
   </ItemGroup>
 
   <ItemGroup>

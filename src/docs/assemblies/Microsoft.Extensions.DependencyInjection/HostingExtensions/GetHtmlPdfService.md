@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # HostingExtensions.GetHtmlPdfService method (1 of 3)
+# 
 
 Gets the required service of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.md) from the IServiceProvider.
 

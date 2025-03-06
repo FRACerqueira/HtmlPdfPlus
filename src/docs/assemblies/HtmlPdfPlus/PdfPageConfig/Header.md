@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # PdfPageConfig.Header property
+# 
 
 Get/Set Html Header. Default value : `null`.
 

@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # IHtmlPdfSrvBuilder.PagesBuffer method
+# 
 
 Number of pages available to render HTML and convert to PDF.
 

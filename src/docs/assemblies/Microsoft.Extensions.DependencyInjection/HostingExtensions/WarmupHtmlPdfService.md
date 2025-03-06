@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # HostingExtensions.WarmupHtmlPdfService method (1 of 3)
+# 
 
 Warms up HtmlPdfServerPlus with full capacity ready.
 

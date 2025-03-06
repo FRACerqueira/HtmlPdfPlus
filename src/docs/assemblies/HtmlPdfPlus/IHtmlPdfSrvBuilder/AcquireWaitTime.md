@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # IHtmlPdfSrvBuilder.AcquireWaitTime method
+# 
 
 Number of idle milliseconds to retry acquiring an available page.
 

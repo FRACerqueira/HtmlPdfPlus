@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
+#
 # IHtmlPdfServer&lt;TIn,TOut&gt; interface
+# 
 
 Fluent interface commands to perform HTML to PDF conversion.
 

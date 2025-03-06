@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # PdfPageConfig.Margins property
+# 
 
 Get/Sets the page margins (default 0mm for left/right/top/bottom)
 

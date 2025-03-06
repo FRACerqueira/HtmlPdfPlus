@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # RequestHtmlPdf.Create method (1 of 4)
+# 
 
 Create string representation of Html to be used in Server engine
 

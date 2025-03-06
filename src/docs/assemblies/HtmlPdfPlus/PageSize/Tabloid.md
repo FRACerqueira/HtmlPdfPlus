@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # PageSize.Tabloid property
+# 
 
 Tabloid : 279.4 x 431.8 mm
 

@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
+#
 # RequestHtmlPdf class
+# 
 
 Request data to convert Html to PDF using only HtmlPdfPlus Server
 

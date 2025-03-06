@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # IHtmlPdfClient.Timeout method
+# 
 
 Set timeout for conversion (default 30000ms).
 

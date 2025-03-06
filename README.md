@@ -23,6 +23,7 @@
 - [Code of Conduct](#code-of-conduct)
 - [Contributing](#contributing)
 - [License](#license)
+- [FAQ](#faq)
 
 ## Project Description
 HtmlPdfPlus is a modern and lightweight library that allows you to convert HTML or RAZOR pages to PDF with high fidelity. It is a scalable and flexible solution that can be used in client-server mode or only server. It supports CSS and JavaScript, and it is easy to integrate with your application. You can customize the PDF settings, such as page size and margins, and add headers and footers to your PDF files. HtmlPdfPlus is a powerful tool that can help you generate PDF files from HTML or RAZOR pages with ease.
@@ -281,30 +282,33 @@ For more examples, please refer to the [Samples directory](../Samples) :
         - Performs writing to file
 - Client-Server
 	- [Console HtmlToPdfPlus Client by Http](../Samples/ConsoleHtmlToPdfPlus.ClientSendHttp)
-        - Performs sending data to the server via http
+        - Performs sending data to the server via http client
         - Performs writing to file
 	- [Server HtmlToPdfPlus Generic](../Samples/WebHtmlToPdf.GenericServer)
         - Performs generate pdf in bytes array
+        - Send data to client via http
 - Client-Server Custom
 	- [Console HtmlToPdfPlus Client Custom by Http](../Samples/ConsoleHtmlToPdfPlus.ClientCustomSendHttp)
         - Performs a generic suggestion for writing a file to a cloud like gcp/azure   
+        - Performs sending data to the server via http client
 	- [Server HtmlToPdfPlus Custom Save File](../Samples/WebHtmlToPdf.CustomSaveFileServer)
         - Performs replacement token substitution in the HTML source before performing the conversion 
         - Performs a generic suggestion writing to file after performing conversion
+        - Send data (name of file or full path file) to client via http
 - Client-Server TCP
 	- [Console HtmlToPdfPlus Client Tcp](../Samples/ConsoleHtmlToPdfPlus.ClientSendTcp)
-        - Performs sending data to the server via tcp-client
+        - Performs sending data to the server via tcp client (using [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp) package)
+        - Performs receiver data from the server via tcp client
         - Performs writing to file
- 	- [Server Console HtmlToPdfPlus Tcp](../Samples/TcpServerHtmlToPdf.GenericServer)
-	    - Performs generate pdf in bytes array via tcp-server
-
-        - 
+    - [Server Console HtmlToPdfPlus Tcp](../Samples/TcpServerHtmlToPdf.GenericServer)
+        - Listening port on tcp server (using [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp) package)
+        - Performs generate pdf in bytes array
+        - Send data to client via tcp server
+- 
 ## Documentation
 [**Top**](#table-of-contents)
 
-The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface:
-
-The documentation is available in the [Docs directory](./src/docs/docindex.md).
+The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface. The documentation is available in the [Docs directory](./src/docs/docindex.md).
 
 ## Code of Conduct
 [**Top**](#table-of-contents)
@@ -331,13 +335,17 @@ This project is licensed under the MIT License - see the [License](LICENSE.md) f
 [**Top**](#table-of-contents)
 
 **Q: What browsers are supported for PDF generation?**
+
 A: Currently, only the Chromium browser is supported for the PDF API.
 
 **Q: Can I customize the PDF settings?**
+
 A: Yes, you can customize settings such as page size, margins, headers, and footers.
 
 **Q: Is there support for asynchronous operations?**
+
 A: Yes, the API supports asynchronous operations.
 
 **Q: How can I contribute to the project?**
+
 A: Please refer to the [Contributing](CONTRIBUTING.md) section for details on how to contribute.

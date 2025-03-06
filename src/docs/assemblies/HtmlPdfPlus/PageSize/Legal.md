@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # PageSize.Legal property
+# 
 
 Legal: 215.9mm x 355.6 mm
 

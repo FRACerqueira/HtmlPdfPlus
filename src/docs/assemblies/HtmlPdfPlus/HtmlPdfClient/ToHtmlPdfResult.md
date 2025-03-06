@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # HtmlPdfClient.ToHtmlPdfResult method (1 of 2)
+# 
 
 Convert Response Data from server HtmlPdfPlus
 

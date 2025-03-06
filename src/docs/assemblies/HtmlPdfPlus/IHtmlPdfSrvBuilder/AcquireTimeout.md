@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # IHtmlPdfSrvBuilder.AcquireTimeout method
+# 
 
 Number of milliseconds to timeout acquiring an available page.
 

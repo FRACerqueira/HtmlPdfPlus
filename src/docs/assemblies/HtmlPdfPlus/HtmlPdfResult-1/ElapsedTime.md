@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # HtmlPdfResult&lt;T&gt;.ElapsedTime property
+# 
 
 Time taken to convert html to PDF
 

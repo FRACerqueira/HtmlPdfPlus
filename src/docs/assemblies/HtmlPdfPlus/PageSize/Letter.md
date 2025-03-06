@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # PageSize.Letter property
+# 
 
 Letter: 215.9 x 279.4 mm
 

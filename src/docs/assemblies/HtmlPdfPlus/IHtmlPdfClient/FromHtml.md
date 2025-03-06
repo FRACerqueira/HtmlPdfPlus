@@ -1,4 +1,7 @@
+# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
+#
 # IHtmlPdfClient.FromHtml method
+# 
 
 Register HTML template to be executed by the server.
 
