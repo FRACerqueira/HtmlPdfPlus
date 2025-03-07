@@ -1,9 +1,9 @@
-# <img style="z-index: 100;" align="left" width="100" height="100" src="../../docs/images/Icon.png"> 
+# <img align="left" width="100" height="100" src="../../docs/images/Icon.png"> 
 
-## HtmlPdfPlus Documentation
+### HtmlPdfPlus Documentation
 ##
 
-## HtmlPdfPlus namespace
+### HtmlPdfPlus namespace
 
 | public type | description |
 | --- | --- |
@@ -20,7 +20,7 @@
 | enum [PageOrientation](./assemblies/HtmlPdfPlus/PageOrientation.md) | Orientation Page PDF |
 | [Flags] enum [DisableOptionsHtmlToPdf](./assemblies/HtmlPdfPlus/DisableOptionsHtmlToPdf.md) | Options for disable internal features |
 
-## Microsoft.Extensions.DependencyInjection namespace
+### Microsoft.Extensions.DependencyInjection namespace
 
 | public type | description |
 | --- | --- |
