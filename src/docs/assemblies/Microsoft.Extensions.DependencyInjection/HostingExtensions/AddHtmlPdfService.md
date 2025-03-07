@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## HostingExtensions.AddHtmlPdfService method (1 of 3)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Adds HtmlPdf Server to the IServiceCollection.
+### HostingExtensions.AddHtmlPdfService method (1 of 3)
+</br>
+
+
+#### Adds HtmlPdf Server to the IServiceCollection.
 
 ```csharp
 public static IServiceCollection AddHtmlPdfService(this IServiceCollection serviceCollection, 
@@ -16,11 +17,11 @@ public static IServiceCollection AddHtmlPdfService(this IServiceCollection servi
 | config | An action to customize HtmlPdf Server configuration. |
 | sourceAlias | Alias for this instance. If empty, uses the log's CategoryName property if it exists or empty. |
 
-## Return Value
+### Return Value
 
 The IServiceCollection instance.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../../HtmlPdfPlus/IHtmlPdfSrvBuilder.md)
 * class [HostingExtensions](../HostingExtensions.md)
@@ -28,9 +29,9 @@ The IServiceCollection instance.
 
 ---
 
-# HostingExtensions.AddHtmlPdfService&lt;TOut&gt; method (2 of 3)
+### HostingExtensions.AddHtmlPdfService&lt;TOut&gt; method (2 of 3)
 
-Adds HtmlPdf Server to the IServiceCollection.
+#### Adds HtmlPdf Server to the IServiceCollection.
 
 ```csharp
 public static IServiceCollection AddHtmlPdfService<TOut>(this IServiceCollection serviceCollection, 
@@ -44,11 +45,11 @@ public static IServiceCollection AddHtmlPdfService<TOut>(this IServiceCollection
 | config | An action to customize HtmlPdf Server configuration. |
 | sourceAlias | Alias for this instance. If empty, uses the log's CategoryName property if it exists or empty. |
 
-## Return Value
+### Return Value
 
 The IServiceCollection instance.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../../HtmlPdfPlus/IHtmlPdfSrvBuilder.md)
 * class [HostingExtensions](../HostingExtensions.md)
@@ -56,9 +57,9 @@ The IServiceCollection instance.
 
 ---
 
-# HostingExtensions.AddHtmlPdfService&lt;TIn,TOut&gt; method (3 of 3)
+### HostingExtensions.AddHtmlPdfService&lt;TIn,TOut&gt; method (3 of 3)
 
-Adds HtmlPdf Server to the IServiceCollection.
+#### Adds HtmlPdf Server to the IServiceCollection.
 
 ```csharp
 public static IServiceCollection AddHtmlPdfService<TIn, TOut>(
@@ -74,17 +75,17 @@ public static IServiceCollection AddHtmlPdfService<TIn, TOut>(
 | config | An action to customize HtmlPdf Server configuration. |
 | sourceAlias | Alias for this instance. If empty, uses the log's CategoryName property if it exists or empty. |
 
-## Return Value
+### Return Value
 
 The IServiceCollection instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException | Thrown when the service collection is null. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../../HtmlPdfPlus/IHtmlPdfSrvBuilder.md)
 * class [HostingExtensions](../HostingExtensions.md)

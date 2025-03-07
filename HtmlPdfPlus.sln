@@ -3,33 +3,33 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfCliPlus", "HtmlPdfCliPlus\HtmlPdfCliPlus.csproj", "{FC3ADC8E-3C6B-4C5A-B625-6B419FEA53E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfCliPlus", "src\HtmlPdfCliPlus\HtmlPdfCliPlus.csproj", "{FC3ADC8E-3C6B-4C5A-B625-6B419FEA53E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfShrPlus", "HtmlPdfShrPlus\HtmlPdfShrPlus.csproj", "{BA5108FC-D4F7-42D4-A7DC-AAFD8B45C1F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfShrPlus", "src\HtmlPdfShrPlus\HtmlPdfShrPlus.csproj", "{BA5108FC-D4F7-42D4-A7DC-AAFD8B45C1F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHtmlPdfPlus", "TestHtmlPdfCliPlus\TestHtmlPdfPlus.csproj", "{887ED686-9F77-493C-A0A5-80CE697025C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHtmlPdfPlus", "src\TestHtmlPdfCliPlus\TestHtmlPdfPlus.csproj", "{887ED686-9F77-493C-A0A5-80CE697025C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfSrvPlus", "HtmlPdfSrvPlus\HtmlPdfSrvPlus.csproj", "{2C22909D-9A0E-443D-82A1-0B403CD26CF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfSrvPlus", "src\HtmlPdfSrvPlus\HtmlPdfSrvPlus.csproj", "{2C22909D-9A0E-443D-82A1-0B403CD26CF9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{266603D0-608D-4207-89F0-BCE0AABDB0A5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{ED148173-C3B1-478E-A38D-1F90CC1DB0D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.OnlyAtServerV1", "..\samples\ConsoleHtmlToPdfPlus.OnlyAtServer\v1\ConsoleHtmlToPdfPlus.OnlyAtServerV1.csproj", "{CF7F88CF-60DB-4A6D-90C4-89D0E5762660}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.OnlyAtServerV1", "samples\ConsoleHtmlToPdfPlus.OnlyAtServer\v1\ConsoleHtmlToPdfPlus.OnlyAtServerV1.csproj", "{CF7F88CF-60DB-4A6D-90C4-89D0E5762660}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.OnlyAtServerV2", "..\samples\ConsoleHtmlToPdfPlus.OnlyAtServer\v2\ConsoleHtmlToPdfPlus.OnlyAtServerV2.csproj", "{35A2065E-8BCA-42F9-94E3-614700B72D4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.OnlyAtServerV2", "samples\ConsoleHtmlToPdfPlus.OnlyAtServer\v2\ConsoleHtmlToPdfPlus.OnlyAtServerV2.csproj", "{35A2065E-8BCA-42F9-94E3-614700B72D4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.ClientSendHttp", "..\samples\ConsoleHtmlToPdfPlus.ClientSendHttp\ConsoleHtmlToPdfPlus.ClientSendHttp.csproj", "{685909BC-FE72-4D1E-BBFA-5F216EBA10FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.ClientSendHttp", "samples\ConsoleHtmlToPdfPlus.ClientSendHttp\ConsoleHtmlToPdfPlus.ClientSendHttp.csproj", "{685909BC-FE72-4D1E-BBFA-5F216EBA10FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHtmlToPdf.GenericServer", "..\samples\WebHtmlToPdf.GenericServer\WebHtmlToPdf.GenericServer.csproj", "{EFC7D734-660B-4F22-B9CC-7206826BDD2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHtmlToPdf.GenericServer", "samples\WebHtmlToPdf.GenericServer\WebHtmlToPdf.GenericServer.csproj", "{EFC7D734-660B-4F22-B9CC-7206826BDD2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.ClientCustomSendHttp", "..\samples\ConsoleHtmlToPdfPlus.ClientCustomSendHttp\ConsoleHtmlToPdfPlus.ClientCustomSendHttp.csproj", "{DBD4BA57-0494-4E8F-A9EB-672BD9855229}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.ClientCustomSendHttp", "samples\ConsoleHtmlToPdfPlus.ClientCustomSendHttp\ConsoleHtmlToPdfPlus.ClientCustomSendHttp.csproj", "{DBD4BA57-0494-4E8F-A9EB-672BD9855229}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHtmlToPdf.CustomSaveFileServer", "..\samples\WebHtmlToPdf.CustomSaveFileServer\WebHtmlToPdf.CustomSaveFileServer.csproj", "{891AC1A4-0E42-4ADD-BF31-1707541F3E50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHtmlToPdf.CustomSaveFileServer", "samples\WebHtmlToPdf.CustomSaveFileServer\WebHtmlToPdf.CustomSaveFileServer.csproj", "{891AC1A4-0E42-4ADD-BF31-1707541F3E50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.ClientSendTcp", "..\samples\ConsoleHtmlToPdfPlus.ClientSendTcp\ConsoleHtmlToPdfPlus.ClientSendTcp.csproj", "{CCD6E39C-00F8-4F62-8013-7248B8EE04CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.ClientSendTcp", "samples\ConsoleHtmlToPdfPlus.ClientSendTcp\ConsoleHtmlToPdfPlus.ClientSendTcp.csproj", "{CCD6E39C-00F8-4F62-8013-7248B8EE04CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerHtmlToPdf.GenericServer", "..\samples\TcpServerHtmlToPdf.GenericServer\TcpServerHtmlToPdf.GenericServer.csproj", "{A804B249-F62B-438F-B767-3BF6FE61B54D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerHtmlToPdf.GenericServer", "samples\TcpServerHtmlToPdf.GenericServer\TcpServerHtmlToPdf.GenericServer.csproj", "{A804B249-F62B-438F-B767-3BF6FE61B54D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{501D5A85-0D42-4552-A312-5BC766C94607}"
 	ProjectSection(SolutionItems) = preProject
@@ -47,9 +47,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XmlDocMarkdown", "XmlDocMar
 		docs\assemblies\HtmlPdfPlus.Shared.md = docs\assemblies\HtmlPdfPlus.Shared.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDocMarkdownGenerator", "XmlDocMarkdownGenerator\XmlDocMarkdownGenerator.csproj", "{5F01EBDC-D330-4176-80A2-9CFBC916D326}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDocMarkdownGenerator", "src\XmlDocMarkdownGenerator\XmlDocMarkdownGenerator.csproj", "{5F01EBDC-D330-4176-80A2-9CFBC916D326}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHtmlToPdf.DockerGenericServer", "..\samples\WebHtmlToPdf.DockerGenericServer\WebHtmlToPdf.DockerGenericServer.csproj", "{FD9288F1-B776-4ED0-AF00-B43FB5FA6E5A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{AEBA43B3-B596-4C7A-A70A-2C86CA5E206D}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHtmlToPdf.DockerGenericServer", "samples\WebHtmlToPdf.DockerGenericServer\WebHtmlToPdf.DockerGenericServer.csproj", "{C73AE25E-98B1-4AF5-A727-D0DE81B52B58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,10 +114,10 @@ Global
 		{5F01EBDC-D330-4176-80A2-9CFBC916D326}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F01EBDC-D330-4176-80A2-9CFBC916D326}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F01EBDC-D330-4176-80A2-9CFBC916D326}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD9288F1-B776-4ED0-AF00-B43FB5FA6E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD9288F1-B776-4ED0-AF00-B43FB5FA6E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD9288F1-B776-4ED0-AF00-B43FB5FA6E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD9288F1-B776-4ED0-AF00-B43FB5FA6E5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C73AE25E-98B1-4AF5-A727-D0DE81B52B58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C73AE25E-98B1-4AF5-A727-D0DE81B52B58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C73AE25E-98B1-4AF5-A727-D0DE81B52B58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C73AE25E-98B1-4AF5-A727-D0DE81B52B58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +133,6 @@ Global
 		{CCD6E39C-00F8-4F62-8013-7248B8EE04CF} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
 		{A804B249-F62B-438F-B767-3BF6FE61B54D} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
 		{A9894106-2EBA-4867-AE60-869D39CC2294} = {501D5A85-0D42-4552-A312-5BC766C94607}
-		{FD9288F1-B776-4ED0-AF00-B43FB5FA6E5A} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
+		{C73AE25E-98B1-4AF5-A727-D0DE81B52B58} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
 	EndGlobalSection
 EndGlobal

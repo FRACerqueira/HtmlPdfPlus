@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IPdfPageConfig.Scale method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Sets the scale of the webpage rendering.
+### IPdfPageConfig.Scale method
+</br>
+
+
+#### Sets the scale of the webpage rendering.
 
 ```csharp
 public IPdfPageConfig Scale(float value)
@@ -13,17 +14,17 @@ public IPdfPageConfig Scale(float value)
 | --- | --- |
 | value | The scale. Must be between 0.1 and 2. Default is 1. |
 
-## Return Value
+### Return Value
 
 [`IPdfPageConfig`](../IPdfPageConfig.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException | Thrown when the scale value is out of range. |
 
-## See Also
+### See Also
 
 * interface [IPdfPageConfig](../IPdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

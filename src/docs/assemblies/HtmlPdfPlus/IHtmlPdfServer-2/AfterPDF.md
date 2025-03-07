@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfServer&lt;TIn,TOut&gt;.AfterPDF method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Function to transform to a new output type after performing HTML to PDF conversion.
+### IHtmlPdfServer&lt;TIn,TOut&gt;.AfterPDF method
+</br>
+
+
+#### Function to transform to a new output type after performing HTML to PDF conversion.
 
 ```csharp
 public IHtmlPdfServer AfterPDF(Func<byte[]?, TIn?, CancellationToken, Task<TOut>> outputParam)
@@ -13,17 +14,17 @@ public IHtmlPdfServer AfterPDF(Func<byte[]?, TIn?, CancellationToken, Task<TOut>
 | --- | --- |
 | outputParam | A function that takes a PDF in byte[], input data of type *TIn*, and a CancellationToken, and returns the new output type *TOut*. |
 
-## Return Value
+### Return Value
 
 An instance of [`IHtmlPdfServer`](../IHtmlPdfServer-2.md).
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException | Thrown when *outputParam* is null. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfServer&lt;TIn,TOut&gt;](../IHtmlPdfServer-2.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)

@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## PageSize class
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Page size for PDF.
+### PageSize class
+</br>
+
+
+#### Page size for PDF.
 
 ```csharp
 public sealed class PageSize
 ```
 
-## Public Members
+### Public Members
 
 | name | description |
 | --- | --- |
@@ -37,7 +38,7 @@ public sealed class PageSize
 | [Width](PageSize/Width.md) { get; } | Page width in millimeters. |
 | override [ToString](PageSize/ToString.md)() | Representation of size in string format |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Shared.md)
 

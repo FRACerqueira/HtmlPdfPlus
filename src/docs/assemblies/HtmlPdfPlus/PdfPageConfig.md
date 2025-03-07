@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## PdfPageConfig class
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-The Config PDF page.
+### PdfPageConfig class
+</br>
+
+
+#### The Config PDF page.
 
 ```csharp
 public sealed class PdfPageConfig
 ```
 
-## Public Members
+### Public Members
 
 | name | description |
 | --- | --- |
@@ -23,7 +24,7 @@ public sealed class PdfPageConfig
 | [Scale](PdfPageConfig/Scale.md) { get; set; } | Get/Set Scale of the webpage rendering. Defaults to `1`. |
 | [Size](PdfPageConfig/Size.md) { get; set; } | Page Size. [`PageSize`](./PageSize.md). Default value : A4. |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Shared.md)
 

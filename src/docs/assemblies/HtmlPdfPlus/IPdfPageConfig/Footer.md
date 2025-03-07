@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IPdfPageConfig.Footer method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Sets the HTML footer.
+### IPdfPageConfig.Footer method
+</br>
+
+
+#### Sets the HTML footer.
 
 ```csharp
 public IPdfPageConfig Footer(string? value)
@@ -13,11 +14,11 @@ public IPdfPageConfig Footer(string? value)
 | --- | --- |
 | value | HTML footer. Default is `null`. |
 
-## Return Value
+### Return Value
 
 [`IPdfPageConfig`](../IPdfPageConfig.md) instance.
 
-## See Also
+### See Also
 
 * interface [IPdfPageConfig](../IPdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

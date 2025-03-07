@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfClient.PageConfig method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Set PDF page configuration.
+### IHtmlPdfClient.PageConfig method
+</br>
+
+
+#### Set PDF page configuration.
 
 ```csharp
 public IHtmlPdfClient PageConfig(Action<IPdfPageConfig> config)
@@ -13,17 +14,17 @@ public IHtmlPdfClient PageConfig(Action<IPdfPageConfig> config)
 | --- | --- |
 | config | An action that takes an IPdfPageConfig object to configure the page settings. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfClient`](../IHtmlPdfClient.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException | Thrown when the config action is null. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)

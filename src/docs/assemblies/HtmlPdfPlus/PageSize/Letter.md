@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PageSize.Letter property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Letter: 215.9 x 279.4 mm
+### PageSize.Letter property
+</br>
+
+
+#### Letter: 215.9 x 279.4 mm
 
 ```csharp
 public static PageSize Letter { get; }
 ```
 
-## See Also
+### See Also
 
 * class [PageSize](../PageSize.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

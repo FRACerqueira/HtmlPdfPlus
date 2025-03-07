@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfSrvBuilder.DefaultConfig method (1 of 2)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-The default Config PDF page when not provided.
+### IHtmlPdfSrvBuilder.DefaultConfig method (1 of 2)
+</br>
+
+
+#### The default Config PDF page when not provided.
 
 ```csharp
 public IHtmlPdfSrvBuilder DefaultConfig(Action<IPdfPageConfig> config)
@@ -13,20 +14,20 @@ public IHtmlPdfSrvBuilder DefaultConfig(Action<IPdfPageConfig> config)
 | --- | --- |
 | config | An action that takes an IPdfPageConfig object to configure the page settings. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfSrvBuilder`](../IHtmlPdfSrvBuilder.md) instance.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../IHtmlPdfSrvBuilder.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)
 
 ---
 
-# IHtmlPdfSrvBuilder.DefaultConfig method (2 of 2)
+### IHtmlPdfSrvBuilder.DefaultConfig method (2 of 2)
 
-The default Config PDF page when not provided.
+#### The default Config PDF page when not provided.
 
 ```csharp
 public IHtmlPdfSrvBuilder DefaultConfig(PdfPageConfig value)
@@ -36,11 +37,11 @@ public IHtmlPdfSrvBuilder DefaultConfig(PdfPageConfig value)
 | --- | --- |
 | value | The default value. PdfPageConfig. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfSrvBuilder`](../IHtmlPdfSrvBuilder.md) instance.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../IHtmlPdfSrvBuilder.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)

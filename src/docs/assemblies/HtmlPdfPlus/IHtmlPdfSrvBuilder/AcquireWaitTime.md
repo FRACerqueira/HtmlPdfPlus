@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfSrvBuilder.AcquireWaitTime method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Number of idle milliseconds to retry acquiring an available page.
+### IHtmlPdfSrvBuilder.AcquireWaitTime method
+</br>
+
+
+#### Number of idle milliseconds to retry acquiring an available page.
 
 ```csharp
 public IHtmlPdfSrvBuilder AcquireWaitTime(int value = 10)
@@ -13,17 +14,17 @@ public IHtmlPdfSrvBuilder AcquireWaitTime(int value = 10)
 | --- | --- |
 | value | Number of milliseconds. Default is 10. The value must be between 10 and 500. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfSrvBuilder`](../IHtmlPdfSrvBuilder.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException | Thrown when the value is out of range. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../IHtmlPdfSrvBuilder.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)

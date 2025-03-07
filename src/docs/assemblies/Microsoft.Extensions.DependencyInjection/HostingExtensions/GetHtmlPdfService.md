@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## HostingExtensions.GetHtmlPdfService method (1 of 3)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Gets the required service of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.md) from the IServiceProvider.
+### HostingExtensions.GetHtmlPdfService method (1 of 3)
+</br>
+
+
+#### Gets the required service of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.md) from the IServiceProvider.
 
 ```csharp
 public static IHtmlPdfServer<object, byte[]> GetHtmlPdfService(this IServiceProvider provider)
@@ -13,17 +14,17 @@ public static IHtmlPdfServer<object, byte[]> GetHtmlPdfService(this IServiceProv
 | --- | --- |
 | provider | The service provider. |
 
-## Return Value
+### Return Value
 
 A service object of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.md).
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException | Thrown when the service provider is null. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfServer&lt;TIn,TOut&gt;](../../HtmlPdfPlus/IHtmlPdfServer-2.md)
 * class [HostingExtensions](../HostingExtensions.md)
@@ -31,9 +32,9 @@ A service object of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.m
 
 ---
 
-# HostingExtensions.GetHtmlPdfService&lt;TOut&gt; method (2 of 3)
+### HostingExtensions.GetHtmlPdfService&lt;TOut&gt; method (2 of 3)
 
-Gets the required service of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.md) from the IServiceProvider.
+#### Gets the required service of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.md) from the IServiceProvider.
 
 ```csharp
 public static IHtmlPdfServer<object, TOut> GetHtmlPdfService<TOut>(this IServiceProvider provider)
@@ -44,17 +45,17 @@ public static IHtmlPdfServer<object, TOut> GetHtmlPdfService<TOut>(this IService
 | TOut | The type of the output parameter. |
 | provider | The service provider. |
 
-## Return Value
+### Return Value
 
 A service object of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.md).
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException | Thrown when the service provider is null. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfServer&lt;TIn,TOut&gt;](../../HtmlPdfPlus/IHtmlPdfServer-2.md)
 * class [HostingExtensions](../HostingExtensions.md)
@@ -62,9 +63,9 @@ A service object of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.m
 
 ---
 
-# HostingExtensions.GetHtmlPdfService&lt;Tin,TOut&gt; method (3 of 3)
+### HostingExtensions.GetHtmlPdfService&lt;Tin,TOut&gt; method (3 of 3)
 
-Gets the required service of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.md) from the IServiceProvider.
+#### Gets the required service of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.md) from the IServiceProvider.
 
 ```csharp
 public static IHtmlPdfServer<Tin, TOut> GetHtmlPdfService<Tin, TOut>(this IServiceProvider provider)
@@ -76,17 +77,17 @@ public static IHtmlPdfServer<Tin, TOut> GetHtmlPdfService<Tin, TOut>(this IServi
 | TOut | The type of the output parameter. |
 | provider | The service provider. |
 
-## Return Value
+### Return Value
 
 A service object of type [`IHtmlPdfServer`](../../HtmlPdfPlus/IHtmlPdfServer-2.md).
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException | Thrown when the service provider is null. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfServer&lt;TIn,TOut&gt;](../../HtmlPdfPlus/IHtmlPdfServer-2.md)
 * class [HostingExtensions](../HostingExtensions.md)

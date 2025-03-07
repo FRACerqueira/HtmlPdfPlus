@@ -1,8 +1,9 @@
-# <img align="left" width="150" height="150" src="../../../docs/images/Icon.png" >
-##
-## HtmlPdfPlus.Server assembly
-## 
-## HtmlPdfPlus namespace
+<img align="left" width="100" height="100" src="../../../docs/images/Icon.png" >
+
+### HtmlPdfPlus.Server assembly
+</br>
+
+### HtmlPdfPlus namespace
 
 | public type | description |
 | --- | --- |
@@ -10,11 +11,11 @@
 | interface [IHtmlPdfSrvBuilder](./HtmlPdfPlus/IHtmlPdfSrvBuilder.md) | Fluent interface commands to set instance of Chromium serverless browser. |
 | static class [RequestHtmlPdf](./HtmlPdfPlus/RequestHtmlPdf.md) | Request data to convert Html to PDF using only HtmlPdfPlus Server |
 
-## Microsoft.Extensions.DependencyInjection namespace
+### Microsoft.Extensions.DependencyInjection namespace
 
 | public type | description |
 | --- | --- |
 | static class [HostingExtensions](./Microsoft.Extensions.DependencyInjection/HostingExtensions.md) | Provides extension methods to add and configure HtmlPdf Server in the IServiceCollection. |
 
-## See Also
+### See Also
 * [Main Index](../docindex.md)

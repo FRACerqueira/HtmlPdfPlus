@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfSrvBuilder interface
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Fluent interface commands to set instance of Chromium serverless browser.
+### IHtmlPdfSrvBuilder interface
+</br>
+
+
+#### Fluent interface commands to set instance of Chromium serverless browser.
 
 ```csharp
 public interface IHtmlPdfSrvBuilder
 ```
 
-## Members
+### Members
 
 | name | description |
 | --- | --- |
@@ -21,7 +22,7 @@ public interface IHtmlPdfSrvBuilder
 | [Logger](IHtmlPdfSrvBuilder/Logger.md)(…) | Set Logger integration. |
 | [PagesBuffer](IHtmlPdfSrvBuilder/PagesBuffer.md)(…) | Number of pages available to render HTML and convert to PDF. |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Server.md)
 

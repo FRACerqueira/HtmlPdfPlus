@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PdfPageConfig.Size property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Page Size. [`PageSize`](../PageSize.md). Default value : A4.
+### PdfPageConfig.Size property
+</br>
+
+
+#### Page Size. [`PageSize`](../PageSize.md). Default value : A4.
 
 ```csharp
 public PageSize Size { get; set; }
 ```
 
-## See Also
+### See Also
 
 * class [PageSize](../PageSize.md)
 * class [PdfPageConfig](../PdfPageConfig.md)

@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PageSize.Tabloid property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Tabloid : 279.4 x 431.8 mm
+### PageSize.Tabloid property
+</br>
+
+
+#### Tabloid : 279.4 x 431.8 mm
 
 ```csharp
 public static PageSize Tabloid { get; }
 ```
 
-## See Also
+### See Also
 
 * class [PageSize](../PageSize.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

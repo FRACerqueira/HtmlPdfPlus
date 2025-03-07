@@ -1,22 +1,23 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## PageOrientation enumeration
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Orientation Page PDF
+### PageOrientation enumeration
+</br>
+
+
+#### Orientation Page PDF
 
 ```csharp
 public enum PageOrientation
 ```
 
-## Values
+### Values
 
 | name | value | description |
 | --- | --- | --- |
 | Portrait | `0` | Portrait |
 | Landscape | `1` | Landscape |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Shared.md)
 

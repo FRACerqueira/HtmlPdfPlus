@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfServer&lt;TIn,TOut&gt; interface
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Fluent interface commands to perform HTML to PDF conversion.
+### IHtmlPdfServer&lt;TIn,TOut&gt; interface
+</br>
+
+
+#### Fluent interface commands to perform HTML to PDF conversion.
 
 ```csharp
 public interface IHtmlPdfServer<TIn, TOut>
@@ -14,7 +15,7 @@ public interface IHtmlPdfServer<TIn, TOut>
 | TIn | Type of input data. |
 | TOut | Type of output data. |
 
-## Members
+### Members
 
 | name | description |
 | --- | --- |
@@ -22,7 +23,7 @@ public interface IHtmlPdfServer<TIn, TOut>
 | [BeforePDF](IHtmlPdfServer-2/BeforePDF.md)(…) | Function to enrich HTML before performing HTML to PDF conversion. |
 | [Run](IHtmlPdfServer-2/Run.md)(…) | Perform HTML to PDF conversion. |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Server.md)
 

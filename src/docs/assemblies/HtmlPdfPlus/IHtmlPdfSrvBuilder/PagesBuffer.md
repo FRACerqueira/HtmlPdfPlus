@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfSrvBuilder.PagesBuffer method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Number of pages available to render HTML and convert to PDF.
+### IHtmlPdfSrvBuilder.PagesBuffer method
+</br>
+
+
+#### Number of pages available to render HTML and convert to PDF.
 
 ```csharp
 public IHtmlPdfSrvBuilder PagesBuffer(byte buffer = 5)
@@ -13,17 +14,17 @@ public IHtmlPdfSrvBuilder PagesBuffer(byte buffer = 5)
 | --- | --- |
 | buffer | Number of pages available. Default is 5. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfSrvBuilder`](../IHtmlPdfSrvBuilder.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException | Thrown when the buffer value is invalid. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../IHtmlPdfSrvBuilder.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)

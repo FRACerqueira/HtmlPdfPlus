@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## HostingExtensions.WarmupHtmlPdfService method (1 of 3)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Warms up HtmlPdfServerPlus with full capacity ready.
+### HostingExtensions.WarmupHtmlPdfService method (1 of 3)
+</br>
+
+
+#### Warms up HtmlPdfServerPlus with full capacity ready.
 
 ```csharp
 public static TimeSpan WarmupHtmlPdfService(this IHost appBuild)
@@ -13,26 +14,26 @@ public static TimeSpan WarmupHtmlPdfService(this IHost appBuild)
 | --- | --- |
 | appBuild | The host application. |
 
-## Return Value
+### Return Value
 
 The elapsed time to warm up with full capacity ready.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | InvalidOperationException | Thrown when the service is not available. |
 
-## See Also
+### See Also
 
 * class [HostingExtensions](../HostingExtensions.md)
 * namespace [Microsoft.Extensions.DependencyInjection](../../HtmlPdfPlus.Server.md)
 
 ---
 
-# HostingExtensions.WarmupHtmlPdfService&lt;TOut&gt; method (2 of 3)
+### HostingExtensions.WarmupHtmlPdfService&lt;TOut&gt; method (2 of 3)
 
-Warms up HtmlPdfServerPlus with full capacity ready.
+#### Warms up HtmlPdfServerPlus with full capacity ready.
 
 ```csharp
 public static TimeSpan WarmupHtmlPdfService<TOut>(this IHost appBuild)
@@ -43,26 +44,26 @@ public static TimeSpan WarmupHtmlPdfService<TOut>(this IHost appBuild)
 | TOut | The type of the output parameter. |
 | appBuild | The host application. |
 
-## Return Value
+### Return Value
 
 The elapsed time to warm up with full capacity ready.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | InvalidOperationException | Thrown when the service is not available. |
 
-## See Also
+### See Also
 
 * class [HostingExtensions](../HostingExtensions.md)
 * namespace [Microsoft.Extensions.DependencyInjection](../../HtmlPdfPlus.Server.md)
 
 ---
 
-# HostingExtensions.WarmupHtmlPdfService&lt;TIn,TOut&gt; method (3 of 3)
+### HostingExtensions.WarmupHtmlPdfService&lt;TIn,TOut&gt; method (3 of 3)
 
-Warms up HtmlPdfServerPlus with full capacity ready.
+#### Warms up HtmlPdfServerPlus with full capacity ready.
 
 ```csharp
 public static TimeSpan WarmupHtmlPdfService<TIn, TOut>(this IHost appBuild)
@@ -74,17 +75,17 @@ public static TimeSpan WarmupHtmlPdfService<TIn, TOut>(this IHost appBuild)
 | TOut | The type of the output parameter. |
 | appBuild | The host application. |
 
-## Return Value
+### Return Value
 
 The elapsed time to warm up with full capacity ready.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | InvalidOperationException | Thrown when the service is not available. |
 
-## See Also
+### See Also
 
 * class [HostingExtensions](../HostingExtensions.md)
 * namespace [Microsoft.Extensions.DependencyInjection](../../HtmlPdfPlus.Server.md)

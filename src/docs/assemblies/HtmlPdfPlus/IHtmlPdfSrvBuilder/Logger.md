@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfSrvBuilder.Logger method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Set Logger integration.
+### IHtmlPdfSrvBuilder.Logger method
+</br>
+
+
+#### Set Logger integration.
 
 ```csharp
 public IHtmlPdfSrvBuilder Logger(LogLevel logLevel, string categoryName = "HtmlPdfServer")
@@ -14,17 +15,17 @@ public IHtmlPdfSrvBuilder Logger(LogLevel logLevel, string categoryName = "HtmlP
 | logLevel | Log level. The valid levels are: None, Trace, Debug (default), Info. LogLevel. |
 | categoryName | Name of category logger. Default is "HtmlPdfServer". |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfSrvBuilder`](../IHtmlPdfSrvBuilder.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException | Thrown when the log level or category name is invalid. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../IHtmlPdfSrvBuilder.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)

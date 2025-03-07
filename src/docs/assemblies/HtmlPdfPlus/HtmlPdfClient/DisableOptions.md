@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## HtmlPdfClient.DisableOptions property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Options for disabling internal features.
+### HtmlPdfClient.DisableOptions property
+</br>
+
+
+#### Options for disabling internal features.
 
 ```csharp
 public static DisableOptionsHtmlToPdf DisableOptions { get; set; }
 ```
 
-## See Also
+### See Also
 
 * class [HtmlPdfClient](../HtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)

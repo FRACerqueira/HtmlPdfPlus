@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## HtmlPdfClient.ToHtmlPdfResult method (1 of 2)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Convert Response Data from server HtmlPdfPlus
+### HtmlPdfClient.ToHtmlPdfResult method (1 of 2)
+</br>
+
+
+#### Convert Response Data from server HtmlPdfPlus
 
 ```csharp
 public static HtmlPdfResult<byte[]> ToHtmlPdfResult(this string dataresponse)
@@ -13,20 +14,20 @@ public static HtmlPdfResult<byte[]> ToHtmlPdfResult(this string dataresponse)
 | --- | --- |
 | dataresponse | Response data |
 
-## Return Value
+### Return Value
 
 HtmlPdfResult
 
-## See Also
+### See Also
 
 * class [HtmlPdfClient](../HtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)
 
 ---
 
-# HtmlPdfClient.ToHtmlPdfResult&lt;T&gt; method (2 of 2)
+### HtmlPdfClient.ToHtmlPdfResult&lt;T&gt; method (2 of 2)
 
-Convert Response Data from server HtmlPdfPlus
+#### Convert Response Data from server HtmlPdfPlus
 
 ```csharp
 public static HtmlPdfResult<T> ToHtmlPdfResult<T>(this string dataresponse)
@@ -37,11 +38,11 @@ public static HtmlPdfResult<T> ToHtmlPdfResult<T>(this string dataresponse)
 | T | Type of result |
 | dataresponse | Response data |
 
-## Return Value
+### Return Value
 
 HtmlPdfResult
 
-## See Also
+### See Also
 
 * class [HtmlPdfClient](../HtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)

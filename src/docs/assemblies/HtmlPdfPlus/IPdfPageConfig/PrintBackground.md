@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IPdfPageConfig.PrintBackground method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Sets whether to print background graphics.
+### IPdfPageConfig.PrintBackground method
+</br>
+
+
+#### Sets whether to print background graphics.
 
 ```csharp
 public IPdfPageConfig PrintBackground(bool value = true)
@@ -13,11 +14,11 @@ public IPdfPageConfig PrintBackground(bool value = true)
 | --- | --- |
 | value | Print background images? Default is `true`. |
 
-## Return Value
+### Return Value
 
 [`IPdfPageConfig`](../IPdfPageConfig.md) instance.
 
-## See Also
+### See Also
 
 * interface [IPdfPageConfig](../IPdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

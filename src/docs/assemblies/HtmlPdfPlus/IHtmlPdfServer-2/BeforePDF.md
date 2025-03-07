@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfServer&lt;TIn,TOut&gt;.BeforePDF method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Function to enrich HTML before performing HTML to PDF conversion.
+### IHtmlPdfServer&lt;TIn,TOut&gt;.BeforePDF method
+</br>
+
+
+#### Function to enrich HTML before performing HTML to PDF conversion.
 
 ```csharp
 public IHtmlPdfServer BeforePDF(Func<string, TIn?, CancellationToken, Task<string>> inputParam)
@@ -13,17 +14,17 @@ public IHtmlPdfServer BeforePDF(Func<string, TIn?, CancellationToken, Task<strin
 | --- | --- |
 | inputParam | A function that takes a HTML request client, input data of type *TIn*, and a CancellationToken, and returns enriched HTML as a string. |
 
-## Return Value
+### Return Value
 
 An instance of [`IHtmlPdfServer`](../IHtmlPdfServer-2.md).
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException | Thrown when *inputParam* is null. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfServer&lt;TIn,TOut&gt;](../IHtmlPdfServer-2.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)

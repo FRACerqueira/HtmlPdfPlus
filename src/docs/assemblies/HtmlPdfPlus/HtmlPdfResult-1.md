@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## HtmlPdfResult&lt;T&gt; class
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Result of converting Html to PDF
+### HtmlPdfResult&lt;T&gt; class
+</br>
+
+
+#### Result of converting Html to PDF
 
 ```csharp
 public sealed class HtmlPdfResult<T>
@@ -13,7 +14,7 @@ public sealed class HtmlPdfResult<T>
 | --- | --- |
 | T | Type of output data |
 
-## Public Members
+### Public Members
 
 | name | description |
 | --- | --- |
@@ -25,7 +26,7 @@ public sealed class HtmlPdfResult<T>
 | [OutputData](HtmlPdfResult-1/OutputData.md) { get; } | Output custom data or PDF in byte[] |
 | [DecompressBytes](HtmlPdfResult-1/DecompressBytes.md)() | Decompress output data if it is byte[] |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Shared.md)
 

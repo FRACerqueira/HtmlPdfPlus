@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IPdfPageConfig.Format method (1 of 2)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Sets the page size of the rendered document.
+### IPdfPageConfig.Format method (1 of 2)
+</br>
+
+
+#### Sets the page size of the rendered document.
 
 ```csharp
 public IPdfPageConfig Format(PageSize value)
@@ -13,11 +14,11 @@ public IPdfPageConfig Format(PageSize value)
 | --- | --- |
 | value | [`PageSize`](../PageSize.md). Default is A4. |
 
-## Return Value
+### Return Value
 
 [`IPdfPageConfig`](../IPdfPageConfig.md) instance.
 
-## See Also
+### See Also
 
 * class [PageSize](../PageSize.md)
 * interface [IPdfPageConfig](../IPdfPageConfig.md)
@@ -25,9 +26,9 @@ public IPdfPageConfig Format(PageSize value)
 
 ---
 
-# IPdfPageConfig.Format method (2 of 2)
+### IPdfPageConfig.Format method (2 of 2)
 
-Sets the page size of the rendered document.
+#### Sets the page size of the rendered document.
 
 ```csharp
 public IPdfPageConfig Format(decimal width = 210, decimal height = 297)
@@ -38,17 +39,17 @@ public IPdfPageConfig Format(decimal width = 210, decimal height = 297)
 | width | Page width in millimeters. Default is 210mm. |
 | height | Page height in millimeters. Default is 297mm. |
 
-## Return Value
+### Return Value
 
 [`IPdfPageConfig`](../IPdfPageConfig.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException | Thrown when width or height is invalid. |
 
-## See Also
+### See Also
 
 * interface [IPdfPageConfig](../IPdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

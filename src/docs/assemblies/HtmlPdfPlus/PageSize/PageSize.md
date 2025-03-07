@@ -1,24 +1,25 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PageSize constructor (1 of 2)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Initializes a new instance of the [`PageSize`](../PageSize.md) class with default value : A4. Page width and height in millimeters.
+### PageSize constructor (1 of 2)
+</br>
+
+
+#### Initializes a new instance of the [`PageSize`](../PageSize.md) class with default value : A4. Page width and height in millimeters.
 
 ```csharp
 public PageSize()
 ```
 
-## See Also
+### See Also
 
 * class [PageSize](../PageSize.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)
 
 ---
 
-# PageSize constructor (2 of 2)
+### PageSize constructor (2 of 2)
 
-Initializes a new instance of the [`PageSize`](../PageSize.md) class. Page width and height in millimeters.
+#### Initializes a new instance of the [`PageSize`](../PageSize.md) class. Page width and height in millimeters.
 
 ```csharp
 public PageSize(decimal width, decimal height)
@@ -29,7 +30,7 @@ public PageSize(decimal width, decimal height)
 | width | Page width in millimeters. |
 | height | Page height in millimeters. |
 
-## See Also
+### See Also
 
 * class [PageSize](../PageSize.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

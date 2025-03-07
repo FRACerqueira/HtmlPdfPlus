@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfClient.Run method (1 of 6)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Submit the HTML to convert to PDF in byte[] by the SubmitHtmlToPdf function.
+### IHtmlPdfClient.Run method (1 of 6)
+</br>
+
+
+#### Submit the HTML to convert to PDF in byte[] by the SubmitHtmlToPdf function.
 
 ```csharp
 public Task<HtmlPdfResult<byte[]>> Run(
@@ -16,27 +17,27 @@ public Task<HtmlPdfResult<byte[]>> Run(
 | submitHtmlToPdf | Handler to function submit to server. |
 | token | CancellationToken token. |
 
-## Return Value
+### Return Value
 
 Returns bytes[] from HtmlPdfResult representing the asynchronous operation of converting HTML to PDF.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | InvalidOperationException | Thrown when the operation is invalid. |
 | ArgumentNullException | Thrown when the submitHtmlToPdf function is null. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)
 
 ---
 
-# IHtmlPdfClient.Run method (2 of 6)
+### IHtmlPdfClient.Run method (2 of 6)
 
-Submit the HTML to convert to PDF in byte[] via POST HttpClient.
+#### Submit the HTML to convert to PDF in byte[] via POST HttpClient.
 
 ```csharp
 public Task<HtmlPdfResult<byte[]>> Run(HttpClient httpClient, CancellationToken token = default)
@@ -47,20 +48,20 @@ public Task<HtmlPdfResult<byte[]>> Run(HttpClient httpClient, CancellationToken 
 | httpClient | Instance of HttpClient. |
 | token | CancellationToken token. |
 
-## Return Value
+### Return Value
 
 Returns bytes[] from HtmlPdfResult representing the asynchronous operation of converting HTML to PDF.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)
 
 ---
 
-# IHtmlPdfClient.Run method (3 of 6)
+### IHtmlPdfClient.Run method (3 of 6)
 
-Submit the HTML to convert to PDF in byte[] via POST HttpClient.
+#### Submit the HTML to convert to PDF in byte[] via POST HttpClient.
 
 ```csharp
 public Task<HtmlPdfResult<byte[]>> Run(HttpClient httpClient, string endpoint, 
@@ -73,20 +74,20 @@ public Task<HtmlPdfResult<byte[]>> Run(HttpClient httpClient, string endpoint,
 | endpoint | The endpoint for the HTTP client. |
 | token | CancellationToken token. |
 
-## Return Value
+### Return Value
 
 Returns bytes[] from HtmlPdfResult representing the asynchronous operation of converting HTML to PDF.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)
 
 ---
 
-# IHtmlPdfClient.Run&lt;Tin,Tout&gt; method (4 of 6)
+### IHtmlPdfClient.Run&lt;Tin,Tout&gt; method (4 of 6)
 
-Submit the HTML to convert to PDF in custom output via the SubmitHtmlToPdf function.
+#### Submit the HTML to convert to PDF in custom output via the SubmitHtmlToPdf function.
 
 ```csharp
 public Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(
@@ -102,27 +103,27 @@ public Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(
 | customData | Input data, for customizing HTML before converting to PDF on the server. |
 | token | CancellationToken token. |
 
-## Return Value
+### Return Value
 
 Returns HtmlPdfResult representing the asynchronous operation of converting HTML to PDF.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | InvalidOperationException | Thrown when the operation is invalid. |
 | ArgumentNullException | Thrown when the submitHtmlToPdf function or customData is null. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)
 
 ---
 
-# IHtmlPdfClient.Run&lt;Tin,Tout&gt; method (5 of 6)
+### IHtmlPdfClient.Run&lt;Tin,Tout&gt; method (5 of 6)
 
-Submit the HTML to convert to PDF in custom output via POST HttpClient.
+#### Submit the HTML to convert to PDF in custom output via POST HttpClient.
 
 ```csharp
 public Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(HttpClient httpClient, Tin? customData, 
@@ -137,20 +138,20 @@ public Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(HttpClient httpClient, Tin? cust
 | customData | Input data, for customizing HTML before converting to PDF on the server. |
 | token | CancellationToken token. |
 
-## Return Value
+### Return Value
 
 Returns HtmlPdfResult representing the asynchronous operation of converting HTML to PDF.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)
 
 ---
 
-# IHtmlPdfClient.Run&lt;Tin,Tout&gt; method (6 of 6)
+### IHtmlPdfClient.Run&lt;Tin,Tout&gt; method (6 of 6)
 
-Submit the HTML to convert to PDF in custom output via POST HttpClient.
+#### Submit the HTML to convert to PDF in custom output via POST HttpClient.
 
 ```csharp
 public Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(HttpClient httpClient, string endpoint, 
@@ -166,11 +167,11 @@ public Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(HttpClient httpClient, string en
 | customData | Input data, for customizing HTML before converting to PDF on the server. |
 | token | CancellationToken token. |
 
-## Return Value
+### Return Value
 
 Returns HtmlPdfResult representing the asynchronous operation of converting HTML to PDF.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)

@@ -1,22 +1,23 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## RequestHtmlPdf class
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Request data to convert Html to PDF using only HtmlPdfPlus Server
+### RequestHtmlPdf class
+</br>
+
+
+#### Request data to convert Html to PDF using only HtmlPdfPlus Server
 
 ```csharp
 public static class RequestHtmlPdf
 ```
 
-## Public Members
+### Public Members
 
 | name | description |
 | --- | --- |
 | static [Create](RequestHtmlPdf/Create.md)(…) | Create string representation of Html to be used in Server engine (2 methods) |
 | static [Create&lt;T&gt;](RequestHtmlPdf/Create.md)(…) | Create string representation of Html to be used in Server engine (2 methods) |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Server.md)
 

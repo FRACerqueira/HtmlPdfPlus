@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IPdfPageConfig.DisplayHeaderFooter method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Sets whether to display the header and footer.
+### IPdfPageConfig.DisplayHeaderFooter method
+</br>
+
+
+#### Sets whether to display the header and footer.
 
 ```csharp
 public IPdfPageConfig DisplayHeaderFooter(bool value = false)
@@ -13,11 +14,11 @@ public IPdfPageConfig DisplayHeaderFooter(bool value = false)
 | --- | --- |
 | value | Display header and footer? Default is `false`. |
 
-## Return Value
+### Return Value
 
 [`IPdfPageConfig`](../IPdfPageConfig.md) instance.
 
-## See Also
+### See Also
 
 * interface [IPdfPageConfig](../IPdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

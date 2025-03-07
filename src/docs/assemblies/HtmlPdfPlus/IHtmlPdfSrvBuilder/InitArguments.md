@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfSrvBuilder.InitArguments method (1 of 2)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Set Initial Arguments for Chromium serverless browser.
+### IHtmlPdfSrvBuilder.InitArguments method (1 of 2)
+</br>
+
+
+#### Set Initial Arguments for Chromium serverless browser.
 
 ```csharp
 public IHtmlPdfSrvBuilder InitArguments(string? args)
@@ -13,20 +14,20 @@ public IHtmlPdfSrvBuilder InitArguments(string? args)
 | --- | --- |
 | args | List of arguments separated by ';'. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfSrvBuilder`](../IHtmlPdfSrvBuilder.md) instance.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../IHtmlPdfSrvBuilder.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)
 
 ---
 
-# IHtmlPdfSrvBuilder.InitArguments method (2 of 2)
+### IHtmlPdfSrvBuilder.InitArguments method (2 of 2)
 
-Set Initial Arguments for Chromium serverless browser.
+#### Set Initial Arguments for Chromium serverless browser.
 
 ```csharp
 public IHtmlPdfSrvBuilder InitArguments(string[] args)
@@ -36,11 +37,11 @@ public IHtmlPdfSrvBuilder InitArguments(string[] args)
 | --- | --- |
 | args | List of arguments. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfSrvBuilder`](../IHtmlPdfSrvBuilder.md) instance.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../IHtmlPdfSrvBuilder.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)

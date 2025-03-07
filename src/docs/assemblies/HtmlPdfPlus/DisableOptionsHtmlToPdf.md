@@ -1,16 +1,17 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## DisableOptionsHtmlToPdf enumeration
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Options for disable internal features
+### DisableOptionsHtmlToPdf enumeration
+</br>
+
+
+#### Options for disable internal features
 
 ```csharp
 [Flags]
 public enum DisableOptionsHtmlToPdf
 ```
 
-## Values
+### Values
 
 | name | value | description |
 | --- | --- | --- |
@@ -19,7 +20,7 @@ public enum DisableOptionsHtmlToPdf
 | DisableCompress | `0x2` | Disable Compress data to client and server |
 | DisableLogging | `0x4` | Disable all log |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Shared.md)
 

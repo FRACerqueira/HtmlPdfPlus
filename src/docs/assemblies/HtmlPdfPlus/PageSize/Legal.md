@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PageSize.Legal property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Legal: 215.9mm x 355.6 mm
+### PageSize.Legal property
+</br>
+
+
+#### Legal: 215.9mm x 355.6 mm
 
 ```csharp
 public static PageSize Legal { get; }
 ```
 
-## See Also
+### See Also
 
 * class [PageSize](../PageSize.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

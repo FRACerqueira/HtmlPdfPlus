@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfSrvBuilder.DisableFeatures method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Options to disable internal features.
+### IHtmlPdfSrvBuilder.DisableFeatures method
+</br>
+
+
+#### Options to disable internal features.
 
 ```csharp
 public IHtmlPdfSrvBuilder DisableFeatures(DisableOptionsHtmlToPdf options)
@@ -13,11 +14,11 @@ public IHtmlPdfSrvBuilder DisableFeatures(DisableOptionsHtmlToPdf options)
 | --- | --- |
 | options | Options to disable. DisableOptionsHtmlToPdf. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfSrvBuilder`](../IHtmlPdfSrvBuilder.md) instance.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../IHtmlPdfSrvBuilder.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)

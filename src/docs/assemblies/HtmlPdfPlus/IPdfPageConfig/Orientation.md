@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IPdfPageConfig.Orientation method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Sets the page orientation.
+### IPdfPageConfig.Orientation method
+</br>
+
+
+#### Sets the page orientation.
 
 ```csharp
 public IPdfPageConfig Orientation(PageOrientation value)
@@ -13,11 +14,11 @@ public IPdfPageConfig Orientation(PageOrientation value)
 | --- | --- |
 | value | [`PageOrientation`](../PageOrientation.md). Default is Portrait. |
 
-## Return Value
+### Return Value
 
 [`IPdfPageConfig`](../IPdfPageConfig.md) instance.
 
-## See Also
+### See Also
 
 * enum [PageOrientation](../PageOrientation.md)
 * interface [IPdfPageConfig](../IPdfPageConfig.md)

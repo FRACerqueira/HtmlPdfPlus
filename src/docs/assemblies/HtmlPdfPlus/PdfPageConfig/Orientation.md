@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PdfPageConfig.Orientation property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Get/Set Orientation Page PDF. [`PageOrientation`](../PageOrientation.md) Default value : Portrait
+### PdfPageConfig.Orientation property
+</br>
+
+
+#### Get/Set Orientation Page PDF. [`PageOrientation`](../PageOrientation.md) Default value : Portrait
 
 ```csharp
 public PageOrientation Orientation { get; set; }
 ```
 
-## See Also
+### See Also
 
 * enum [PageOrientation](../PageOrientation.md)
 * class [PdfPageConfig](../PdfPageConfig.md)

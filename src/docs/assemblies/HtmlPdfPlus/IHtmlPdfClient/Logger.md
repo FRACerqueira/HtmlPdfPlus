@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfClient.Logger method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Set Logger integration.
+### IHtmlPdfClient.Logger method
+</br>
+
+
+#### Set Logger integration.
 
 ```csharp
 public IHtmlPdfClient Logger(ILogger? logger, LogLevel logLevel = LogLevel.Debug)
@@ -14,17 +15,17 @@ public IHtmlPdfClient Logger(ILogger? logger, LogLevel logLevel = LogLevel.Debug
 | logger | ILogger instance. |
 | logLevel | Log level, valid levels are: None, Trace, Debug (default), Info. LogLevel. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfClient`](../IHtmlPdfClient.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException | Thrown when the logger instance is invalid. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)

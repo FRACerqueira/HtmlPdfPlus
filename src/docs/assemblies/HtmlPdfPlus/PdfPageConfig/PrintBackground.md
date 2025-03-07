@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PdfPageConfig.PrintBackground property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Get/Set Print background graphics. Defaults to `true`.
+### PdfPageConfig.PrintBackground property
+</br>
+
+
+#### Get/Set Print background graphics. Defaults to `true`.
 
 ```csharp
 public bool PrintBackground { get; set; }
 ```
 
-## See Also
+### See Also
 
 * class [PdfPageConfig](../PdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

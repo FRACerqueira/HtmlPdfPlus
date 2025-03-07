@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## HtmlPdfResult&lt;T&gt; constructor
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Create instance [`HtmlPdfResult`](../HtmlPdfResult-1.md)
+### HtmlPdfResult&lt;T&gt; constructor
+</br>
+
+
+#### Create instance [`HtmlPdfResult`](../HtmlPdfResult-1.md)
 
 ```csharp
 public HtmlPdfResult(bool isSuccess, bool bufferDrained, TimeSpan elapsedTime, T? outputData, 
@@ -18,7 +19,7 @@ public HtmlPdfResult(bool isSuccess, bool bufferDrained, TimeSpan elapsedTime, T
 | outputData | Output custom data or PDF in byte[] |
 | error | The exception during conversion. Exception |
 
-## See Also
+### See Also
 
 * class [HtmlPdfResult&lt;T&gt;](../HtmlPdfResult-1.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

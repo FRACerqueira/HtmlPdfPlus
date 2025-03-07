@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## HostingExtensions class
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Provides extension methods to add and configure HtmlPdf Server in the IServiceCollection.
+### HostingExtensions class
+</br>
+
+
+#### Provides extension methods to add and configure HtmlPdf Server in the IServiceCollection.
 
 ```csharp
 public static class HostingExtensions
 ```
 
-## Public Members
+### Public Members
 
 | name | description |
 | --- | --- |
@@ -23,7 +24,7 @@ public static class HostingExtensions
 | static [WarmupHtmlPdfService&lt;TOut&gt;](HostingExtensions/WarmupHtmlPdfService.md)(…) | Warms up HtmlPdfServerPlus with full capacity ready. |
 | static [WarmupHtmlPdfService&lt;TIn,TOut&gt;](HostingExtensions/WarmupHtmlPdfService.md)(…) | Warms up HtmlPdfServerPlus with full capacity ready. |
 
-## See Also
+### See Also
 
 * namespace [Microsoft.Extensions.DependencyInjection](../HtmlPdfPlus.Server.md)
 

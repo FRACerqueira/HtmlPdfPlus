@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PageMargins.Create method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Create a new instance of the [`PageMargins`](../PageMargins.md) class.
+### PageMargins.Create method
+</br>
+
+
+#### Create a new instance of the [`PageMargins`](../PageMargins.md) class.
 
 ```csharp
 public static PageMargins Create(decimal top, decimal bottom, decimal left, decimal right)
@@ -16,11 +17,11 @@ public static PageMargins Create(decimal top, decimal bottom, decimal left, deci
 | left | Margin left in millimeters. |
 | right | Margin right in millimeters. |
 
-## Return Value
+### Return Value
 
 [`PageMargins`](../PageMargins.md) instance
 
-## See Also
+### See Also
 
 * class [PageMargins](../PageMargins.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

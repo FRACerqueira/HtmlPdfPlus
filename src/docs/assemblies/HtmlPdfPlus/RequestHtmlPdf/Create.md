@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## RequestHtmlPdf.Create method (1 of 4)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Create string representation of Html to be used in Server engine
+### RequestHtmlPdf.Create method (1 of 4)
+</br>
+
+
+#### Create string representation of Html to be used in Server engine
 
 ```csharp
 public static string Create(string html, int converttimeout = 30000, bool minify = true, 
@@ -17,26 +18,26 @@ public static string Create(string html, int converttimeout = 30000, bool minify
 | minify | `True` to minify html. Default value is `true` |
 | compress | `True` to compress html in gzip-base64. Default value is `false` |
 
-## Return Value
+### Return Value
 
 String representation of Html to be used in Server engine
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException |  |
 
-## See Also
+### See Also
 
 * class [RequestHtmlPdf](../RequestHtmlPdf.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)
 
 ---
 
-# RequestHtmlPdf.Create method (2 of 4)
+### RequestHtmlPdf.Create method (2 of 4)
 
-Create string representation of Html to be used in Server engine
+#### Create string representation of Html to be used in Server engine
 
 ```csharp
 public static string Create(string html, Action<IPdfPageConfig> config, int converttimeout = 30000, 
@@ -51,27 +52,27 @@ public static string Create(string html, Action<IPdfPageConfig> config, int conv
 | minify | `True` to minify html. Default value is `true` |
 | compress | `True` to compress html in gzip-base64. Default value is `false` |
 
-## Return Value
+### Return Value
 
 String representation of Html to be used in Server engine
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException |  |
 | ArgumentException |  |
 
-## See Also
+### See Also
 
 * class [RequestHtmlPdf](../RequestHtmlPdf.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)
 
 ---
 
-# RequestHtmlPdf.Create&lt;T&gt; method (3 of 4)
+### RequestHtmlPdf.Create&lt;T&gt; method (3 of 4)
 
-Create string representation of Html to be used in Server engine
+#### Create string representation of Html to be used in Server engine
 
 ```csharp
 public static string Create<T>(string html, int converttimeout = 30000, T? param = default, 
@@ -87,26 +88,26 @@ public static string Create<T>(string html, int converttimeout = 30000, T? param
 | minify | `True` to minify html. Default value is `true` |
 | compress | `True` to compress html in gzip-base64. Default value is `false` |
 
-## Return Value
+### Return Value
 
 String representation of Html to be used in Server engine
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException |  |
 
-## See Also
+### See Also
 
 * class [RequestHtmlPdf](../RequestHtmlPdf.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)
 
 ---
 
-# RequestHtmlPdf.Create&lt;T&gt; method (4 of 4)
+### RequestHtmlPdf.Create&lt;T&gt; method (4 of 4)
 
-Create string representation of Html to be used in Server engine
+#### Create string representation of Html to be used in Server engine
 
 ```csharp
 public static string Create<T>(string html, Action<IPdfPageConfig> config, 
@@ -123,18 +124,18 @@ public static string Create<T>(string html, Action<IPdfPageConfig> config,
 | minify | `True` to minify html. Default value is `true` |
 | compress | `True` to compress html in gzip-base64. Default value is `false` |
 
-## Return Value
+### Return Value
 
 String representation of Html to be used in Server engine
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException |  |
 | ArgumentException |  |
 
-## See Also
+### See Also
 
 * class [RequestHtmlPdf](../RequestHtmlPdf.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)

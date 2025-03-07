@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PdfPageConfig.Margins property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Get/Sets the page margins (default 0mm for left/right/top/bottom)
+### PdfPageConfig.Margins property
+</br>
+
+
+#### Get/Sets the page margins (default 0mm for left/right/top/bottom)
 
 ```csharp
 public PageMargins Margins { get; set; }
 ```
 
-## See Also
+### See Also
 
 * class [PageMargins](../PageMargins.md)
 * class [PdfPageConfig](../PdfPageConfig.md)

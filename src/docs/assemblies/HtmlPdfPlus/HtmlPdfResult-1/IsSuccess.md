@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## HtmlPdfResult&lt;T&gt;.IsSuccess property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-If the conversion was successful
+### HtmlPdfResult&lt;T&gt;.IsSuccess property
+</br>
+
+
+#### If the conversion was successful
 
 ```csharp
 public bool IsSuccess { get; }
 ```
 
-## See Also
+### See Also
 
 * class [HtmlPdfResult&lt;T&gt;](../HtmlPdfResult-1.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

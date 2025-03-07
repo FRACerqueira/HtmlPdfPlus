@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IPdfPageConfig.Margins method (1 of 3)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Sets the page margins.
+### IPdfPageConfig.Margins method (1 of 3)
+</br>
+
+
+#### Sets the page margins.
 
 ```csharp
 public IPdfPageConfig Margins(decimal value = 0)
@@ -13,26 +14,26 @@ public IPdfPageConfig Margins(decimal value = 0)
 | --- | --- |
 | value | Margin for all sides in millimeters. Default is 0mm. |
 
-## Return Value
+### Return Value
 
 [`IPdfPageConfig`](../IPdfPageConfig.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException | Thrown when the margin value is invalid. |
 
-## See Also
+### See Also
 
 * interface [IPdfPageConfig](../IPdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)
 
 ---
 
-# IPdfPageConfig.Margins method (2 of 3)
+### IPdfPageConfig.Margins method (2 of 3)
 
-Sets the page margins.
+#### Sets the page margins.
 
 ```csharp
 public IPdfPageConfig Margins(PageMargins value)
@@ -42,11 +43,11 @@ public IPdfPageConfig Margins(PageMargins value)
 | --- | --- |
 | value | Margins [`PageMargins`](../PageMargins.md). Default is 0mm for all sides. |
 
-## Return Value
+### Return Value
 
 [`IPdfPageConfig`](../IPdfPageConfig.md) instance.
 
-## See Also
+### See Also
 
 * class [PageMargins](../PageMargins.md)
 * interface [IPdfPageConfig](../IPdfPageConfig.md)
@@ -54,9 +55,9 @@ public IPdfPageConfig Margins(PageMargins value)
 
 ---
 
-# IPdfPageConfig.Margins method (3 of 3)
+### IPdfPageConfig.Margins method (3 of 3)
 
-Sets the page margins.
+#### Sets the page margins.
 
 ```csharp
 public IPdfPageConfig Margins(decimal top = 0, decimal bottom = 0, decimal left = 0, 
@@ -70,17 +71,17 @@ public IPdfPageConfig Margins(decimal top = 0, decimal bottom = 0, decimal left 
 | left | Margin left in millimeters. Default is 0mm. |
 | right | Margin right in millimeters. Default is 0mm. |
 
-## Return Value
+### Return Value
 
 [`IPdfPageConfig`](../IPdfPageConfig.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException | Thrown when any margin value is invalid. |
 
-## See Also
+### See Also
 
 * interface [IPdfPageConfig](../IPdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

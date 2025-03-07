@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfClient.FromHtml method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Register HTML template to be executed by the server.
+### IHtmlPdfClient.FromHtml method
+</br>
+
+
+#### Register HTML template to be executed by the server.
 
 ```csharp
 public IHtmlPdfClient FromHtml(string html)
@@ -13,17 +14,17 @@ public IHtmlPdfClient FromHtml(string html)
 | --- | --- |
 | html | The HTML content. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfClient`](../IHtmlPdfClient.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException | Thrown when the HTML content is null. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)

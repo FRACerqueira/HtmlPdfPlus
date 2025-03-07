@@ -8,26 +8,25 @@ EXPOSE 8080
 EXPOSE 8081
 
 # This stage is used to build the service project
-FROM mcr.microsoft.com/playwright/dotnet:v1.50.0 as build  
-#FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
-
 WORKDIR /src
-COPY ["WebHtmlToPdf.DockerGenericServer/WebHtmlToPdf.DockerGenericServer.csproj", "WebHtmlToPdf.DockerGenericServer/"]
-COPY ["HtmlPdfSrvPlus/HtmlPdfSrvPlus.csproj", "HtmlPdfSrvPlus/"]
-COPY ["HtmlPdfShrPlus/HtmlPdfShrPlus.csproj", "HtmlPdfShrPlus/"]
-RUN dotnet restore "./WebHtmlToPdf.DockerGenericServer/WebHtmlToPdf.DockerGenericServer.csproj"
+COPY ["/samples/WebHtmlToPdf.DockerGenericServer/**", "samples/WebHtmlToPdf.DockerGenericServer/"]
+COPY ["/src/HtmlPdfShrPlus/**", "HtmlPdfShrPlus/"]
+COPY ["/src/HtmlPdfSrvPlus/**", "HtmlPdfSrvPlus/"]
+
+RUN dotnet restore "./samples/WebHtmlToPdf.DockerGenericServer/WebHtmlToPdf.DockerGenericServer.csproj"
 COPY . .
-WORKDIR "/src/WebHtmlToPdf.DockerGenericServer"
 
+WORKDIR "/src/samples/WebHtmlToPdf.DockerGenericServer/"
 RUN dotnet build "./WebHtmlToPdf.DockerGenericServer.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
-RUN pwsh bin/Debug/net9/playwright.ps1 install --with-deps 
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./WebHtmlToPdf.DockerGenericServer.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+RUN pwsh /app/publish/playwright.ps1 install --with-deps chromium
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final

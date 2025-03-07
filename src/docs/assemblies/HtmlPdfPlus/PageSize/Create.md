@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PageSize.Create method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Create a new instance of the [`PageSize`](../PageSize.md) class. Page width and height in millimeters.
+### PageSize.Create method
+</br>
+
+
+#### Create a new instance of the [`PageSize`](../PageSize.md) class. Page width and height in millimeters.
 
 ```csharp
 public static PageSize Create(decimal width, decimal height)
@@ -14,11 +15,11 @@ public static PageSize Create(decimal width, decimal height)
 | width | Page width in millimeters. |
 | height | Page height in millimeters. |
 
-## Return Value
+### Return Value
 
 [`PageSize`](../PageSize.md) instance
 
-## See Also
+### See Also
 
 * class [PageSize](../PageSize.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfClient.FromRazor&lt;T&gt; method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Execute the Razor HTML template with the data and register the HTML.
+### IHtmlPdfClient.FromRazor&lt;T&gt; method
+</br>
+
+
+#### Execute the Razor HTML template with the data and register the HTML.
 
 ```csharp
 public IHtmlPdfClient FromRazor<T>(string template, T model)
@@ -15,17 +16,17 @@ public IHtmlPdfClient FromRazor<T>(string template, T model)
 | template | Razor template source. |
 | model | Data to apply to the template. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfClient`](../IHtmlPdfClient.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException | Thrown when the template or model is null. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)

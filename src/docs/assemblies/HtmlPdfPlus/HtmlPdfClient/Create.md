@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## HtmlPdfClient.Create method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Create an instance of Html to Pdf Client
+### HtmlPdfClient.Create method
+</br>
+
+
+#### Create an instance of Html to Pdf Client
 
 ```csharp
 public static IHtmlPdfClient Create(string? alias = null)
@@ -13,11 +14,11 @@ public static IHtmlPdfClient Create(string? alias = null)
 | --- | --- |
 | alias | Alias name for client |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfClient`](../IHtmlPdfClient.md) instance.
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * class [HtmlPdfClient](../HtmlPdfClient.md)

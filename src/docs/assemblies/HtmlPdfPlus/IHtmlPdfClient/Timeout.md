@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfClient.Timeout method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Set timeout for conversion (default 30000ms).
+### IHtmlPdfClient.Timeout method
+</br>
+
+
+#### Set timeout for conversion (default 30000ms).
 
 ```csharp
 public IHtmlPdfClient Timeout(int value)
@@ -13,17 +14,17 @@ public IHtmlPdfClient Timeout(int value)
 | --- | --- |
 | value | Timeout for conversion in milliseconds. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfClient`](../IHtmlPdfClient.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException | Thrown when the timeout value is invalid. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Client.md)

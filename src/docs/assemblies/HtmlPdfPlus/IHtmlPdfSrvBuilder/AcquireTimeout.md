@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfSrvBuilder.AcquireTimeout method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Number of milliseconds to timeout acquiring an available page.
+### IHtmlPdfSrvBuilder.AcquireTimeout method
+</br>
+
+
+#### Number of milliseconds to timeout acquiring an available page.
 
 ```csharp
 public IHtmlPdfSrvBuilder AcquireTimeout(int value = 5000)
@@ -13,17 +14,17 @@ public IHtmlPdfSrvBuilder AcquireTimeout(int value = 5000)
 | --- | --- |
 | value | Number of milliseconds. Default is 5000. The value must be greater than or equal to 10. |
 
-## Return Value
+### Return Value
 
 [`IHtmlPdfSrvBuilder`](../IHtmlPdfSrvBuilder.md) instance.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentException | Thrown when the value is out of range. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfSrvBuilder](../IHtmlPdfSrvBuilder.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)

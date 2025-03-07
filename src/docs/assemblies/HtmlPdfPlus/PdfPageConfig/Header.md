@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PdfPageConfig.Header property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Get/Set Html Header. Default value : `null`.
+### PdfPageConfig.Header property
+</br>
+
+
+#### Get/Set Html Header. Default value : `null`.
 
 ```csharp
 public string? Header { get; set; }
 ```
 
-## See Also
+### See Also
 
 * class [PdfPageConfig](../PdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

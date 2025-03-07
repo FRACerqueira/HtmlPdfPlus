@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## HtmlPdfClient class
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Fluent interface commands to perform client HTML to PDF conversion
+### HtmlPdfClient class
+</br>
+
+
+#### Fluent interface commands to perform client HTML to PDF conversion
 
 ```csharp
 public static class HtmlPdfClient
 ```
 
-## Public Members
+### Public Members
 
 | name | description |
 | --- | --- |
@@ -18,7 +19,7 @@ public static class HtmlPdfClient
 | static [ToHtmlPdfResult](HtmlPdfClient/ToHtmlPdfResult.md)(…) | Convert Response Data from server HtmlPdfPlus |
 | static [ToHtmlPdfResult&lt;T&gt;](HtmlPdfClient/ToHtmlPdfResult.md)(…) | Convert Response Data from server HtmlPdfPlus |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Client.md)
 

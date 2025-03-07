@@ -4,16 +4,8 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<UserSecretsId>eaecc2d8-0d2e-426e-a601-16818296fcfe</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <Compile Remove="bin\Debug\net9.0\.playwright\node\linux-x64\**" />
-	  <Content Remove="bin\Debug\net9.0\.playwright\node\linux-x64\**" />
-	  <EmbeddedResource Remove="bin\Debug\net9.0\.playwright\node\linux-x64\**" />
-	  <None Remove="bin\Debug\net9.0\.playwright\node\linux-x64\**" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
@@ -21,6 +13,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\HtmlPdfSrvPlus\HtmlPdfSrvPlus.csproj" />
+	  <ProjectReference Include="..\..\src\HtmlPdfSrvPlus\HtmlPdfSrvPlus.csproj" />
 	</ItemGroup>
 </Project>

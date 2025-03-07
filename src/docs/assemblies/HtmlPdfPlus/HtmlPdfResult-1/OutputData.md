@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## HtmlPdfResult&lt;T&gt;.OutputData property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Output custom data or PDF in byte[]
+### HtmlPdfResult&lt;T&gt;.OutputData property
+</br>
+
+
+#### Output custom data or PDF in byte[]
 
 ```csharp
 public T? OutputData { get; }
 ```
 
-## See Also
+### See Also
 
 * class [HtmlPdfResult&lt;T&gt;](../HtmlPdfResult-1.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

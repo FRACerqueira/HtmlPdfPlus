@@ -7,30 +7,40 @@
 using HtmlPdfPlus;
 using Microsoft.AspNetCore.Mvc;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddOpenApi();
-
-builder.Services.AddHtmlPdfService((cfg) =>
+namespace WebHtmlToPdf.DockerGenericServer
 {
-    cfg.Logger(LogLevel.Debug, "MyPDFServer");
-});
-var app = builder.Build();
+    public class Program
+    {
+        static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
 
-var logger = app.Services.GetService<ILogger<Program>>();
+            builder.Services.AddOpenApi();
 
-//Warmup HtmlPdfServerPlus on startup for better performance from the first request
-var WarmupTS = app.WarmupHtmlPdfService();
-logger?.LogDebug("HtmlPdfServerPlus ready after {tm}", WarmupTS);
+            builder.Services.AddHtmlPdfService((cfg) =>
+            {
+                cfg.Logger(LogLevel.Debug, "MyPDFServer");
+            });
+            var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-app.MapOpenApi();
+            var logger = app.Services.GetService<ILogger<Program>>();
 
-app.UseHttpsRedirection();
+            //Warmup HtmlPdfServerPlus on startup for better performance from the first request
+            var WarmupTS = app.WarmupHtmlPdfService();
+            logger?.LogDebug("HtmlPdfServerPlus ready after {tm}", WarmupTS);
 
-app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] string requestclienthtmltopdf, CancellationToken token) =>
-{
-    return await PDFserver.Run(requestclienthtmltopdf, token);
-}).Produces<HtmlPdfResult<byte[]>>(200);
+            // Configure the HTTP request pipeline.
+            app.MapOpenApi();
 
-app.Run();
+            app.UseHttpsRedirection();
+
+            app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] string requestclienthtmltopdf, CancellationToken token) =>
+            {
+                return await PDFserver.Run(requestclienthtmltopdf, token);
+            }).Produces<HtmlPdfResult<byte[]>>(200);
+
+            app.Run();
+        }
+    }
+}
+

@@ -1,19 +1,20 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PageSize.ToString method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Representation of size in string format
+### PageSize.ToString method
+</br>
+
+
+#### Representation of size in string format
 
 ```csharp
 public override string ToString()
 ```
 
-## Return Value
+### Return Value
 
 size in string format, separated by semicolons (Width;Height)
 
-## See Also
+### See Also
 
 * class [PageSize](../PageSize.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

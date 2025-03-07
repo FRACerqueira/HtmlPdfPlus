@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfClient interface
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Fluent interface commands to HtmlPdfClientInstance.
+### IHtmlPdfClient interface
+</br>
+
+
+#### Fluent interface commands to HtmlPdfClientInstance.
 
 ```csharp
 public interface IHtmlPdfClient
 ```
 
-## Members
+### Members
 
 | name | description |
 | --- | --- |
@@ -21,7 +22,7 @@ public interface IHtmlPdfClient
 | [Run&lt;Tin,Tout&gt;](IHtmlPdfClient/Run.md)(…) | Submit the HTML to convert to PDF in custom output via the SubmitHtmlToPdf function. (3 methods) |
 | [Timeout](IHtmlPdfClient/Timeout.md)(…) | Set timeout for conversion (default 30000ms). |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Client.md)
 

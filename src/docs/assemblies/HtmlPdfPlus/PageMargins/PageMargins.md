@@ -1,24 +1,25 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PageMargins constructor (1 of 2)
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Initializes a new instance of the [`PageMargins`](../PageMargins.md) class with default value : 0mm for all. Margins pages in millimeters: top, bottom, left, right.
+### PageMargins constructor (1 of 2)
+</br>
+
+
+#### Initializes a new instance of the [`PageMargins`](../PageMargins.md) class with default value : 0mm for all. Margins pages in millimeters: top, bottom, left, right.
 
 ```csharp
 public PageMargins()
 ```
 
-## See Also
+### See Also
 
 * class [PageMargins](../PageMargins.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)
 
 ---
 
-# PageMargins constructor (2 of 2)
+### PageMargins constructor (2 of 2)
 
-Initializes a new instance of the [`PageMargins`](../PageMargins.md) class. Margins pages in millimeters: top, bottom, left, right.
+#### Initializes a new instance of the [`PageMargins`](../PageMargins.md) class. Margins pages in millimeters: top, bottom, left, right.
 
 ```csharp
 public PageMargins(decimal top, decimal bottom, decimal left, decimal right)
@@ -31,7 +32,7 @@ public PageMargins(decimal top, decimal bottom, decimal left, decimal right)
 | left | Margin left in millimeters. |
 | right | Margin right in millimeters. |
 
-## See Also
+### See Also
 
 * class [PageMargins](../PageMargins.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

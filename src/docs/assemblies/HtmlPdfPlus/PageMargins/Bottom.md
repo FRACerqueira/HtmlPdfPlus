@@ -1,19 +1,20 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PageMargins.Bottom property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Page height in millimeters.
+### PageMargins.Bottom property
+</br>
+
+
+#### Page height in millimeters.
 
 ```csharp
 public decimal Bottom { get; }
 ```
 
-## Property Value
+### Property Value
 
 The Height.
 
-## See Also
+### See Also
 
 * class [PageMargins](../PageMargins.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

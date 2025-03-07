@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## PageMargins class
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Page margins.
+### PageMargins class
+</br>
+
+
+#### Page margins.
 
 ```csharp
 public sealed class PageMargins
 ```
 
-## Public Members
+### Public Members
 
 | name | description |
 | --- | --- |
@@ -22,7 +23,7 @@ public sealed class PageMargins
 | [Top](PageMargins/Top.md) { get; } | Page width in millimeters. |
 | override [ToString](PageMargins/ToString.md)() | Representation of margins in string format |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Shared.md)
 

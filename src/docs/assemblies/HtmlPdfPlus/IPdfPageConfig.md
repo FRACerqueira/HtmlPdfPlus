@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../docs/images/Icon.png" >
-##
-## IPdfPageConfig interface
-## 
+<img align="left" width="100" height="100" src="../../../../docs/images/Icon.png" >
 
-Fluent interface commands to configure PDF rendering.
+### IPdfPageConfig interface
+</br>
+
+
+#### Fluent interface commands to configure PDF rendering.
 
 ```csharp
 public interface IPdfPageConfig
 ```
 
-## Members
+### Members
 
 | name | description |
 | --- | --- |
@@ -22,7 +23,7 @@ public interface IPdfPageConfig
 | [PrintBackground](IPdfPageConfig/PrintBackground.md)(…) | Sets whether to print background graphics. |
 | [Scale](IPdfPageConfig/Scale.md)(…) | Sets the scale of the webpage rendering. |
 
-## See Also
+### See Also
 
 * namespace [HtmlPdfPlus](../HtmlPdfPlus.Shared.md)
 

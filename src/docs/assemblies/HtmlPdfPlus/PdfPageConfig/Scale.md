@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PdfPageConfig.Scale property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Get/Set Scale of the webpage rendering. Defaults to `1`.
+### PdfPageConfig.Scale property
+</br>
+
+
+#### Get/Set Scale of the webpage rendering. Defaults to `1`.
 
 The scale amount must be between 0.1 and 2.
 
@@ -11,7 +12,7 @@ The scale amount must be between 0.1 and 2.
 public float Scale { get; set; }
 ```
 
-## See Also
+### See Also
 
 * class [PdfPageConfig](../PdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PdfPageConfig constructor
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Create instance Config PDF page with default values
+### PdfPageConfig constructor
+</br>
+
+
+#### Create instance Config PDF page with default values
 
 ```csharp
 public PdfPageConfig()
 ```
 
-## See Also
+### See Also
 
 * class [PdfPageConfig](../PdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

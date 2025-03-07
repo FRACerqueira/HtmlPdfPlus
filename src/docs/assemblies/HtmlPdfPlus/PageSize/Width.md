@@ -1,19 +1,20 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PageSize.Width property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Page width in millimeters.
+### PageSize.Width property
+</br>
+
+
+#### Page width in millimeters.
 
 ```csharp
 public decimal Width { get; }
 ```
 
-## Property Value
+### Property Value
 
 The width.
 
-## See Also
+### See Also
 
 * class [PageSize](../PageSize.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

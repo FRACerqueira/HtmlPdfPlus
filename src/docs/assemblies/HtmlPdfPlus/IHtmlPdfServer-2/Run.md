@@ -1,9 +1,10 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## IHtmlPdfServer&lt;TIn,TOut&gt;.Run method
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Perform HTML to PDF conversion.
+### IHtmlPdfServer&lt;TIn,TOut&gt;.Run method
+</br>
+
+
+#### Perform HTML to PDF conversion.
 
 ```csharp
 public Task<HtmlPdfResult<TOut>> Run(string requestClient, CancellationToken token = default)
@@ -14,18 +15,18 @@ public Task<HtmlPdfResult<TOut>> Run(string requestClient, CancellationToken tok
 | requestClient | The compressed data from the request HtmlPdfCliPlus client. |
 | token | The CancellationToken to perform the conversion. |
 
-## Return Value
+### Return Value
 
 An instance of HtmlPdfResult.
 
-## Exceptions
+### Exceptions
 
 | exception | condition |
 | --- | --- |
 | ArgumentNullException | Thrown when *requestClient* is null. |
 | ArgumentException | Thrown when *requestClient* is invalid. |
 
-## See Also
+### See Also
 
 * interface [IHtmlPdfServer&lt;TIn,TOut&gt;](../IHtmlPdfServer-2.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)

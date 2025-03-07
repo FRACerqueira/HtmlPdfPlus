@@ -1,15 +1,16 @@
-# <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-##
-## PdfPageConfig.DisplayHeaderFooter property
-## 
+<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
 
-Get/Set Display header and footer. Defaults to `false`.
+### PdfPageConfig.DisplayHeaderFooter property
+</br>
+
+
+#### Get/Set Display header and footer. Defaults to `false`.
 
 ```csharp
 public bool DisplayHeaderFooter { get; set; }
 ```
 
-## See Also
+### See Also
 
 * class [PdfPageConfig](../PdfPageConfig.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Shared.md)

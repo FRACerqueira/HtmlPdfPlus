@@ -1,8 +1,9 @@
-# <img align="left" width="150" height="150" src="../../../docs/images/Icon.png" >
-##
-## HtmlPdfPlus.Shared assembly
-## 
-## HtmlPdfPlus namespace
+<img align="left" width="100" height="100" src="../../../docs/images/Icon.png" >
+
+### HtmlPdfPlus.Shared assembly
+</br>
+
+### HtmlPdfPlus namespace
 
 | public type | description |
 | --- | --- |
@@ -14,5 +15,5 @@
 | class [PageSize](./HtmlPdfPlus/PageSize.md) | Page size for PDF. |
 | class [PdfPageConfig](./HtmlPdfPlus/PdfPageConfig.md) | The Config PDF page. |
 
-## See Also
+### See Also
 * [Main Index](../docindex.md)
