@@ -1,5 +1,5 @@
-# <img align="left" width="150" height="150" src="../../docs/images/Icon.png">
-##
+# <img style="z-index: 100;" align="left" width="100" height="100" src="../../docs/images/Icon.png"> 
+
 ## HtmlPdfPlus Documentation
 ##
 
