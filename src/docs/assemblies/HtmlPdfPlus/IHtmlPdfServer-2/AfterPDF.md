@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# IHtmlPdfServer&lt;TIn,TOut&gt;.AfterPDF method
-# 
+##
+## IHtmlPdfServer&lt;TIn,TOut&gt;.AfterPDF method
+## 
 
 Function to transform to a new output type after performing HTML to PDF conversion.
 

@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# PageSize constructor (1 of 2)
-# 
+##
+## PageSize constructor (1 of 2)
+## 
 
 Initializes a new instance of the [`PageSize`](../PageSize.md) class with default value : A4. Page width and height in millimeters.
 

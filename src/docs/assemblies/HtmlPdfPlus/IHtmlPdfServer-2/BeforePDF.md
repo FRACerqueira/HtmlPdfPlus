@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# IHtmlPdfServer&lt;TIn,TOut&gt;.BeforePDF method
-# 
+##
+## IHtmlPdfServer&lt;TIn,TOut&gt;.BeforePDF method
+## 
 
 Function to enrich HTML before performing HTML to PDF conversion.
 

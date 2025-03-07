@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# HtmlPdfResult&lt;T&gt;.DecompressBytes method
-# 
+##
+## HtmlPdfResult&lt;T&gt;.DecompressBytes method
+## 
 
 Decompress output data if it is byte[]
 

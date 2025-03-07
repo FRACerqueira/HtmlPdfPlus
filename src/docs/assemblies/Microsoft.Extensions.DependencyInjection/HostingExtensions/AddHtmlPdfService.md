@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# HostingExtensions.AddHtmlPdfService method (1 of 3)
-# 
+##
+## HostingExtensions.AddHtmlPdfService method (1 of 3)
+## 
 
 Adds HtmlPdf Server to the IServiceCollection.
 

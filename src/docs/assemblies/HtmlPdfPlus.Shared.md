@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../docs/images/Icon.png" >
-#
-# HtmlPdfPlus.Shared assembly
-# 
+##
+## HtmlPdfPlus.Shared assembly
+## 
 ## HtmlPdfPlus namespace
 
 | public type | description |

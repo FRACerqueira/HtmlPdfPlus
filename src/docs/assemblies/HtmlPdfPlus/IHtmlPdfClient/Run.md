@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# IHtmlPdfClient.Run method (1 of 6)
-# 
+##
+## IHtmlPdfClient.Run method (1 of 6)
+## 
 
 Submit the HTML to convert to PDF in byte[] by the SubmitHtmlToPdf function.
 

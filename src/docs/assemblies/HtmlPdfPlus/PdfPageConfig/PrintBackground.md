@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# PdfPageConfig.PrintBackground property
-# 
+##
+## PdfPageConfig.PrintBackground property
+## 
 
 Get/Set Print background graphics. Defaults to `true`.
 

@@ -304,7 +304,7 @@ For more examples, please refer to the [Samples directory](../Samples) :
         - Listening port on tcp server (using [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp) package)
         - Performs generate pdf in bytes array
         - Send data to client via tcp server
-- 
+ 
 ## Documentation
 [**Top**](#table-of-contents)
 

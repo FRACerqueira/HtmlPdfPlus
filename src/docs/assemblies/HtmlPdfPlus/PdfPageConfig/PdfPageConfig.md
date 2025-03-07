@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# PdfPageConfig constructor
-# 
+##
+## PdfPageConfig constructor
+## 
 
 Create instance Config PDF page with default values
 

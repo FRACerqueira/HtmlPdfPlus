@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# IHtmlPdfClient.Logger method
-# 
+##
+## IHtmlPdfClient.Logger method
+## 
 
 Set Logger integration.
 

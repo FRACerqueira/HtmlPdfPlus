@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# IPdfPageConfig.Format method (1 of 2)
-# 
+##
+## IPdfPageConfig.Format method (1 of 2)
+## 
 
 Sets the page size of the rendered document.
 

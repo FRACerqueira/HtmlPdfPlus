@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# IPdfPageConfig.Footer method
-# 
+##
+## IPdfPageConfig.Footer method
+## 
 
 Sets the HTML footer.
 

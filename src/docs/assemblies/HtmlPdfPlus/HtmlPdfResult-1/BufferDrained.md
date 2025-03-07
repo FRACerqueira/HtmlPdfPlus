@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# HtmlPdfResult&lt;T&gt;.BufferDrained property
-# 
+##
+## HtmlPdfResult&lt;T&gt;.BufferDrained property
+## 
 
 If the time limit for acquiring a page has been reached
 

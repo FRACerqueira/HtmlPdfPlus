@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# IPdfPageConfig.PrintBackground method
-# 
+##
+## IPdfPageConfig.PrintBackground method
+## 
 
 Sets whether to print background graphics.
 

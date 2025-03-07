@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# PdfPageConfig.Footer property
-# 
+##
+## PdfPageConfig.Footer property
+## 
 
 Get/Set Html Footer. Default value : `null`.
 

@@ -29,9 +29,9 @@ namespace XmlDocMarkdownGenerator
                 var content = File.ReadAllLines(item).ToList();
                 var title = content[0].Replace("# ", "");
                 content[0]= "# <img align=\"left\" width=\"150\" height=\"150\" src=\"../../../docs/images/Icon.png\" >";
-                content[1]= "#";
-                content.Insert(2,$"# {title}");
-                content.Insert(3, "# ");
+                content[1]= "##";
+                content.Insert(2,$"## {title}");
+                content.Insert(3, "## ");
                 var line = 4;
                 while (!content[line].Contains("<!-- DO NOT EDIT"))
                 {
@@ -55,9 +55,9 @@ namespace XmlDocMarkdownGenerator
                         var content = File.ReadAllLines(item2).ToList();
                         var title = content[0].Replace("# ", "");
                         content.Insert(0, "# <img align=\"left\" width=\"150\" height=\"150\" src=\"../../../../../docs/images/Icon.png\" >");
-                        content[1] = "#";
-                        content.Insert(2, $"# {title}");
-                        content.Insert(3, "# ");
+                        content[1] = "##";
+                        content.Insert(2, $"## {title}");
+                        content.Insert(3, "## ");
                         File.Delete(item2);
                         File.WriteAllLines(item2, content);
                     }
@@ -68,9 +68,9 @@ namespace XmlDocMarkdownGenerator
                     var content = File.ReadAllLines(item3).ToList();
                     var title = content[0].Replace("# ", "");
                     content.Insert(0, "# <img align=\"left\" width=\"150\" height=\"150\" src=\"../../../../docs/images/Icon.png\" >");
-                    content[1] = "#";
-                    content.Insert(2, $"# {title}");
-                    content.Insert(3, "# ");
+                    content[1] = "##";
+                    content.Insert(2, $"## {title}");
+                    content.Insert(3, "## ");
                     File.Delete(item3);
                     File.WriteAllLines(item3, content);
                 }

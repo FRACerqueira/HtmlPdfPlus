@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# IHtmlPdfSrvBuilder.DefaultConfig method (1 of 2)
-# 
+##
+## IHtmlPdfSrvBuilder.DefaultConfig method (1 of 2)
+## 
 
 The default Config PDF page when not provided.
 

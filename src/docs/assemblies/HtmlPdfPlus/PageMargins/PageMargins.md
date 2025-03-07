@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# PageMargins constructor (1 of 2)
-# 
+##
+## PageMargins constructor (1 of 2)
+## 
 
 Initializes a new instance of the [`PageMargins`](../PageMargins.md) class with default value : 0mm for all. Margins pages in millimeters: top, bottom, left, right.
 

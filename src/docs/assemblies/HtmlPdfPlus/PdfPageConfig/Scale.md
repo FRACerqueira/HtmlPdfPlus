@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# PdfPageConfig.Scale property
-# 
+##
+## PdfPageConfig.Scale property
+## 
 
 Get/Set Scale of the webpage rendering. Defaults to `1`.
 

@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# PdfPageConfig.DisplayHeaderFooter property
-# 
+##
+## PdfPageConfig.DisplayHeaderFooter property
+## 
 
 Get/Set Display header and footer. Defaults to `false`.
 

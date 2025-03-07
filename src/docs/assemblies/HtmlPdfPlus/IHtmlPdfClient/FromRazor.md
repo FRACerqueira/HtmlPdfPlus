@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# IHtmlPdfClient.FromRazor&lt;T&gt; method
-# 
+##
+## IHtmlPdfClient.FromRazor&lt;T&gt; method
+## 
 
 Execute the Razor HTML template with the data and register the HTML.
 

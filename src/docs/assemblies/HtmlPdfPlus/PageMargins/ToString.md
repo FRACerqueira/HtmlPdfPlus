@@ -1,7 +1,7 @@
 # <img align="left" width="150" height="150" src="../../../../../docs/images/Icon.png" >
-#
-# PageMargins.ToString method
-# 
+##
+## PageMargins.ToString method
+## 
 
 Representation of margins in string format
 
