@@ -1,7 +1,8 @@
-# <img align="left" width="100" height="100" src="../../docs/images/Icon.png"> 
+<img align="left" width="100" height="100" src="../../docs/images/Icon.png"> 
 
-### HtmlPdfPlus Documentation
-##
+### HtmlPdfPlus Documentation 
+
+</br>
 
 ### HtmlPdfPlus namespace
 
