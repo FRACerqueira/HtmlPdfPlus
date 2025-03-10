@@ -25,6 +25,9 @@ namespace HtmlPdfCliPlus.Core
         private PdfPageConfig _pdfPageConfig = new();
         private string _html = string.Empty;
         private int _timeout = 30000;
+        private bool _htmlparse = false;
+        private string? _errorparse = null;
+        private Action<string>? _parseError = null;
         private static readonly JsonSerializerOptions jsonoptions = new() { PropertyNameCaseInsensitive = true };
 
         /// <inheritdoc />
@@ -61,10 +64,13 @@ namespace HtmlPdfCliPlus.Core
             if (disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml))
             {
                 _html = value;
+                _errorparse = null;
             }
             else
             {
-                _html = Uglify.Html(value).Code;
+                var minify = Uglify.Html(value);
+                _errorparse = minify.Errors.ToString();
+                _html = minify.Code;
             }
             return this;
         }
@@ -83,7 +89,9 @@ namespace HtmlPdfCliPlus.Core
             }
             else
             {
-                _html = Uglify.Html(aux).Code;
+                var minify = Uglify.Html(aux);
+                _errorparse = minify.Errors.ToString();
+                _html = minify.Code;
             }
             return this;
         }
@@ -115,6 +123,16 @@ namespace HtmlPdfCliPlus.Core
             return this;
         }
 
+
+        /// <inheritdoc />
+        public IHtmlPdfClient HtmlParser(bool validate, Action<string> whenhaserror)
+        {
+            _htmlparse = validate;
+            _parseError = whenhaserror;
+            return this;
+        }
+
+
         /// <inheritdoc />
         public async Task<HtmlPdfResult<byte[]>> Run(Func<string, CancellationToken, Task<HtmlPdfResult<byte[]>>> submitHtmlToPdf, CancellationToken token = default)
         {
@@ -144,22 +162,7 @@ namespace HtmlPdfCliPlus.Core
         /// <inheritdoc />
         public async Task<HtmlPdfResult<byte[]>> Run(HttpClient httpclient, string? endpoint, CancellationToken token = default)
         {
-            var sw = Stopwatch.StartNew();
-            HttpContent content = CreateHttpContent<object>(null);
-            content.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Application.Json);
-            try
-            {
-                var result = await httpclient.PostAsync(endpoint, content, token).ConfigureAwait(false);
-                return await HandleHttpResponse<byte[]>(result, sw, token).ConfigureAwait(false);
-            }
-            catch (HttpRequestException ex)
-            {
-                return new HtmlPdfResult<byte[]>(false, false, sw.Elapsed, null, ex);
-            }
-            catch (TaskCanceledException ex)
-            {
-                return new HtmlPdfResult<byte[]>(false, false, sw.Elapsed, null, ex);
-            }
+            return await Run<object, byte[]>(httpclient, endpoint, null, token);
         }
 
         /// <inheritdoc />
@@ -171,6 +174,14 @@ namespace HtmlPdfCliPlus.Core
         /// <inheritdoc />
         public async Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(HttpClient httpclient, string? endpoint, Tin? customdata, CancellationToken token = default)
         {
+            if (_html.Length == 0)
+            {
+                throw new InvalidOperationException("Html source not found");
+            }
+            if (_htmlparse && !string.IsNullOrEmpty(_errorparse) && _parseError is not null)
+            { 
+                _parseError.Invoke(_errorparse);
+            }
             var sw = Stopwatch.StartNew();
             HttpContent content = CreateHttpContent(customdata);
             content.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Application.Json);
@@ -200,6 +211,14 @@ namespace HtmlPdfCliPlus.Core
         /// <returns>The result of the HTML to PDF conversion.</returns>
         private async Task<HtmlPdfResult<Tout>> SubmitAsync<Tin, Tout>(Func<string, CancellationToken, Task<HtmlPdfResult<Tout>>> submitHtmlToPdf, Tin? inputparam, CancellationToken token)
         {
+            if (_html.Length == 0)
+            {
+                throw new InvalidOperationException("Html source not found");
+            }
+            if (_htmlparse && !string.IsNullOrEmpty(_errorparse) && _parseError is not null)
+            {
+                _parseError.Invoke(_errorparse);
+            }
             var sw = Stopwatch.StartNew();
             LogMessage($"Start Submit at {DateTime.UtcNow}");
             HtmlPdfResult<Tout>? result = null;

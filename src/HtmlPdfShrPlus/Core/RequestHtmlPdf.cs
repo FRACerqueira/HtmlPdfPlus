@@ -7,6 +7,7 @@
 using System.Text.Json;
 using HtmlPdfPlus;
 using NUglify;
+using NUglify.Html;
 
 namespace HtmlPdfShrPlus.Core
 {

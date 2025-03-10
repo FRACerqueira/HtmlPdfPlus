@@ -33,8 +33,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerHtmlToPdf.GenericS
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{501D5A85-0D42-4552-A312-5BC766C94607}"
 	ProjectSection(SolutionItems) = preProject
-		docs\docindex.md = docs\docindex.md
-		..\README.md = ..\README.md
+		README.md = README.md
 		..\docs\swimlanes.io.AnyProcess.txt = ..\docs\swimlanes.io.AnyProcess.txt
 		..\docs\swimlanes.io.http.txt = ..\docs\swimlanes.io.http.txt
 		..\docs\swimlanes.io.OnlyServer.txt = ..\docs\swimlanes.io.OnlyServer.txt
@@ -42,9 +41,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{501D5A85-0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XmlDocMarkdown", "XmlDocMarkdown", "{A9894106-2EBA-4867-AE60-869D39CC2294}"
 	ProjectSection(SolutionItems) = preProject
-		docs\assemblies\HtmlPdfPlus.Client.md = docs\assemblies\HtmlPdfPlus.Client.md
-		docs\assemblies\HtmlPdfPlus.Server.md = docs\assemblies\HtmlPdfPlus.Server.md
-		docs\assemblies\HtmlPdfPlus.Shared.md = docs\assemblies\HtmlPdfPlus.Shared.md
+		src\docs\docindex.md = src\docs\docindex.md
+		src\docs\assemblies\HtmlPdfPlus.Client.md = src\docs\assemblies\HtmlPdfPlus.Client.md
+		src\docs\assemblies\HtmlPdfPlus.Server.md = src\docs\assemblies\HtmlPdfPlus.Server.md
+		src\docs\assemblies\HtmlPdfPlus.Shared.md = src\docs\assemblies\HtmlPdfPlus.Shared.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDocMarkdownGenerator", "src\XmlDocMarkdownGenerator\XmlDocMarkdownGenerator.csproj", "{5F01EBDC-D330-4176-80A2-9CFBC916D326}"

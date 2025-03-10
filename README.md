@@ -45,11 +45,12 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
 - Support HTML5 and CSS3
 - Communicate with the server using REST API (with compressed request) or user custom protocol
 - Minify HTML and CSS
+- Client-side HTML parser with custom error action (optional)
 - Compress PDF using GZip over network (Only type bytes array output)
 - Extension on server side to customize the conversion process (before and after conversion)
     - BeforePDF : Normalize HTML, Replace tokens, etc
     - AfterPDF : Save file, Send to cloud, etc
-- Disable features to improve/ balance performance (minify, compress, etc)
+- Disable features to improve/ balance performance (minify, compress and log)
 
 #### What's new in the latest version
 

@@ -1,5 +1,4 @@
-﻿using System.Windows.Markup;
-using XmlDocMarkdown.Core;
+﻿using XmlDocMarkdown.Core;
 
 namespace XmlDocMarkdownGenerator
 {

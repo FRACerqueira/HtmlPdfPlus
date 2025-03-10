@@ -25,7 +25,7 @@ Returns bytes[] from HtmlPdfResult representing the asynchronous operation of co
 
 | exception | condition |
 | --- | --- |
-| InvalidOperationException | Thrown when the operation is invalid. |
+| InvalidOperationException | Thrown when the empty Html source. |
 | ArgumentNullException | Thrown when the submitHtmlToPdf function is null. |
 
 ### See Also
@@ -52,6 +52,12 @@ public Task<HtmlPdfResult<byte[]>> Run(HttpClient httpClient, CancellationToken 
 
 Returns bytes[] from HtmlPdfResult representing the asynchronous operation of converting HTML to PDF.
 
+### Exceptions
+
+| exception | condition |
+| --- | --- |
+| InvalidOperationException | Thrown when the empty Html source. |
+
 ### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
@@ -77,6 +83,12 @@ public Task<HtmlPdfResult<byte[]>> Run(HttpClient httpClient, string endpoint,
 ### Return Value
 
 Returns bytes[] from HtmlPdfResult representing the asynchronous operation of converting HTML to PDF.
+
+### Exceptions
+
+| exception | condition |
+| --- | --- |
+| InvalidOperationException | Thrown when the empty Html source. |
 
 ### See Also
 
@@ -111,7 +123,7 @@ Returns HtmlPdfResult representing the asynchronous operation of converting HTML
 
 | exception | condition |
 | --- | --- |
-| InvalidOperationException | Thrown when the operation is invalid. |
+| InvalidOperationException | Thrown when the empty Html source. |
 | ArgumentNullException | Thrown when the submitHtmlToPdf function or customData is null. |
 
 ### See Also
@@ -142,6 +154,12 @@ public Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(HttpClient httpClient, Tin? cust
 
 Returns HtmlPdfResult representing the asynchronous operation of converting HTML to PDF.
 
+### Exceptions
+
+| exception | condition |
+| --- | --- |
+| InvalidOperationException | Thrown when the empty Html source. |
+
 ### See Also
 
 * interface [IHtmlPdfClient](../IHtmlPdfClient.md)
@@ -170,6 +188,12 @@ public Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(HttpClient httpClient, string en
 ### Return Value
 
 Returns HtmlPdfResult representing the asynchronous operation of converting HTML to PDF.
+
+### Exceptions
+
+| exception | condition |
+| --- | --- |
+| InvalidOperationException | Thrown when the empty Html source. |
 
 ### See Also
 
