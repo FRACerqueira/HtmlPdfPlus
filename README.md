@@ -299,7 +299,7 @@ I believe this work can still be improved! **For reference on this approach, see
 ## Examples
 [**Top**](#table-of-contents)
 
-For more examples, please refer to the [Samples directory](./Samples) :
+For more examples, please refer to the [Samples directory](./samples) :
 
 - Server Only
 	- [Console HtmlToPdfPlus OnlyAtServer V1](../Samples/ConsoleHtmlToPdfPlus.OnlyAtServer/v1)
