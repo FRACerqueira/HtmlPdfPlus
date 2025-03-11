@@ -18,6 +18,7 @@
 - [Installing](#installing)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
+- [Docker Usage](#docker-usage)
 - [Examples](#examples)
 - [Documentation](#documentation)
 - [Code of Conduct](#code-of-conduct)
@@ -267,6 +268,32 @@ else
     //show error via pdfresult.Error
 }
 ```
+
+# Docker Usage
+[**Top**](#table-of-contents)
+
+The use of Playwright works very well for local testing on Windows machines following the standard installation instructions.
+
+For containerization scenarios, image sizes are a challenge that deserves more dedicated attention.
+
+This project suggests a containerization example that **reduces the final image size by approximately 70% (from 4.2GB to 1.29GB)** . 
+
+
+To achieve this reduction, the biggest challenge was controlling the necessary dependencies and keeping only the minimum for execution in a headless shell.
+
+Basically, what we did was:
+- Use the base image from mcr.microsoft.com/dotnet/aspnet:9.0
+- Use the image from cr.microsoft.com/playwright/dotnet:v1.50.0 for build
+  - Removing unnecessary browser and driver installations
+  - For .NET 9, we removed the default installation (.NET 8)
+    - We installed the .NET 9 SDK version for the build phase
+- Copy the required folder (pre-installed) to run Playwright
+- Install Google Chrome Stable , fonts and install the necessary libs to make the browser work.
+- Set environment variable for Playwright
+- Enable running the service as a non-root user
+
+I believe this work can still be improved! **For reference on this approach, see the [DockFile](./Dockerfile)**.
+
 
 ## Examples
 [**Top**](#table-of-contents)

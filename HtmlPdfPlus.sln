@@ -54,8 +54,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{AEBA43
 		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHtmlToPdf.DockerGenericServer", "samples\WebHtmlToPdf.DockerGenericServer\WebHtmlToPdf.DockerGenericServer.csproj", "{C73AE25E-98B1-4AF5-A727-D0DE81B52B58}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,10 +112,6 @@ Global
 		{5F01EBDC-D330-4176-80A2-9CFBC916D326}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F01EBDC-D330-4176-80A2-9CFBC916D326}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F01EBDC-D330-4176-80A2-9CFBC916D326}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C73AE25E-98B1-4AF5-A727-D0DE81B52B58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C73AE25E-98B1-4AF5-A727-D0DE81B52B58}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C73AE25E-98B1-4AF5-A727-D0DE81B52B58}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C73AE25E-98B1-4AF5-A727-D0DE81B52B58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,6 +127,5 @@ Global
 		{CCD6E39C-00F8-4F62-8013-7248B8EE04CF} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
 		{A804B249-F62B-438F-B767-3BF6FE61B54D} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
 		{A9894106-2EBA-4867-AE60-869D39CC2294} = {501D5A85-0D42-4552-A312-5BC766C94607}
-		{C73AE25E-98B1-4AF5-A727-D0DE81B52B58} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
 	EndGlobalSection
 EndGlobal
