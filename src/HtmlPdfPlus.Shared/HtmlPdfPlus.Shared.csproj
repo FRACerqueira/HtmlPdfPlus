@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net9.0;net8.0;netstandard2.1</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<NoWarn>1701;1702;NU5100;NU5104</NoWarn>
+		<LangVersion>latestmajor</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Authors>Fernando Cerqueira</Authors>
+		<Owners>Fernando Cerqueira</Owners>
+		<Version>0.1.0</Version>
+		<Title>Shared components for Lightweight and scalable HTML to PDF converter in .NET</Title>
+		<Description>HtmlPdfPlus is an Open Source library licensed under MIT that converts an HTML into a PDF.</Description>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<AssemblyName>HtmlPdfPlus.Shared</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>TestHtmlPdfPlus</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>HtmlPdfPlus.Client</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>HtmlPdfPlus.Server</_Parameter1>
+		</AssemblyAttribute>
+		<PackageReference Include="NUglify" Version="1.21.13" />
+		<PackageReference Include="System.Text.Json" Version="9.0.3" />
+	</ItemGroup>
+</Project>

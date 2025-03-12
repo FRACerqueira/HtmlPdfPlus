@@ -1,0 +1,139 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHtmlPdfPlus", "src\TestHtmlPdfCliPlus\TestHtmlPdfPlus.csproj", "{887ED686-9F77-493C-A0A5-80CE697025C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{266603D0-608D-4207-89F0-BCE0AABDB0A5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{ED148173-C3B1-478E-A38D-1F90CC1DB0D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.OnlyAtServerV1", "samples\ConsoleHtmlToPdfPlus.OnlyAtServer\v1\ConsoleHtmlToPdfPlus.OnlyAtServerV1.csproj", "{CF7F88CF-60DB-4A6D-90C4-89D0E5762660}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.OnlyAtServerV2", "samples\ConsoleHtmlToPdfPlus.OnlyAtServer\v2\ConsoleHtmlToPdfPlus.OnlyAtServerV2.csproj", "{35A2065E-8BCA-42F9-94E3-614700B72D4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.ClientSendHttp", "samples\ConsoleHtmlToPdfPlus.ClientSendHttp\ConsoleHtmlToPdfPlus.ClientSendHttp.csproj", "{685909BC-FE72-4D1E-BBFA-5F216EBA10FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHtmlToPdf.GenericServer", "samples\WebHtmlToPdf.GenericServer\WebHtmlToPdf.GenericServer.csproj", "{EFC7D734-660B-4F22-B9CC-7206826BDD2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.ClientCustomSendHttp", "samples\ConsoleHtmlToPdfPlus.ClientCustomSendHttp\ConsoleHtmlToPdfPlus.ClientCustomSendHttp.csproj", "{DBD4BA57-0494-4E8F-A9EB-672BD9855229}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHtmlToPdf.CustomSaveFileServer", "samples\WebHtmlToPdf.CustomSaveFileServer\WebHtmlToPdf.CustomSaveFileServer.csproj", "{891AC1A4-0E42-4ADD-BF31-1707541F3E50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.ClientSendTcp", "samples\ConsoleHtmlToPdfPlus.ClientSendTcp\ConsoleHtmlToPdfPlus.ClientSendTcp.csproj", "{CCD6E39C-00F8-4F62-8013-7248B8EE04CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerHtmlToPdf.GenericServer", "samples\TcpServerHtmlToPdf.GenericServer\TcpServerHtmlToPdf.GenericServer.csproj", "{A804B249-F62B-438F-B767-3BF6FE61B54D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{501D5A85-0D42-4552-A312-5BC766C94607}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		src\README.txt = src\README.txt
+		..\docs\swimlanes.io.AnyProcess.txt = ..\docs\swimlanes.io.AnyProcess.txt
+		..\docs\swimlanes.io.http.txt = ..\docs\swimlanes.io.http.txt
+		..\docs\swimlanes.io.OnlyServer.txt = ..\docs\swimlanes.io.OnlyServer.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XmlDocMarkdown", "XmlDocMarkdown", "{A9894106-2EBA-4867-AE60-869D39CC2294}"
+	ProjectSection(SolutionItems) = preProject
+		src\docs\docindex.md = src\docs\docindex.md
+		src\docs\assemblies\HtmlPdfPlus.Client.md = src\docs\assemblies\HtmlPdfPlus.Client.md
+		src\docs\assemblies\HtmlPdfPlus.Server.md = src\docs\assemblies\HtmlPdfPlus.Server.md
+		src\docs\assemblies\HtmlPdfPlus.Shared.md = src\docs\assemblies\HtmlPdfPlus.Shared.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDocMarkdownGenerator", "src\XmlDocMarkdownGenerator\XmlDocMarkdownGenerator.csproj", "{5F01EBDC-D330-4176-80A2-9CFBC916D326}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{AEBA43B3-B596-4C7A-A70A-2C86CA5E206D}"
+	ProjectSection(SolutionItems) = preProject
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfPlus.Client", "src\HtmlPdfPlus.Client\HtmlPdfPlus.Client.csproj", "{77D118D5-C505-4916-953B-2337914970ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfPlus.Server", "src\HtmlPdfPlus.Server\HtmlPdfPlus.Server.csproj", "{938A7F4A-99B8-4530-844C-10408E573586}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfPlus.Shared", "src\HtmlPdfPlus.Shared\HtmlPdfPlus.Shared.csproj", "{305A8FB5-2E0A-4771-9CC5-5D0D9B3ABB72}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{5ABE1DDA-E964-40F4-BF56-4B52E0605666}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\codeql.yml = .github\workflows\codeql.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{887ED686-9F77-493C-A0A5-80CE697025C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{887ED686-9F77-493C-A0A5-80CE697025C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{887ED686-9F77-493C-A0A5-80CE697025C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{887ED686-9F77-493C-A0A5-80CE697025C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF7F88CF-60DB-4A6D-90C4-89D0E5762660}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF7F88CF-60DB-4A6D-90C4-89D0E5762660}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF7F88CF-60DB-4A6D-90C4-89D0E5762660}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF7F88CF-60DB-4A6D-90C4-89D0E5762660}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35A2065E-8BCA-42F9-94E3-614700B72D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35A2065E-8BCA-42F9-94E3-614700B72D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35A2065E-8BCA-42F9-94E3-614700B72D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35A2065E-8BCA-42F9-94E3-614700B72D4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{685909BC-FE72-4D1E-BBFA-5F216EBA10FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{685909BC-FE72-4D1E-BBFA-5F216EBA10FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{685909BC-FE72-4D1E-BBFA-5F216EBA10FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{685909BC-FE72-4D1E-BBFA-5F216EBA10FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFC7D734-660B-4F22-B9CC-7206826BDD2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFC7D734-660B-4F22-B9CC-7206826BDD2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFC7D734-660B-4F22-B9CC-7206826BDD2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFC7D734-660B-4F22-B9CC-7206826BDD2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBD4BA57-0494-4E8F-A9EB-672BD9855229}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBD4BA57-0494-4E8F-A9EB-672BD9855229}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBD4BA57-0494-4E8F-A9EB-672BD9855229}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBD4BA57-0494-4E8F-A9EB-672BD9855229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{891AC1A4-0E42-4ADD-BF31-1707541F3E50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{891AC1A4-0E42-4ADD-BF31-1707541F3E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{891AC1A4-0E42-4ADD-BF31-1707541F3E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{891AC1A4-0E42-4ADD-BF31-1707541F3E50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCD6E39C-00F8-4F62-8013-7248B8EE04CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCD6E39C-00F8-4F62-8013-7248B8EE04CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCD6E39C-00F8-4F62-8013-7248B8EE04CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCD6E39C-00F8-4F62-8013-7248B8EE04CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A804B249-F62B-438F-B767-3BF6FE61B54D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A804B249-F62B-438F-B767-3BF6FE61B54D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A804B249-F62B-438F-B767-3BF6FE61B54D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A804B249-F62B-438F-B767-3BF6FE61B54D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F01EBDC-D330-4176-80A2-9CFBC916D326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F01EBDC-D330-4176-80A2-9CFBC916D326}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F01EBDC-D330-4176-80A2-9CFBC916D326}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F01EBDC-D330-4176-80A2-9CFBC916D326}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77D118D5-C505-4916-953B-2337914970ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77D118D5-C505-4916-953B-2337914970ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77D118D5-C505-4916-953B-2337914970ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77D118D5-C505-4916-953B-2337914970ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{938A7F4A-99B8-4530-844C-10408E573586}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{938A7F4A-99B8-4530-844C-10408E573586}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{938A7F4A-99B8-4530-844C-10408E573586}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{938A7F4A-99B8-4530-844C-10408E573586}.Release|Any CPU.Build.0 = Release|Any CPU
+		{305A8FB5-2E0A-4771-9CC5-5D0D9B3ABB72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{305A8FB5-2E0A-4771-9CC5-5D0D9B3ABB72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{305A8FB5-2E0A-4771-9CC5-5D0D9B3ABB72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{305A8FB5-2E0A-4771-9CC5-5D0D9B3ABB72}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{887ED686-9F77-493C-A0A5-80CE697025C2} = {ED148173-C3B1-478E-A38D-1F90CC1DB0D4}
+		{CF7F88CF-60DB-4A6D-90C4-89D0E5762660} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
+		{35A2065E-8BCA-42F9-94E3-614700B72D4F} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
+		{685909BC-FE72-4D1E-BBFA-5F216EBA10FF} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
+		{EFC7D734-660B-4F22-B9CC-7206826BDD2B} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
+		{DBD4BA57-0494-4E8F-A9EB-672BD9855229} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
+		{891AC1A4-0E42-4ADD-BF31-1707541F3E50} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
+		{CCD6E39C-00F8-4F62-8013-7248B8EE04CF} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
+		{A804B249-F62B-438F-B767-3BF6FE61B54D} = {266603D0-608D-4207-89F0-BCE0AABDB0A5}
+		{A9894106-2EBA-4867-AE60-869D39CC2294} = {501D5A85-0D42-4552-A312-5BC766C94607}
+	EndGlobalSection
+EndGlobal

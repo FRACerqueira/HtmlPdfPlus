@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net9.0;net8.0;netstandard2.1</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<NoWarn>1701;1702;NU5100;NU5104</NoWarn>
+		<LangVersion>latestmajor</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Authors>Fernando Cerqueira</Authors>
+		<Owners>Fernando Cerqueira</Owners>
+		<Title>Lightweight and scalable HTML to PDF Server-Converter in .NET</Title>
+		<Description>HtmlPdfPlus is an Open Source library licensed under MIT that converts an HTML into a PDF.</Description>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<PackageProjectUrl></PackageProjectUrl>
+		<PackageIcon>Icon.png</PackageIcon>
+		<RepositoryType>git</RepositoryType>
+		<IncludeSymbols>True</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Copyright>© 2025 - Fernando Cerqueira</Copyright>
+		<RepositoryUrl>https://github.com/FRACerqueira/HtmlPdfPlus</RepositoryUrl>
+		<PackageTags>html pdf pdf-converter dotnet .net razor</PackageTags>
+		<PackageId>HtmlPdfPlus.Server</PackageId>
+		<AssemblyName>HtmlPdfPlus.Server</AssemblyName>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\HtmlPdfPlus.Shared\HtmlPdfPlus.Shared.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>TestHtmlPdfPlus</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
+		<PackageReference Include="Microsoft.Playwright" Version="1.50.0" />
+		<PackageReference Include="NUglify" Version="1.21.13" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\README.txt">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\Icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+</Project>

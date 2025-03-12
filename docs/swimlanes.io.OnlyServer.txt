@@ -1,0 +1,19 @@
+title: Generate PDF Client-Sever via only server
+
+note: Compress disabled (via DisableOptionsHtmlToPdf)
+
+HtmlPdfServer ->App Client: AddHtmlPdfService (Optional Default PageConfig)
+App Client --> App Client : Warmup HtmlPdfService
+App Client --> Request HtmlPdf: Html + PageConfig(Optional) + timeout
+Request HtmlPdf --> Request HtmlPdf : Minify Html
+
+
+App Client ->  HtmlPdfServer: ** Run (Optional Input param) **
+
+HtmlPdfServer --> HtmlPdfServer : Exec BeforePdf (Input param)
+HtmlPdfServer --> HtmlPdfServer : **Generate PDF**
+HtmlPdfServer --> HtmlPdfServer : Exec AfterPdf (Input param and Transform output type) 
+
+HtmlPdfServer -> App Client : ** Result HtmlPdf** 
+
+Order: App Client, Request HtmlPdf,  HtmlPdfServer
