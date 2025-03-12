@@ -22,7 +22,7 @@ namespace HtmlPdfPlus
         /// <param name="minify"><c>True</c> to minify html. Default value is <c>true</c></param>
         /// <param name="compress"><c>True</c> to compress html in gzip-base64. Default value is <c>false</c></param>
         /// <returns>String representation of Html to be used in Server engine</returns>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentException">Thrown when timeout less than 1</exception>
         public static string Create(string html, int converttimeout = 30000, bool minify = true, bool compress = false)
         {
             ValidateTimeout(converttimeout);
@@ -42,8 +42,8 @@ namespace HtmlPdfPlus
         /// <param name="minify"><c>True</c> to minify html. Default value is <c>true</c></param>
         /// <param name="compress"><c>True</c> to compress html in gzip-base64. Default value is <c>false</c></param>
         /// <returns>String representation of Html to be used in Server engine</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException">Thrown when Config is null</exception>
+        /// <exception cref="ArgumentException">Thrown when timeout less than 1</exception>
         public static string Create(string html, Action<IPdfPageConfig> config, int converttimeout = 30000, bool minify = true, bool compress = false)
         {
             if (config is null)
@@ -72,8 +72,8 @@ namespace HtmlPdfPlus
         /// <param name="minify"><c>True</c> to minify html. Default value is <c>true</c></param>
         /// <param name="compress"><c>True</c> to compress html in gzip-base64. Default value is <c>false</c></param>
         /// <returns>String representation of Html to be used in Server engine</returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException">Thrown when Config is null</exception>
+        /// <exception cref="ArgumentException">Thrown when timeout less than 1</exception>
         public static string Create<T>(string html, Action<IPdfPageConfig> config, int converttimeout = 30000, T? param = default, bool minify = true, bool compress = false)
         {
             if (config is null)
@@ -101,7 +101,7 @@ namespace HtmlPdfPlus
         /// <param name="minify"><c>True</c> to minify html. Default value is <c>true</c></param>
         /// <param name="compress"><c>True</c> to compress html in gzip-base64. Default value is <c>false</c></param>
         /// <returns>String representation of Html to be used in Server engine</returns>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentException">Thrown when timeout less than 1</exception>
         public static string Create<T>(string html, int converttimeout = 30000, T? param = default, bool minify = true, bool compress = false)
         {
             ValidateTimeout(converttimeout);

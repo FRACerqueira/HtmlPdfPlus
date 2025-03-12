@@ -28,6 +28,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{501D5A85-0D42-4552-A312-5BC766C94607}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		src\README.txt = src\README.txt
 		..\docs\swimlanes.io.AnyProcess.txt = ..\docs\swimlanes.io.AnyProcess.txt
 		..\docs\swimlanes.io.http.txt = ..\docs\swimlanes.io.http.txt
 		..\docs\swimlanes.io.OnlyServer.txt = ..\docs\swimlanes.io.OnlyServer.txt
@@ -53,6 +54,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfPlus.Server", "src\HtmlPdfPlus.Server\HtmlPdfPlus.Server.csproj", "{938A7F4A-99B8-4530-844C-10408E573586}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfPlus.Shared", "src\HtmlPdfPlus.Shared\HtmlPdfPlus.Shared.csproj", "{305A8FB5-2E0A-4771-9CC5-5D0D9B3ABB72}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{5ABE1DDA-E964-40F4-BF56-4B52E0605666}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\codeql.yml = .github\workflows\codeql.yml
+		.github\workflows\publish.yml = .github\workflows\publish.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

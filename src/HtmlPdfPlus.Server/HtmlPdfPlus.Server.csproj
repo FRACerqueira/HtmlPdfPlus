@@ -8,7 +8,6 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Authors>Fernando Cerqueira</Authors>
 		<Owners>Fernando Cerqueira</Owners>
-		<Version>0.1.0</Version>
 		<Title>Lightweight and scalable HTML to PDF Server-Converter in .NET</Title>
 		<Description>HtmlPdfPlus is an Open Source library licensed under MIT that converts an HTML into a PDF.</Description>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -24,6 +23,8 @@
 		<PackageTags>html pdf pdf-converter dotnet .net razor</PackageTags>
 		<PackageId>HtmlPdfPlus.Server</PackageId>
 		<AssemblyName>HtmlPdfPlus.Server</AssemblyName>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -44,6 +45,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="..\README.txt">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 		<None Include="..\Icon.png">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>

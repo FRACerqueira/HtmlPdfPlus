@@ -26,7 +26,7 @@ String representation of Html to be used in Server engine
 
 | exception | condition |
 | --- | --- |
-| ArgumentException |  |
+| ArgumentException | Thrown when timeout less than 1 |
 
 ### See Also
 
@@ -60,8 +60,8 @@ String representation of Html to be used in Server engine
 
 | exception | condition |
 | --- | --- |
-| ArgumentNullException |  |
-| ArgumentException |  |
+| ArgumentNullException | Thrown when Config is null |
+| ArgumentException | Thrown when timeout less than 1 |
 
 ### See Also
 
@@ -96,7 +96,7 @@ String representation of Html to be used in Server engine
 
 | exception | condition |
 | --- | --- |
-| ArgumentException |  |
+| ArgumentException | Thrown when timeout less than 1 |
 
 ### See Also
 
@@ -132,8 +132,8 @@ String representation of Html to be used in Server engine
 
 | exception | condition |
 | --- | --- |
-| ArgumentNullException |  |
-| ArgumentException |  |
+| ArgumentNullException | Thrown when Config is null |
+| ArgumentException | Thrown when timeout less than 1 |
 
 ### See Also
 

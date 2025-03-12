@@ -179,7 +179,7 @@ namespace HtmlPdfPlus.Server.Core
                 _playwright = await Playwright.CreateAsync().ConfigureAwait(false);
                 if (_args.Length == 0)
                 {
-                    _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true }).ConfigureAwait(false);
+                    _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true, Args = ["--run-all-compositor-stages-before-draw", "--disable-dev-shm-usage", "-disable-setuid-sandbox", "--no-sandbox"] }).ConfigureAwait(false);
                 }
                 else
                 {

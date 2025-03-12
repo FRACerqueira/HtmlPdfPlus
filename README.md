@@ -3,12 +3,13 @@
 ### **Lightweight and scalable HTML to PDF converter in .NET.** 
 
 ![GitHub license](https://img.shields.io/github/license/fracerqueira/HtmlPdfPlus)
-
 ## The best tool to convert HTML to PDF in .NET with a modern engine
 
-#### | Client -> [![NuGet Client](https://img.shields.io/nuget/v/HtmlPdfPlus.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Client/) [![NuGet Client](https://img.shields.io/nuget/dt/HtmlPdfPlus.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Client/)
+[![Build](https://github.com/FRACerqueira/HtmlPdfPlus/workflows/Build/badge.svg)](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/build.yml)
+[![Publish](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/publish.yml/badge.svg)](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/publish.yml)
 
-#### | Server -> [![NuGet Server](https://img.shields.io/nuget/v/HtmlPdfPlus.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Server/) [![NuGet Server](https://img.shields.io/nuget/dt/HtmlPdfPlus.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Server/)
+- Client : [![NuGet Client](https://img.shields.io/nuget/v/HtmlPdfPlus.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Client/) [![NuGet Client](https://img.shields.io/nuget/dt/HtmlPdfPlus.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Client/)
+- Server : [![NuGet Server](https://img.shields.io/nuget/v/HtmlPdfPlus.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Server/) [![NuGet Server](https://img.shields.io/nuget/dt/HtmlPdfPlus.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Server/)
 
 ## Table of Contents
 
@@ -380,6 +381,10 @@ This project is licensed under the MIT License - see the [License](LICENSE.md) f
 **Q: What browsers are supported for PDF generation?**
 
 A: Currently, only the Chromium browser is supported for the PDF API.
+
+**Q: What init args for speed and reduce resource usage ?**
+
+A: Currently, HtmlPdfPlus.Server starts with "--run-all-compositor-stages-before-draw --disable-dev-shm-usage -disable-setuid-sandbox --no-sandbox" when no argument value is passed.
 
 **Q: Can I customize the PDF settings?**
 

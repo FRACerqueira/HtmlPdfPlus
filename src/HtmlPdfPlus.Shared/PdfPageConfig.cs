@@ -21,6 +21,7 @@ namespace HtmlPdfPlus
             Orientation = PageOrientation.Portrait;
             DisplayHeaderFooter = false;
             PrintBackground = true;
+            PreferCSSPageSize = false;
             Scale = 1;
         }
 
