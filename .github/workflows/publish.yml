@@ -20,10 +20,10 @@ jobs:
       run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_OUTPUT
 
     - name: Pack NuGet Package HtmlPdfPlus.Server
-      run: dotnet pack src/HtmlPdfPlus.Server/HtmlPdfPlus.Server.csproj -c Release -o ./dist -p:Version=${{ steps.setup_version.outputs.VERSION }}
+      run: dotnet pack src/HtmlPdfPlus.Server/HtmlPdfPlus.Server.csproj -c Release -o --use-current-runtime ./dist -p:Version=${{ steps.setup_version.outputs.VERSION }}
 
     - name: Pack NuGet Package HtmlPdfPlus.Client
-      run: dotnet pack src/HtmlPdfPlus.Client/HtmlPdfPlus.Client.csproj -c Release -o ./dist -p:Version=${{ steps.setup_version.outputs.VERSION }}
+      run: dotnet pack src/HtmlPdfPlus.Client/HtmlPdfPlus.Client.csproj -c Release -o --use-current-runtime ./dist -p:Version=${{ steps.setup_version.outputs.VERSION }}
 
     - name: Publish  Package HtmlPdfPlus.Server and HtmlPdfPlus.Client
       run: dotnet nuget push dist/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
