@@ -20,6 +20,7 @@ public interface IPdfPageConfig
 | [Header](IPdfPageConfig/Header.md)(…) | Sets the HTML header. |
 | [Margins](IPdfPageConfig/Margins.md)(…) | Sets the page margins. (3 methods) |
 | [Orientation](IPdfPageConfig/Orientation.md)(…) | Sets the page orientation. |
+| [PreferCSSPageSize](IPdfPageConfig/PreferCSSPageSize.md)(…) | Sets preferred CSS media type for page size. |
 | [PrintBackground](IPdfPageConfig/PrintBackground.md)(…) | Sets whether to print background graphics. |
 | [Scale](IPdfPageConfig/Scale.md)(…) | Sets the scale of the webpage rendering. |
 

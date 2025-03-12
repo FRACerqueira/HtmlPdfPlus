@@ -131,6 +131,12 @@ namespace HtmlPdfPlus.Client.Core
             return this;
         }
 
+        public IPdfPageConfig PreferCSSPageSize(bool value)
+        {
+            PageConfig.PreferCSSPageSize = value;
+            return this;
+        }
+
         /// <summary>
         /// Sets whether to print background graphics.
         /// </summary>

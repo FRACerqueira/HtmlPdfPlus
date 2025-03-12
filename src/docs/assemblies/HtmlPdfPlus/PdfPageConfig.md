@@ -20,6 +20,7 @@ public sealed class PdfPageConfig
 | [Header](PdfPageConfig/Header.md) { get; set; } | Get/Set Html Header. Default value : `null`. |
 | [Margins](PdfPageConfig/Margins.md) { get; set; } | Get/Sets the page margins (default 0mm for left/right/top/bottom) |
 | [Orientation](PdfPageConfig/Orientation.md) { get; set; } | Get/Set Orientation Page PDF. [`PageOrientation`](./PageOrientation.md) Default value : Portrait |
+| [PreferCSSPageSize](PdfPageConfig/PreferCSSPageSize.md) { get; set; } | Get/Set Prefer CSS page size. Defaults to `false`. |
 | [PrintBackground](PdfPageConfig/PrintBackground.md) { get; set; } | Get/Set Print background graphics. Defaults to `true`. |
 | [Scale](PdfPageConfig/Scale.md) { get; set; } | Get/Set Scale of the webpage rendering. Defaults to `1`. |
 | [Size](PdfPageConfig/Size.md) { get; set; } | Page Size. [`PageSize`](./PageSize.md). Default value : A4. |

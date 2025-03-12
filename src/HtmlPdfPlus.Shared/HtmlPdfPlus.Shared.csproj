@@ -27,6 +27,6 @@
 			<_Parameter1>HtmlPdfPlus.Server</_Parameter1>
 		</AssemblyAttribute>
 		<PackageReference Include="NUglify" Version="1.21.13" />
-		<PackageReference Include="System.Text.Json" Version="9.0.2" />
+		<PackageReference Include="System.Text.Json" Version="9.0.3" />
 	</ItemGroup>
 </Project>

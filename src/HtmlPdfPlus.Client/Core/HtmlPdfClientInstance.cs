@@ -60,15 +60,18 @@ namespace HtmlPdfPlus.Client.Core
             {
                 throw new ArgumentNullException(nameof(value), "value is null or empty");
             }
+            _errorparse = null;
             if (disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml))
             {
                 _html = value;
-                _errorparse = null;
             }
             else
             {
                 var minify = Uglify.Html(value);
-                _errorparse = minify.Errors.ToString();
+                if (minify.HasErrors)
+                {
+                    _errorparse = string.Join(Environment.NewLine, minify.Errors.Select(e => e.Message));
+                }
                 _html = minify.Code;
             }
             return this;
@@ -82,6 +85,7 @@ namespace HtmlPdfPlus.Client.Core
                 throw new ArgumentNullException(nameof(template), "template is null or empty");
             }
             var aux = RazorHelpper.CompileTemplate(template, razordata);
+            _errorparse = null;
             if (disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml))
             {
                 _html = aux;
@@ -89,7 +93,10 @@ namespace HtmlPdfPlus.Client.Core
             else
             {
                 var minify = Uglify.Html(aux);
-                _errorparse = minify.Errors.ToString();
+                if (minify.HasErrors)
+                {
+                    _errorparse = string.Join(Environment.NewLine, minify.Errors.Select(e => e.Message));
+                }
                 _html = minify.Code;
             }
             return this;

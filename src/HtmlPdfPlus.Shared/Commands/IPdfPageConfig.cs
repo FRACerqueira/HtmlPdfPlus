@@ -95,5 +95,12 @@ namespace HtmlPdfPlus
         /// <returns><see cref="IPdfPageConfig"/> instance.</returns>
         /// <exception cref="ArgumentException">Thrown when the scale value is out of range.</exception>
         IPdfPageConfig Scale(float value);
+
+        /// <summary>
+        /// Sets preferred CSS media type for page size.
+        /// </summary>
+        /// <param name="value">referred CSS media type for page size. Default is <c>false</c>.</param>
+        /// <returns><see cref="IPdfPageConfig"/> instance.</returns>
+        IPdfPageConfig PreferCSSPageSize(bool value);
     }
 }

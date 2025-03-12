@@ -314,6 +314,7 @@ namespace HtmlPdfPlus.Server.Core
                         },
                         DisplayHeaderFooter = request.Config.DisplayHeaderFooter,
                         PrintBackground = request.Config.PrintBackground,
+                        PreferCSSPageSize = request.Config.PreferCSSPageSize,
                         Scale = request.Config.Scale
                     });
                 }, token);

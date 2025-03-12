@@ -64,6 +64,12 @@ namespace HtmlPdfPlus.Shared.Core
             return this;
         }
 
+        public IPdfPageConfig PreferCSSPageSize(bool value)
+        {
+            PageConfig.PreferCSSPageSize = value;
+            return this;
+        }
+
         public IPdfPageConfig PrintBackground(bool value = true)
         {
             PageConfig.PrintBackground = value;

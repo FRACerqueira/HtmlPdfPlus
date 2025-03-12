@@ -66,5 +66,11 @@ namespace HtmlPdfPlus
         /// </para>
         /// </summary>
         public float Scale { get; set; }
+
+        /// <summary>
+        /// Get/Set Prefer CSS page size. Defaults to <c>false</c>.
+        /// </summary>
+        public bool PreferCSSPageSize { get; set; }
+
     }
 }

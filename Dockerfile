@@ -3,7 +3,21 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 EXPOSE 8080
 EXPOSE 8081
 
-# This stage (pre-installed playwright) install the .net 9 runtime  and used to build the service project
+USER root
+
+# Install Google Chrome (133.0.6943.* - Same playwright 1.50.0) Stable and fonts
+# Note: this installs the necessary libs to make the browser work. 
+RUN apt-get update && apt-get install gnupg wget -y && \
+    wget --quiet --output-document=- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /etc/apt/trusted.gpg.d/google-archive.gpg
+RUN wget -q https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_133.0.6943.126-1_amd64.deb
+RUN apt-get -y update
+RUN apt-get install ./google-chrome-stable_133.0.6943.126-1_amd64.deb -y --no-install-recommends
+
+# Clean up
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*  /tmp/* /var/tmp/* ./google-chrome-stable_133.0.6943.126-1_amd64.deb
+
+# This stage (pre-installed playwright with Google Chrome 133.0.6943.*) install the .net 9 runtime  and used to build the service project
 FROM mcr.microsoft.com/playwright/dotnet:v1.50.0 AS build  
 
 USER root
@@ -47,24 +61,13 @@ COPY --from=publish /app/publish .
 
 # Copy required folder(pre-installed) to run playwright
 COPY --from=build /ms-playwright/ /ms-playwright
-
-USER root
-
-# Install Google Chrome Stable and fonts
-# Note: this installs the necessary libs to make the browser work. 
-RUN apt-get update && apt-get install gnupg wget -y && \
-    wget --quiet --output-document=- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /etc/apt/trusted.gpg.d/google-archive.gpg && \
-    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
-    apt-get update && \
-    apt-get install google-chrome-stable -y --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/*
-
+ 
 # Set emvironment variable for playwright
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 # This stage enables running the service as a non-root user
+USER root
 RUN chown -R $APP_UID /app          
-
 USER $APP_UID           
             
 ENTRYPOINT ["dotnet", "WebHtmlToPdf.GenericServer.dll"]
