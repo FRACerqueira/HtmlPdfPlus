@@ -28,11 +28,11 @@ jobs:
         dotnet-version: '9.0.x'
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         queries: +security-and-quality
-        config-file: ./.github/codeql-config.yml
+        config-file: ./.github/workflows/codeql-config.yml
         
     - name: Build client
       run: dotnet build ./src/HtmlPdfPlus.Client/HtmlPdfPlus.Client.csproj -c Release
