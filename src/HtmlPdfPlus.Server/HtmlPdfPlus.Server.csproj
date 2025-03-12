@@ -25,6 +25,7 @@
 		<AssemblyName>HtmlPdfPlus.Server</AssemblyName>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Version>0.1.0-alfa</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
