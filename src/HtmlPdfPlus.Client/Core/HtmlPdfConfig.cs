@@ -4,9 +4,7 @@
 // https://github.com/FRACerqueira/HtmlPdfPlus
 // ***************************************************************************************
 
-using HtmlPdfPlus;
-
-namespace HtmlPdfCliPlus.Core
+namespace HtmlPdfPlus.Client.Core
 {
     /// <summary>
     /// Configuration for HTML to PDF conversion.

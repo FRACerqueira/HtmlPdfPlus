@@ -6,7 +6,7 @@
 
 using RazorEngineCore;
 
-namespace HtmlPdfCliPlus.Core
+namespace HtmlPdfPlus.Client.Core
 {
     /// <summary>
     /// Razor Helpper

@@ -5,11 +5,9 @@
 // ***************************************************************************************
 
 using System.Text.Json;
-using HtmlPdfPlus;
 using NUglify;
-using NUglify.Html;
 
-namespace HtmlPdfShrPlus.Core
+namespace HtmlPdfPlus.Shared.Core
 {
     /// <summary>
     /// Request data to convert Html to PDF

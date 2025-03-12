@@ -7,12 +7,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\HtmlPdfCliPlus\HtmlPdfCliPlus.csproj" />
-    <ProjectReference Include="..\HtmlPdfSrvPlus\HtmlPdfSrvPlus.csproj" />
-  </ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="XmlDocMarkdown.Core" Version="2.9.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\HtmlPdfPlus.Client\HtmlPdfPlus.Client.csproj" />
+	  <ProjectReference Include="..\HtmlPdfPlus.Server\HtmlPdfPlus.Server.csproj" />
 	</ItemGroup>
 </Project>

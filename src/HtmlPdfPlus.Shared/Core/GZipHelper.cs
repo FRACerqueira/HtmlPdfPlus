@@ -7,9 +7,8 @@
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
-using HtmlPdfPlus;
 
-namespace HtmlPdfShrPlus.Core
+namespace HtmlPdfPlus.Shared.Core
 {
     internal static class GZipHelper
     {

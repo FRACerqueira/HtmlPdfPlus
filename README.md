@@ -28,7 +28,11 @@
 - [FAQ](#faq)
 
 ## Project Description
-HtmlPdfPlus is a modern and lightweight library that allows you to convert HTML or RAZOR pages to PDF with high fidelity. It is a scalable and flexible solution that can be used in client-server mode or only server. It supports CSS and JavaScript, and it is easy to integrate with your application. You can customize the PDF settings, such as page size and margins, and add headers and footers to your PDF files. HtmlPdfPlus is a powerful tool that can help you generate PDF files from HTML or RAZOR pages with ease.
+HtmlPdfPlus is a modern and lightweight library for **.Net9, .Net8 and NetStandard2.1** that allows you to convert HTML or RAZOR pages to PDF with high fidelity. 
+
+It is a scalable and flexible solution that can be used in client-server mode or only server. It supports CSS and JavaScript, and it is easy to integrate with your application. 
+
+You can customize the PDF settings, such as page size and margins, and add headers and footers to your PDF files. HtmlPdfPlus is a powerful tool that can help you generate PDF files from HTML or RAZOR pages with ease.
 
 This library was built using the [Playwright](https://playwright.dev/dotnet/) (engine to automate **Chromium, Firefox, and WebKit** with a single API). Playwright is built to enable cross-browser web automation that is evergreen, capable, reliable, and fast. 
 
@@ -63,7 +67,7 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
 
 - .NET 8 or .NET 9 SDK
 - Visual Studio 2022 or later
-- Playwright (for PDF generation)
+- Playwright (Installed and configured for your O.S)
 
 
 ## Installing
@@ -277,7 +281,7 @@ The use of Playwright works very well for local testing on Windows machines foll
 
 For containerization scenarios, image sizes are a challenge that deserves more dedicated attention.
 
-This project suggests a containerization example that **reduces the final image size by approximately 70% (from 4.2GB to 1.29GB)** . 
+This project suggests a containerization example that **reduces the final image size by approximately 70% !.** 
 
 
 To achieve this reduction, the biggest challenge was controlling the necessary dependencies and keeping only the minimum for execution in a headless shell.
@@ -302,34 +306,34 @@ I believe this work can still be improved! **For reference on this approach, see
 For more examples, please refer to the [Samples directory](./samples) :
 
 - Server Only
-	- [Console HtmlToPdfPlus OnlyAtServer V1](../Samples/ConsoleHtmlToPdfPlus.OnlyAtServer/v1)
+	- [Console HtmlToPdfPlus OnlyAtServer V1](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/v1)
         - Performs replacement token substitution in the HTML source before performing the conversion 
         - Performs writing to file after performing conversion
         - Return output data with filename
-	- [Console HtmlToPdfPlus OnlyAtServer V2](../Samples/ConsoleHtmlToPdfPlus.OnlyAtServer/v2)
+	- [Console HtmlToPdfPlus OnlyAtServer V2](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/v2)
         - Performs generate pdf in bytes array
         - Performs writing to file
 - Client-Server
-	- [Console HtmlToPdfPlus Client by Http](../Samples/ConsoleHtmlToPdfPlus.ClientSendHttp)
+	- [Console HtmlToPdfPlus Client by Http](./samples/ConsoleHtmlToPdfPlus.ClientSendHttp)
         - Performs sending data to the server via http client
         - Performs writing to file
-	- [Server HtmlToPdfPlus Generic](../Samples/WebHtmlToPdf.GenericServer)
+	- [Server HtmlToPdfPlus Generic](./samples/WebHtmlToPdf.GenericServer)
         - Performs generate pdf in bytes array
         - Send data to client via http
 - Client-Server Custom
-	- [Console HtmlToPdfPlus Client Custom by Http](../Samples/ConsoleHtmlToPdfPlus.ClientCustomSendHttp)
+	- [Console HtmlToPdfPlus Client Custom by Http](./samples/ConsoleHtmlToPdfPlus.ClientCustomSendHttp)
         - Performs a generic suggestion for writing a file to a cloud like gcp/azure   
         - Performs sending data to the server via http client
-	- [Server HtmlToPdfPlus Custom Save File](../Samples/WebHtmlToPdf.CustomSaveFileServer)
+	- [Server HtmlToPdfPlus Custom Save File](./samples/WebHtmlToPdf.CustomSaveFileServer)
         - Performs replacement token substitution in the HTML source before performing the conversion 
         - Performs a generic suggestion writing to file after performing conversion
         - Send data (name of file or full path file) to client via http
 - Client-Server TCP
-	- [Console HtmlToPdfPlus Client Tcp](../Samples/ConsoleHtmlToPdfPlus.ClientSendTcp)
+	- [Console HtmlToPdfPlus Client Tcp](./samples/ConsoleHtmlToPdfPlus.ClientSendTcp)
         - Performs sending data to the server via tcp client (using [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp) package)
         - Performs receiver data from the server via tcp client
         - Performs writing to file
-    - [Server Console HtmlToPdfPlus Tcp](../Samples/TcpServerHtmlToPdf.GenericServer)
+    - [Server Console HtmlToPdfPlus Tcp](./samples/TcpServerHtmlToPdf.GenericServer)
         - Listening port on tcp server (using [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp) package)
         - Performs generate pdf in bytes array
         - Send data to client via tcp server
@@ -357,7 +361,7 @@ Please read [Contributing](CONTRIBUTING.md) for details on our code of conduct, 
 
 **API documentation generated by**
 
-- [XmlDocMarkdown](https://github.com/ejball/XmlDocMarkdown), Copyright (c) 2022 [Ed Ball](https://github.com/ejball)
+- [XmlDocMarkdown](https://github.com/ejball/XmlDocMarkdown), Copyright (c) 2024 [Ed Ball](https://github.com/ejball)
     - See an unrefined customization to contain header and other adjustments in project [XmlDocMarkdownGenerator](./src/XmlDocMarkdownGenerator)  
     
 ## License

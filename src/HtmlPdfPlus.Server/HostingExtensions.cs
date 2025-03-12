@@ -6,7 +6,7 @@
 
 using System.Diagnostics;
 using HtmlPdfPlus;
-using HtmlPdfSrvPlus.Core;
+using HtmlPdfPlus.Server.Core;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 

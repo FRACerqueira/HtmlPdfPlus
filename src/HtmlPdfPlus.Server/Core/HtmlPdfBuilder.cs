@@ -5,13 +5,12 @@
 // ***************************************************************************************
 
 using System.Collections.Concurrent;
-using HtmlPdfPlus;
-using HtmlPdfShrPlus.Core;
+using HtmlPdfPlus.Shared.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using NUglify;
 
-namespace HtmlPdfSrvPlus.Core
+namespace HtmlPdfPlus.Server.Core
 {
     /// <summary>
     /// Builder class for configuring and creating an HTML to PDF conversion service.
@@ -71,7 +70,7 @@ namespace HtmlPdfSrvPlus.Core
                 _args = [];
             }
             _args = new string[args.Length];
-            args.CopyTo(_args,0);
+            args.CopyTo(_args, 0);
             return this;
         }
 

@@ -4,9 +4,7 @@
 // https://github.com/FRACerqueira/HtmlPdfPlus
 // ***************************************************************************************
 
-using HtmlPdfPlus;
-
-namespace HtmlPdfShrPlus.Core
+namespace HtmlPdfPlus.Shared.Core
 {
     internal sealed class HtmlPdfConfig : IPdfPageConfig
     {

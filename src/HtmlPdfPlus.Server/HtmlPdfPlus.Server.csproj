@@ -27,7 +27,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\HtmlPdfShrPlus\HtmlPdfShrPlus.csproj" />
+		<ProjectReference Include="..\HtmlPdfPlus.Shared\HtmlPdfPlus.Shared.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>

@@ -26,8 +26,8 @@ ARG BUILD_CONFIGURATION=Release
 
 WORKDIR /src
 COPY ["/samples/WebHtmlToPdf.GenericServer/**", "samples/WebHtmlToPdf.GenericServer/"]
-COPY ["/src/HtmlPdfShrPlus/**", "HtmlPdfShrPlus/"]
-COPY ["/src/HtmlPdfSrvPlus/**", "HtmlPdfSrvPlus/"]
+COPY ["/src/HtmlPdfPlus.Shared/**", "HtmlPdfShrPlus/"]
+COPY ["/src/HtmlPdfPlus.Server/**", "HtmlPdfSrvPlus/"]
 
 RUN dotnet restore "./samples/WebHtmlToPdf.GenericServer/WebHtmlToPdf.GenericServer.csproj"
 COPY . .

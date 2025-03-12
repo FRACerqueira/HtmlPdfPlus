@@ -7,13 +7,12 @@
 using System.Diagnostics;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using HtmlPdfPlus;
-using HtmlPdfShrPlus.Core;
 using Microsoft.Extensions.Logging;
 using NUglify;
 using System.Net.Mime;
+using HtmlPdfPlus.Shared.Core;
 
-namespace HtmlPdfCliPlus.Core
+namespace HtmlPdfPlus.Client.Core
 {
     /// <summary>
     /// Represents an instance of the HTML to PDF client.

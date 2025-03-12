@@ -5,8 +5,8 @@
 // ***************************************************************************************
 
 using HtmlPdfPlus;
-using HtmlPdfShrPlus.Core;
-using HtmlPdfSrvPlus.Core;
+using HtmlPdfPlus.Server.Core;
+using HtmlPdfPlus.Shared.Core;
 
 namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 {

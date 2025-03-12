@@ -7,12 +7,11 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
-using HtmlPdfPlus;
-using HtmlPdfShrPlus.Core;
+using HtmlPdfPlus.Shared.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 
-namespace HtmlPdfSrvPlus.Core
+namespace HtmlPdfPlus.Server.Core
 {
     /// <summary>
     /// Represents a server for converting HTML to PDF.
@@ -79,7 +78,7 @@ namespace HtmlPdfSrvPlus.Core
                 }
                 else
                 {
-                    requestHtmlPdf = GZipHelper.DecompressRequest<Tin>(requestclient);
+                    requestHtmlPdf = Shared.Core.GZipHelper.DecompressRequest<Tin>(requestclient);
                     LogMessage($"Decompress Request after {sw.Elapsed}");
                 }
                 requestHtmlPdf.Config ??= _pdfSrvBuilder.Config;
@@ -111,7 +110,7 @@ namespace HtmlPdfSrvPlus.Core
                 {
                     var taskinput = Task.Run(async () =>
                     {
-                        requestHtmlPdf.ChangeHtml(await _inputparam(requestHtmlPdf.Html, requestHtmlPdf.InputParam, executeToken.Token), 
+                        requestHtmlPdf.ChangeHtml(await _inputparam(requestHtmlPdf.Html, requestHtmlPdf.InputParam, executeToken.Token),
                             _pdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml));
                     }, executeToken.Token);
 
@@ -216,7 +215,7 @@ namespace HtmlPdfSrvPlus.Core
                             }
                             else
                             {
-                                var auxBytes = (byte[]?)Convert.ChangeType(aux, typeof(byte[])) ?? 
+                                var auxBytes = (byte[]?)Convert.ChangeType(aux, typeof(byte[])) ??
                                     throw new InvalidOperationException("Conversion to byte[] resulted in null");
                                 var compresspdf = GZipHelper.Compress(auxBytes);
                                 result = new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout?)Convert.ChangeType(compresspdf, typeof(Tout)), null);

@@ -4,7 +4,7 @@
 // https://github.com/FRACerqueira/HtmlPdfPlus
 // ***************************************************************************************
 
-using HtmlPdfShrPlus.Core;
+using HtmlPdfPlus.Shared.Core;
 using NUglify;
 
 namespace HtmlPdfPlus

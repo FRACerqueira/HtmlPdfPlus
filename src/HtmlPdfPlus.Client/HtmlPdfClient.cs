@@ -5,7 +5,7 @@
 // ***************************************************************************************
 
 using System.Text.Json;
-using HtmlPdfCliPlus.Core;
+using HtmlPdfPlus.Client.Core;
 
 namespace HtmlPdfPlus
 {

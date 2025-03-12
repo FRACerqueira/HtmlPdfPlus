@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\HtmlPdfCliPlus\HtmlPdfCliPlus.csproj" />
+    <ProjectReference Include="..\..\src\HtmlPdfPlus.Client\HtmlPdfPlus.Client.csproj" />
   </ItemGroup>
 
 </Project>

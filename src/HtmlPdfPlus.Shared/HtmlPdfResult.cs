@@ -5,7 +5,7 @@
 // ***************************************************************************************
 
 using System.Text.Json.Serialization;
-using HtmlPdfShrPlus.Core;
+using HtmlPdfPlus.Shared.Core;
 
 namespace HtmlPdfPlus
 {

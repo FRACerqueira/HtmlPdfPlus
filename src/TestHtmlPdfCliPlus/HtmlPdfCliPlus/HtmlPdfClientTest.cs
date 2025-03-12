@@ -7,7 +7,7 @@
 using HtmlPdfPlus;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
-using HtmlPdfShrPlus.Core;
+using HtmlPdfPlus.Shared.Core;
 
 namespace TestHtmlPdfPlus.HtmlPdfCliPlus
 {

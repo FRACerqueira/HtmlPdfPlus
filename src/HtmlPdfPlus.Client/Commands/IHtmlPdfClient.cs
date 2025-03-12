@@ -4,8 +4,8 @@
 // https://github.com/FRACerqueira/HtmlPdfPlus
 // ***************************************************************************************
 
-using HtmlPdfCliPlus.Core;
 using Microsoft.Extensions.Logging;
+using HtmlPdfPlus.Client.Core;
 
 namespace HtmlPdfPlus
 {
