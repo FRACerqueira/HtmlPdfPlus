@@ -9,6 +9,7 @@ using HtmlPdfPlus.Shared.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using NUglify;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace HtmlPdfPlus.Server.Core
 {
@@ -179,13 +180,10 @@ namespace HtmlPdfPlus.Server.Core
                 _playwright = await Playwright.CreateAsync().ConfigureAwait(false);
                 if (_args.Length == 0)
                 {
-                    _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true, Args = ["--run-all-compositor-stages-before-draw", "--disable-dev-shm-usage", "-disable-setuid-sandbox", "--no-sandbox"] }).ConfigureAwait(false);
+                    _args = ["--run-all-compositor-stages-before-draw", "--disable-dev-shm-usage", "-disable-setuid-sandbox", "--no-sandbox"];
                 }
-                else
-                {
-                    _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true, Args = _args }).ConfigureAwait(false);
-                    LogMessage($"Build Chromium with args {_args}");
-                }
+                _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true, Args = _args }).ConfigureAwait(false);
+                LogMessage($"Build Chromium with args { string.Join("", _args) }");
                 for (int i = 0; i < _pagesbuffer; i++)
                 {
                     _availableBuffer.Enqueue(await _browser.NewPageAsync().ConfigureAwait(false));

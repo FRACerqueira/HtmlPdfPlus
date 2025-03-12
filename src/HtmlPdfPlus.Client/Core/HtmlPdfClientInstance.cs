@@ -261,7 +261,7 @@ namespace HtmlPdfPlus.Client.Core
                 }
             }
             sw.Stop();
-            LogMessage($"End Submit at {DateTime.UtcNow} with Elapsed time {sw.Elapsed}. Success {result!.IsSuccess}, Error : {result!.Error?.ToString()} ");
+            LogMessage($"End Submit at {DateTime.UtcNow} with Elapsed time {sw.Elapsed}. Success {result!.IsSuccess}, Error : { result!.Error } ");
             if (typeof(Tout) == typeof(byte[]))
             {
                 if (disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress) || result.OutputData is null)
