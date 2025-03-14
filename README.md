@@ -1,4 +1,4 @@
-# <img align="left" width="150" height="150" src="./docs/images/Icon.png">Welcome to HtmlPdfPlus
+# ![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/iconsmall.png) Welcome to HtmlPdfPlus
 
 ### **Lightweight and scalable HTML to PDF converter in .NET.** 
 
@@ -114,7 +114,7 @@ It is possible to generate a PDF in two ways:
 
 #### 1.1) Via http
 
-<img width="800" height="959"  src="./docs/images/swimlanes.io.Http.png">
+![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/swimlanes.io.Http.png)
 
 #### basic usage client side
 
@@ -177,7 +177,7 @@ app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]>
 
 #### 1.2) Via any process
 
-<img width="800" height="1050" src="./docs/images/swimlanes.io.AnyProcess.png">
+![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/swimlanes.io.AnyProcess.png)
 
 #### basic usage client side
 
@@ -230,7 +230,7 @@ var result = await PDFserver.Run(requestdata , Token);
 
 ### 2) Using ony-server
 
-<img width="800" height="480" src="./docs/images/swimlanes.io.OnlyServer.png">
+![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/swimlanes.io.OnlyServer.png)
 
 #### basic usage
 ```csharp

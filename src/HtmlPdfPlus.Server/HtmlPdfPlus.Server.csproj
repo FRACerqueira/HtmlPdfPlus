@@ -1,4 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+		<ItemGroup>
+			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+		</ItemGroup>
+	</Target>
 	<PropertyGroup>
 		<TargetFrameworks>net9.0;net8.0;netstandard2.1</TargetFrameworks>
 		<Nullable>enable</Nullable>
@@ -26,10 +31,14 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Version>0.1.0-alfa</Version>
+		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\HtmlPdfPlus.Shared\HtmlPdfPlus.Shared.csproj" />
+		<ProjectReference Include="..\HtmlPdfPlus.Shared\HtmlPdfPlus.Shared.csproj">
+			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+			<IncludeAssets>HtmlPdfPlus.Shared.dll</IncludeAssets>
+		</ProjectReference>
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -43,6 +52,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
 		<PackageReference Include="Microsoft.Playwright" Version="1.50.0" />
 		<PackageReference Include="NUglify" Version="1.21.13" />
+		<PackageReference Include="System.Text.Json" Version="9.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
