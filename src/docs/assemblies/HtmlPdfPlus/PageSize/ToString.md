@@ -1,4 +1,4 @@
-<img align="left" width="100" height="100" src="../../../../../docs/images/Icon.png" >
+![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/iconsmall.png)
 
 ### PageSize.ToString method
 </br>

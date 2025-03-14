@@ -27,7 +27,7 @@ namespace XmlDocMarkdownGenerator
             {
                 var content = File.ReadAllLines(item).ToList();
                 var title = content[0].Replace("# ", "");
-                content[0]= "<img align=\"left\" width=\"100\" height=\"100\" src=\"../../../docs/images/Icon.png\" >";
+                content[0]= "![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/iconsmall.png)";
                 content[1]= "";
                 content.Insert(2,$"### {title}");
                 content.Insert(3, "</br>");
@@ -67,7 +67,7 @@ namespace XmlDocMarkdownGenerator
                     {
                         var content = File.ReadAllLines(item2).ToList();
                         var title = content[0].Replace("# ", "");
-                        content.Insert(0, "<img align=\"left\" width=\"100\" height=\"100\" src=\"../../../../../docs/images/Icon.png\" >");
+                        content.Insert(0, "![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/iconsmall.png)");
                         content[1] = "";
                         content.Insert(2, $"### {title}");
                         content.Insert(3, "</br>");
@@ -105,7 +105,7 @@ namespace XmlDocMarkdownGenerator
                 {
                     var content = File.ReadAllLines(item3).ToList();
                     var title = content[0].Replace("# ", "");
-                    content.Insert(0, "<img align=\"left\" width=\"100\" height=\"100\" src=\"../../../../docs/images/Icon.png\" >");
+                    content.Insert(0, "![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/iconsmall.png)");
                     content[1] = "";
                     content.Insert(2, $"### {title}");
                     content.Insert(3, "</br>");
