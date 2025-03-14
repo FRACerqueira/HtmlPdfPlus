@@ -29,13 +29,13 @@ jobs:
       run: dotnet build src/HtmlPdfPlus.Shared -c Release
 
     - name: Pack NuGet Package HtmlPdfPlus.Server
-      run: dotnet pack src/HtmlPdfPlus.Server --no-build -o ./dist -p:Version=${{ steps.setup_version.outputs.VERSION }}
+      run: dotnet pack src/HtmlPdfPlus.Server -o ./dist -p:Version=${{ steps.setup_version.outputs.VERSION }}
 
     - name: Pack NuGet Package HtmlPdfPlus.Client
-      run: dotnet pack src/HtmlPdfPlus.Client --no-build -o ./dist -p:Version=${{ steps.setup_version.outputs.VERSION }}
+      run: dotnet pack src/HtmlPdfPlus.Client -o ./dist -p:Version=${{ steps.setup_version.outputs.VERSION }}
 
     - name: Pack NuGet Package HtmlPdfPlus.Shared
-      run: dotnet pack src/HtmlPdfPlus.Shared --no-build -o ./dist -p:Version=${{ steps.setup_version.outputs.VERSION }}
+      run: dotnet pack src/HtmlPdfPlus.Shared -o ./dist -p:Version=${{ steps.setup_version.outputs.VERSION }}
 
     - name: Publish  Package HtmlPdfPlus.Server 
       run: dotnet nuget push dist/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --skip-duplicate
