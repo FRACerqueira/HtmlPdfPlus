@@ -34,15 +34,10 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerV1
             //instance of Html to Pdf Engine
             var PDFserver = HostApp!.Services.GetHtmlPdfService<string, string>();
 
-            //create a request with custom type param , default config page and without compression to save file at server. 
-            //When run in the same context, not Compress is fast because it is not required to transfer data over the network
-            var request = RequestHtmlPdf.Create(
-                    HtmlSample(),
-                    5000,
-                    param: Path.Combine(PathToSamples, "html2pdfHtml.pdf"));
-
             //Performs conversion and custom operations on the server
             var pdfresult = await PDFserver
+                .Source(Path.Combine(PathToSamples, "html2pdfHtml.pdf"))
+                .FromHtml(HtmlSample(), 5000)
                 .BeforePDF((html, _, _) =>
                 {
                     //performs replacement token substitution in the HTML source before performing the conversion
@@ -56,7 +51,7 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerV1
                     Console.WriteLine($"File PDF generate at {filepath}");
                     return filepath!;
                 })
-                .Run(request, applifetime.ApplicationStopping);
+                .Run(applifetime.ApplicationStopping);
 
             Console.WriteLine($"HtmlPdfServer IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 

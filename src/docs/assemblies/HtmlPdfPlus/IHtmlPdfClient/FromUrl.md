@@ -1,28 +1,22 @@
 ![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/iconsmall.png)
 
-### IHtmlPdfClient.FromHtml method
+### IHtmlPdfClient.FromUrl method
 </br>
 
 
-#### Register HTML to be executed by the server.
+#### ;Register Page Url to be executed by the server.
 
 ```csharp
-public IHtmlPdfClient FromHtml(string html)
+public IHtmlPdfClient FromUrl(Uri value)
 ```
 
 | parameter | description |
 | --- | --- |
-| html | The HTML content. |
+| value | The url |
 
 ### Return Value
 
 [`IHtmlPdfClient`](../IHtmlPdfClient.md) instance.
-
-### Exceptions
-
-| exception | condition |
-| --- | --- |
-| ArgumentNullException | Thrown when the HTML content is null. |
 
 ### See Also
 

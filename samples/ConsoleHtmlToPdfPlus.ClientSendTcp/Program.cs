@@ -51,8 +51,6 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
             //create client instance and to HtmlPdfPlus server endpoint
             Console.WriteLine($"HtmlPdfClient send Html to PDF Server via http post");
 
-            TimeoutWaitResponse = 50000;
-
             var pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
                              .PageConfig((cfg) =>
                              {
@@ -64,7 +62,7 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
                              })
                              .Logger(HostApp.Services.GetService<ILogger<Program>>())
                              .FromHtml(HtmlSample())
-                             .Timeout(TimeoutWaitResponse)
+                             .Timeout(5000)
                              .Run(SendToTcpServer, applifetime.ApplicationStopping);
 
             Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");

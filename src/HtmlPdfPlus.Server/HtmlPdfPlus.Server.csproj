@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
 		<ItemGroup>
-			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+			<BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
 		</ItemGroup>
 	</Target>
 	<PropertyGroup>
@@ -31,6 +31,9 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Core\RequestHtmlPdf.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\HtmlPdfPlus.Shared\HtmlPdfPlus.Shared.csproj">

@@ -7,6 +7,7 @@
 using System.Text;
 using System.Text.Json;
 using HtmlPdfPlus;
+using HtmlPdfPlus.Shared.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -112,7 +113,9 @@ namespace TcpServerHtmlToPdf.GenericServer
 
             var request = Encoding.UTF8.GetString(e.Data.Array!, 0, e.Data.Count);
 
-            var aux = PDFserver.Run(request, CancellationToken.None).Result;
+            var aux = PDFserver
+                .Request(request)
+                .Run(CancellationToken.None).Result;
 
             var sendata = JsonSerializer.Serialize<HtmlPdfResult<byte[]>>(aux);
 

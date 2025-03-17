@@ -55,13 +55,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfPlus.Server", "src\H
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlPdfPlus.Shared", "src\HtmlPdfPlus.Shared\HtmlPdfPlus.Shared.csproj", "{305A8FB5-2E0A-4771-9CC5-5D0D9B3ABB72}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{5ABE1DDA-E964-40F4-BF56-4B52E0605666}"
-	ProjectSection(SolutionItems) = preProject
-		.github\workflows\build.yml = .github\workflows\build.yml
-		.github\workflows\codeql.yml = .github\workflows\codeql.yml
-		.github\workflows\publish.yml = .github\workflows\publish.yml
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -12,7 +12,7 @@ namespace HtmlPdfPlus.Shared.Core
 {
     internal static class GZipHelper
     {
-        private static readonly JsonSerializerOptions jsonoptions = new() { PropertyNameCaseInsensitive = true };
+        public static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
         /// <summary>
         /// Decompresses a base64 encoded string.
@@ -27,9 +27,14 @@ namespace HtmlPdfPlus.Shared.Core
                 byte[] decompressed = Decompress(compressed);
                 return Encoding.UTF8.GetString(decompressed);
             }
-            catch (Exception ex)
+            catch (FormatException ex)
             {
-                // Handle or log the exception as needed
+                // Log the exception
+                throw new InvalidOperationException("The input string is not a valid base64 string.", ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Log the exception
                 throw new InvalidOperationException("Failed to decompress the input string.", ex);
             }
         }
@@ -71,9 +76,14 @@ namespace HtmlPdfPlus.Shared.Core
                 }
                 return result.ToArray();
             }
+            catch (InvalidDataException ex)
+            {
+                // Log the exception
+                throw new InvalidOperationException("The input byte array is not a valid GZip stream.", ex);
+            }
             catch (Exception ex)
             {
-                // Handle or log the exception as needed
+                // Log the exception
                 throw new InvalidOperationException("Failed to decompress the input byte array.", ex);
             }
         }
@@ -87,11 +97,10 @@ namespace HtmlPdfPlus.Shared.Core
         {
             try
             {
-                using var source = new MemoryStream(input);
                 using var result = new MemoryStream();
                 using (var compress = new GZipStream(result, CompressionMode.Compress))
                 {
-                    source.CopyTo(compress);
+                    compress.Write(input, 0, input.Length);
                 }
                 return result.ToArray();
             }
@@ -114,9 +123,17 @@ namespace HtmlPdfPlus.Shared.Core
         /// <returns>The compressed and base64 encoded request string.</returns>
         internal static string CompressRequest<T>(string? alias, PdfPageConfig? pageConfig, string html, int timeout, T? inputparam)
         {
-            var request = new RequestHtmlPdf<T>(html, alias, pageConfig, timeout, inputparam);
-            var json = JsonSerializer.Serialize(request, jsonoptions);
-            return Compress(json);
+            try
+            {
+                var request = new RequestHtmlPdf<T>(html, alias, pageConfig, timeout, inputparam);
+                var json = JsonSerializer.Serialize(request, JsonOptions);
+                return Compress(json);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                throw new InvalidOperationException("Failed to compress the request object.", ex);
+            }
         }
 
         /// <summary>
@@ -127,9 +144,22 @@ namespace HtmlPdfPlus.Shared.Core
         /// <returns>The decompressed request object.</returns>
         internal static RequestHtmlPdf<T> DecompressRequest<T>(string compressdata)
         {
-            var json = Decompress(compressdata);
-            var result = JsonSerializer.Deserialize<RequestHtmlPdf<T>>(json, jsonoptions);
-            return result!;
+            try
+            {
+                var json = Decompress(compressdata);
+                var result = JsonSerializer.Deserialize<RequestHtmlPdf<T>>(json, JsonOptions);
+                return result!;
+            }
+            catch (JsonException ex)
+            {
+                // Log the exception
+                throw new InvalidOperationException("Failed to deserialize the decompressed JSON string.", ex);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                throw new InvalidOperationException("Failed to decompress the request object.", ex);
+            }
         }
     }
 }

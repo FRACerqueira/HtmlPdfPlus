@@ -6,6 +6,7 @@
 
 using System.Text.Json;
 using HtmlPdfPlus.Client.Core;
+using HtmlPdfPlus.Shared.Core;
 
 namespace HtmlPdfPlus
 {
@@ -52,13 +53,8 @@ namespace HtmlPdfPlus
                 throw new ArgumentException("Response data cannot be null or empty", nameof(dataresponse));
             }
 
-            return JsonSerializer.Deserialize<HtmlPdfResult<T>>(dataresponse, jsonoptions)!;
+            return JsonSerializer.Deserialize<HtmlPdfResult<T>>(dataresponse, GZipHelper.JsonOptions)!;
         }
-
-        private static readonly JsonSerializerOptions jsonoptions = new()
-        {
-            PropertyNameCaseInsensitive = true
-        };
     }
 }
 

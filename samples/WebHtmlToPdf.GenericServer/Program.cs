@@ -30,7 +30,8 @@ app.UseHttpsRedirection();
 
 app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] string requestclienthtmltopdf, CancellationToken token) =>
 {
-    return await PDFserver.Run(requestclienthtmltopdf, token);
+    return await PDFserver
+        .Run(requestclienthtmltopdf,token);
 }).Produces<HtmlPdfResult<byte[]>>(200);
 
 app.Run();

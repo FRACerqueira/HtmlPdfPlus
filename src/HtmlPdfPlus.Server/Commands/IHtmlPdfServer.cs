@@ -11,31 +11,30 @@ namespace HtmlPdfPlus
     /// </summary>
     /// <typeparam name="TIn">Type of input data.</typeparam>
     /// <typeparam name="TOut">Type of output data.</typeparam>
-    public interface IHtmlPdfServer<TIn, TOut>
+    public interface IHtmlPdfServer<TIn, TOut> : IDisposable
     {
         /// <summary>
-        /// Function to enrich HTML before performing HTML to PDF conversion.
+        /// Transfer context for <see cref="IHtmlPdfServerContext{TIn, TOut}"/> server context  with input data,and custom actions.
+        /// <param name="inputparam">Input data, for customizing HTML before converting to PDF on the server.</param>
         /// </summary>
-        /// <param name="inputParam">A function that takes a HTML request client, input data of type <typeparamref name="TIn"/>, and a <see cref="CancellationToken"/>, and returns enriched HTML as a string.</param>
-        /// <returns>An instance of <see cref="IHtmlPdfServer{TIn, TOut}"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="inputParam"/> is null.</exception>
-        IHtmlPdfServer<TIn, TOut> BeforePDF(Func<string, TIn?, CancellationToken, Task<string>> inputParam);
+        /// <returns>An instance of <see cref="IHtmlPdfServerContext{TIn, TOut}"/>.</returns>
+        IHtmlPdfServerContext<TIn, TOut> Source(TIn? inputparam = default);
+
 
         /// <summary>
-        /// Function to transform to a new output type after performing HTML to PDF conversion.
+        /// Transfer request client for <see cref="IHtmlPdfServerContext{TIn, TOut}"/> server context for custom actions 
         /// </summary>
-        /// <param name="outputParam">A function that takes a PDF in byte[], input data of type <typeparamref name="TIn"/>, and a <see cref="CancellationToken"/>, and returns the new output type <typeparamref name="TOut"/>.</param>
-        /// <returns>An instance of <see cref="IHtmlPdfServer{TIn, TOut}"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="outputParam"/> is null.</exception>
-        IHtmlPdfServer<TIn, TOut> AfterPDF(Func<byte[]?, TIn?, CancellationToken, Task<TOut>> outputParam);
+        /// <param name="requestClient">The compressed data from the request HtmlPdfCliPlus client.</param>
+        /// <returns>An instance of <see cref="IHtmlPdfServerContext{TIn, TOut}"/>.</returns>
+        IHtmlPdfServerContext<TIn, TOut> Request(string requestClient);
 
         /// <summary>
-        /// Perform HTML to PDF conversion.
+        /// Perform HTML to PDF conversion from the request HtmlPdfCliPlus client.
         /// </summary>
         /// <param name="requestClient">The compressed data from the request HtmlPdfCliPlus client.</param>
         /// <param name="token">The <see cref="CancellationToken"/> to perform the conversion.</param>
         /// <returns>An instance of <see cref="HtmlPdfResult{TOut}"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="requestClient"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown when <typeparamref name="TOut"/> is invalid.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="requestClient"/> is invalid.</exception>
         Task<HtmlPdfResult<TOut>> Run(string requestClient, CancellationToken token = default);
     }

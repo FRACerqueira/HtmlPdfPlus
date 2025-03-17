@@ -27,7 +27,6 @@ namespace HtmlPdfPlus.Client.Core
         private bool _htmlparse = false;
         private string? _errorparse = null;
         private Action<string>? _parseError = null;
-        private static readonly JsonSerializerOptions jsonoptions = new() { PropertyNameCaseInsensitive = true };
 
         /// <inheritdoc />
         public IHtmlPdfClient PageConfig(Action<IPdfPageConfig> config)
@@ -74,6 +73,14 @@ namespace HtmlPdfPlus.Client.Core
                 }
                 _html = minify.Code;
             }
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IHtmlPdfClient FromUrl(Uri value)
+        {
+            _html = value.ToString();
+            _errorparse = null;
             return this;
         }
 
@@ -310,7 +317,7 @@ namespace HtmlPdfPlus.Client.Core
         private string CreateRequestSend<T>(T? inputparam)
         {
             return disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress)
-                ? JsonSerializer.Serialize(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam), jsonoptions)
+                ? JsonSerializer.Serialize(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam), GZipHelper.JsonOptions)
                 : GZipHelper.CompressRequest(sourcealias, _pdfPageConfig, _html, _timeout, inputparam);
         }
 
@@ -357,11 +364,11 @@ namespace HtmlPdfPlus.Client.Core
                 {
                     if (disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
                     {
-                        return JsonSerializer.Deserialize<HtmlPdfResult<Tout>>(resultconvert, jsonoptions)!;
+                        return JsonSerializer.Deserialize<HtmlPdfResult<Tout>>(resultconvert, GZipHelper.JsonOptions)!;
                     }
                     else
                     {
-                        var auxresult = JsonSerializer.Deserialize<HtmlPdfResult<Tout>>(resultconvert, jsonoptions)!;
+                        var auxresult = JsonSerializer.Deserialize<HtmlPdfResult<Tout>>(resultconvert, GZipHelper.JsonOptions)!;
                         if (auxresult.OutputData is null)
                         {
                             return auxresult;
@@ -371,7 +378,7 @@ namespace HtmlPdfPlus.Client.Core
                 }
                 else
                 {
-                    return JsonSerializer.Deserialize<HtmlPdfResult<Tout>>(resultconvert, jsonoptions)!;
+                    return JsonSerializer.Deserialize<HtmlPdfResult<Tout>>(resultconvert, GZipHelper.JsonOptions)!;
                 }
             }
             else

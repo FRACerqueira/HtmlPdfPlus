@@ -98,6 +98,33 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
                 Console.WriteLine($"HtmlPdfClient error: {pdfresult.Error!}");
             }
 
+            Console.WriteLine("Press any key to next");
+            Console.ReadKey();
+
+            //create client instance  and send to server
+            Console.WriteLine($"HtmlPdfClient send Url to PDF Server via http post");
+
+            pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
+                                 .PageConfig((cfg) => cfg.Margins(10))
+                                 .Logger(HostApp.Services.GetService<ILogger<Program>>())
+                                 .FromUrl(new Uri("https://github.com/FRACerqueira/HtmlPdfPlus"))
+                                 .Timeout(15000)
+                                 .Run(clienthttp, applifetime.ApplicationStopping);
+
+            Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
+
+            //performs writing to file after performing conversion
+            if (pdfresult.IsSuccess)
+            {
+                var fullpath = Path.Combine(PathToSamples, "HtmlPdfPlus.pdf");
+                await File.WriteAllBytesAsync(fullpath, pdfresult.OutputData!);
+                Console.WriteLine($"File PDF generate at {fullpath}");
+            }
+            else
+            {
+                Console.WriteLine($"HtmlPdfClient error: {pdfresult.Error!}");
+            }
+
 
             Console.WriteLine("Press any key to end");
             Console.ReadKey();

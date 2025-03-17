@@ -7,7 +7,7 @@
 #### Fluent interface commands to perform HTML to PDF conversion.
 
 ```csharp
-public interface IHtmlPdfServer<TIn, TOut>
+public interface IHtmlPdfServer<TIn, TOut> : IDisposable
 ```
 
 | parameter | description |
@@ -19,9 +19,9 @@ public interface IHtmlPdfServer<TIn, TOut>
 
 | name | description |
 | --- | --- |
-| [AfterPDF](IHtmlPdfServer-2/AfterPDF.md)(…) | Function to transform to a new output type after performing HTML to PDF conversion. |
-| [BeforePDF](IHtmlPdfServer-2/BeforePDF.md)(…) | Function to enrich HTML before performing HTML to PDF conversion. |
-| [Run](IHtmlPdfServer-2/Run.md)(…) | Perform HTML to PDF conversion. |
+| [Request](IHtmlPdfServer-2/Request.md)(…) | Transfer request client for [`IHtmlPdfServerContext`](./IHtmlPdfServerContext-2.md) server context for custom actions |
+| [Run](IHtmlPdfServer-2/Run.md)(…) | Perform HTML to PDF conversion from the request HtmlPdfCliPlus client. |
+| [Source](IHtmlPdfServer-2/Source.md)(…) | Transfer context for [`IHtmlPdfServerContext`](./IHtmlPdfServerContext-2.md) server context with input data,and custom actions. Input data, for customizing HTML before converting to PDF on the server. |
 
 ### See Also
 

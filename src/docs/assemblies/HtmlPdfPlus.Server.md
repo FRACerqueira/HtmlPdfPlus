@@ -8,8 +8,8 @@
 | public type | description |
 | --- | --- |
 | interface [IHtmlPdfServer&lt;TIn,TOut&gt;](./HtmlPdfPlus/IHtmlPdfServer-2.md) | Fluent interface commands to perform HTML to PDF conversion. |
+| interface [IHtmlPdfServerContext&lt;TIn,TOut&gt;](./HtmlPdfPlus/IHtmlPdfServerContext-2.md) | Fluent interface commands to input sources HTML or Url to PDF conversion. |
 | interface [IHtmlPdfSrvBuilder](./HtmlPdfPlus/IHtmlPdfSrvBuilder.md) | Fluent interface commands to set instance of Chromium serverless browser. |
-| static class [RequestHtmlPdf](./HtmlPdfPlus/RequestHtmlPdf.md) | Request data to convert Html to PDF using only HtmlPdfPlus Server |
 
 ### Microsoft.Extensions.DependencyInjection namespace
 
