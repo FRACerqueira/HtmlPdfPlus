@@ -1,33 +1,26 @@
 ![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/iconsmall.png)
 
-### IHtmlPdfServer&lt;TIn,TOut&gt;.Run method
+### IHtmlPdfServer&lt;TIn,TOut&gt;.Request method
 </br>
 
 
-#### Perform HTML to PDF conversion from the request HtmlPdfCliPlus client.
+#### Transfer request client for [`IHtmlPdfServerContext`](../IHtmlPdfServerContext-2.md) server context for custom actions
 
 ```csharp
-public Task<HtmlPdfResult<TOut>> Run(string requestClient, CancellationToken token = default)
+public IHtmlPdfServerContext<TIn, TOut> Request(string requestClient)
 ```
 
 | parameter | description |
 | --- | --- |
 | requestClient | The compressed data from the request HtmlPdfCliPlus client. |
-| token | The CancellationToken to perform the conversion. |
 
 ### Return Value
 
-An instance of HtmlPdfResult.
-
-### Exceptions
-
-| exception | condition |
-| --- | --- |
-| ArgumentException | Thrown when *TOut* is invalid. |
-| ArgumentException | Thrown when *requestClient* is invalid. |
+An instance of [`IHtmlPdfServerContext`](../IHtmlPdfServerContext-2.md).
 
 ### See Also
 
+* interface [IHtmlPdfServerContext&lt;TIn,TOut&gt;](../IHtmlPdfServerContext-2.md)
 * interface [IHtmlPdfServer&lt;TIn,TOut&gt;](../IHtmlPdfServer-2.md)
 * namespace [HtmlPdfPlus](../../HtmlPdfPlus.Server.md)
 

@@ -18,14 +18,12 @@ namespace HtmlPdfPlus.Server.Core
     /// </summary>
     /// <typeparam name="Tin">The type of input data.</typeparam>
     /// <typeparam name="Tout">The type of output data.</typeparam>
-    internal sealed class HtmlPdfServer<Tin, Tout> : IHtmlPdfServer<Tin, Tout>, IDisposable
+    internal sealed class HtmlPdfServer<Tin, Tout> : IHtmlPdfServer<Tin, Tout>
     {
-        private Func<string, Tin?, CancellationToken, Task<string>>? _inputparam = null;
-        private Func<byte[]?, Tin?, CancellationToken, Task<Tout>>? _outputparam = null;
         private bool isDisposed;
-        private readonly HtmlPdfBuilder _pdfSrvBuilder;
-        private readonly string _sourcealias;
-        private static readonly JsonSerializerOptions jsonoptions = new() { PropertyNameCaseInsensitive = true };
+
+        internal readonly HtmlPdfBuilder PdfSrvBuilder;
+        internal readonly string SourceAlias;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HtmlPdfServer{Tin, Tout}"/> class.
@@ -36,23 +34,22 @@ namespace HtmlPdfPlus.Server.Core
 #pragma warning disable IDE0290 // Use primary constructor
         public HtmlPdfServer(HtmlPdfBuilder? pdfSrvBuilder, string sourcealias)
         {
-            _pdfSrvBuilder = pdfSrvBuilder ?? throw new ArgumentNullException(nameof(pdfSrvBuilder), "The pdfSrvBuilder is null");
-            _sourcealias = sourcealias;
+            PdfSrvBuilder = pdfSrvBuilder ?? throw new ArgumentNullException(nameof(pdfSrvBuilder), "The pdfSrvBuilder is null");
+            SourceAlias = sourcealias;
         }
 #pragma warning restore IDE0290 // Use primary constructor
 
+
         /// <inheritdoc />
-        public IHtmlPdfServer<Tin, Tout> BeforePDF(Func<string, Tin?, CancellationToken, Task<string>> inputparam)
+        public IHtmlPdfServerContext<Tin, Tout> Source(Tin? inputparam)
         {
-            _inputparam = inputparam ?? throw new ArgumentNullException(nameof(inputparam), "null reference");
-            return this;
+            return new HtmlPdfServerContext<Tin, Tout>(this, inputparam, null);
         }
 
         /// <inheritdoc />
-        public IHtmlPdfServer<Tin, Tout> AfterPDF(Func<byte[]?, Tin?, CancellationToken, Task<Tout>> outputparam)
+        public IHtmlPdfServerContext<Tin, Tout> Request(string requestClient)
         {
-            _outputparam = outputparam ?? throw new ArgumentNullException(nameof(outputparam), "null reference");
-            return this;
+            return new HtmlPdfServerContext<Tin, Tout>(this, default, requestClient);
         }
 
         /// <inheritdoc />
@@ -62,26 +59,20 @@ namespace HtmlPdfPlus.Server.Core
             {
                 throw new ArgumentNullException(nameof(requestclient), "request client is null or empty");
             }
-            if (_outputparam is null && typeof(Tout) != typeof(byte[]))
-            {
-                throw new ArgumentException("The output type when there is no custom output parameter must be byte[]");
-            }
-
             var sw = Stopwatch.StartNew();
-            LogMessage($"Start Convert Html to PDF from Server at {DateTime.Now}");
             RequestHtmlPdf<Tin> requestHtmlPdf;
             try
             {
-                if (_pdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
+                if (PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
                 {
-                    requestHtmlPdf = JsonSerializer.Deserialize<RequestHtmlPdf<Tin>>(requestclient, jsonoptions)!;
+                    requestHtmlPdf = JsonSerializer.Deserialize<RequestHtmlPdf<Tin>>(requestclient, GZipHelper.JsonOptions)!;
                 }
                 else
                 {
-                    requestHtmlPdf = Shared.Core.GZipHelper.DecompressRequest<Tin>(requestclient);
+                    requestHtmlPdf = GZipHelper.DecompressRequest<Tin>(requestclient);
                     LogMessage($"Decompress Request after {sw.Elapsed}");
                 }
-                requestHtmlPdf.Config ??= _pdfSrvBuilder.Config;
+                requestHtmlPdf.Config ??= PdfSrvBuilder.Config;
 
                 if (requestHtmlPdf.Timeout < 1)
                 {
@@ -100,8 +91,20 @@ namespace HtmlPdfPlus.Server.Core
             {
                 return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
             }
+            var isurl = Uri.IsWellFormedUriString(requestHtmlPdf.Html, UriKind.RelativeOrAbsolute);
+            return await RunServer(isurl,null,null,sw, requestHtmlPdf, PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress), token);
+        }
 
-            if (_inputparam is not null)
+        internal async Task<HtmlPdfResult<Tout>> RunServer(
+            bool isurl,
+            Func<string, Tin?, CancellationToken, Task<string>>? inputparam,
+            Func<byte[]?, Tin?, CancellationToken, Task<Tout>>? outputparam,
+            Stopwatch sw, 
+            RequestHtmlPdf<Tin> requestHtmlPdf,
+            bool disableCompress, 
+            CancellationToken token = default)
+        {
+            if (inputparam is not null)
             {
                 using var cts = new CancellationTokenSource();
                 cts.CancelAfter(requestHtmlPdf.Timeout);
@@ -110,8 +113,8 @@ namespace HtmlPdfPlus.Server.Core
                 {
                     var taskinput = Task.Run(async () =>
                     {
-                        requestHtmlPdf.ChangeHtml(await _inputparam(requestHtmlPdf.Html, requestHtmlPdf.InputParam, executeToken.Token),
-                            _pdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml));
+                        requestHtmlPdf.ChangeHtml(await inputparam(requestHtmlPdf.Html, requestHtmlPdf.InputParam, executeToken.Token),
+                            isurl || PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml));
                     }, executeToken.Token);
 
                     var completed = await Task.WhenAny(taskinput, Task.Delay(requestHtmlPdf.Timeout, executeToken.Token));
@@ -172,7 +175,7 @@ namespace HtmlPdfPlus.Server.Core
                 using var executeToken = CancellationTokenSource.CreateLinkedTokenSource(token, cts.Token);
                 try
                 {
-                    bytespdf = await GeneratePDF(requestHtmlPdf, reamaindtime, executeToken.Token);
+                    bytespdf = await GeneratePDF(isurl, requestHtmlPdf, reamaindtime, executeToken.Token);
                     if (bytespdf is null)
                     {
                         return new HtmlPdfResult<Tout>(false, true, sw.Elapsed, default, new InvalidOperationException("Not AvailableBuffer"));
@@ -191,7 +194,7 @@ namespace HtmlPdfPlus.Server.Core
                 }
             }
 
-            if (_outputparam is not null)
+            if (outputparam is not null)
             {
                 reamaindtime = requestHtmlPdf.Timeout - sw.ElapsedMilliseconds;
                 if (reamaindtime < 0)
@@ -206,10 +209,10 @@ namespace HtmlPdfPlus.Server.Core
                 {
                     var taskoutput = Task.Run(async () =>
                     {
-                        var aux = await _outputparam(bytespdf, requestHtmlPdf.InputParam, executeToken.Token);
+                        var aux = await outputparam(bytespdf, requestHtmlPdf.InputParam, executeToken.Token);
                         if (typeof(Tout) == typeof(byte[]))
                         {
-                            if (_pdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
+                            if (disableCompress)
                             {
                                 result = new HtmlPdfResult<Tout>(true, false, sw.Elapsed, aux, null);
                             }
@@ -272,7 +275,7 @@ namespace HtmlPdfPlus.Server.Core
                 return result!;
             }
             LogMessage($"End Convert Html to PDF from Server at {DateTime.Now} after {sw.Elapsed}");
-            if (_pdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
+            if (disableCompress)
             {
                 return new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout?)Convert.ChangeType(bytespdf, typeof(Tout)), null);
             }
@@ -280,22 +283,34 @@ namespace HtmlPdfPlus.Server.Core
             return new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout?)Convert.ChangeType(compresspdf, typeof(Tout)), null);
         }
 
-        private async Task<byte[]?> GeneratePDF(RequestHtmlPdf<Tin> request, long remaindtime, CancellationToken token)
+        private async Task<byte[]?> GeneratePDF(bool isurl, RequestHtmlPdf<Tin> request, long remaindtime, CancellationToken token)
         {
             IPage? page = null;
             byte[] resultpdf = [];
             try
             {
-                page = _pdfSrvBuilder!.Acquire(token);
+                page = PdfSrvBuilder!.Acquire(token);
                 if (page == null)
                 {
                     return null;
                 }
-                await page.SetContentAsync(request.Html, new PageSetContentOptions
+                if (isurl)
                 {
-                    Timeout = remaindtime,
-                    WaitUntil = WaitUntilState.DOMContentLoaded
-                });
+                    await page.GotoAsync(request.Html, new PageGotoOptions
+                    {
+                        Timeout = remaindtime,
+                        WaitUntil = WaitUntilState.DOMContentLoaded
+                    });
+
+                }
+                else
+                {
+                    await page.SetContentAsync(request.Html, new PageSetContentOptions
+                    {
+                        Timeout = remaindtime,
+                        WaitUntil = WaitUntilState.DOMContentLoaded
+                    });
+                }
                 var taskpdf = Task.Run(async () =>
                 {
                     resultpdf = await page.PdfAsync(new PagePdfOptions
@@ -340,7 +355,7 @@ namespace HtmlPdfPlus.Server.Core
             {
                 if (page is not null)
                 {
-                    await _pdfSrvBuilder!.RestoreAvailableBuffer(page!);
+                    await PdfSrvBuilder!.RestoreAvailableBuffer(page!);
                 }
             }
             return resultpdf;
@@ -359,25 +374,25 @@ namespace HtmlPdfPlus.Server.Core
 
         private void Cleanup()
         {
-            _pdfSrvBuilder?.Dispose();
+            PdfSrvBuilder?.Dispose();
         }
 
         private void LogMessage(string message)
         {
-            if (_pdfSrvBuilder is null || _pdfSrvBuilder.Log is null || (!_pdfSrvBuilder.Log?.IsEnabled(_pdfSrvBuilder.LevelLog) ?? false)) return;
+            if (PdfSrvBuilder is null || PdfSrvBuilder.Log is null || (!PdfSrvBuilder.Log?.IsEnabled(PdfSrvBuilder.LevelLog) ?? false)) return;
 
-            switch (_pdfSrvBuilder.LevelLog)
+            switch (PdfSrvBuilder.LevelLog)
             {
                 case LogLevel.None:
                     return;
                 case LogLevel.Trace:
-                    logMessageForTrc(_pdfSrvBuilder.Log!, _sourcealias, message, null);
+                    logMessageForTrc(PdfSrvBuilder.Log!, SourceAlias, message, null);
                     break;
                 case LogLevel.Information:
-                    logMessageForInf(_pdfSrvBuilder.Log!, _sourcealias, message, null);
+                    logMessageForInf(PdfSrvBuilder.Log!, SourceAlias, message, null);
                     break;
                 case LogLevel.Debug:
-                    logMessageForDbg(_pdfSrvBuilder.Log!, _sourcealias, message, null);
+                    logMessageForDbg(PdfSrvBuilder.Log!, SourceAlias, message, null);
                     break;
             }
         }

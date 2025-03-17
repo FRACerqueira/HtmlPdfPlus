@@ -4,7 +4,6 @@
 // https://github.com/FRACerqueira/HtmlPdfPlus
 // ***************************************************************************************
 
-using HtmlPdfPlus;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -32,14 +31,11 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerV2
 
             Console.WriteLine($"HtmlPdfServerPlus ready");
 
-            //create a request with default configuration and without compression to the server 
-            //when run in the same context, not Compress is fast because it is not required to transfer data over the network
-            //change compress to false to uncompression (recommended)
-            //if you want to disable compression, uncomment the line 80!
-            var request = RequestHtmlPdf.Create(HtmlSample(), compress: true);
-
             //Performs conversion on the server
-            var pdfresult = await PDFserver.Run(request, applifetime.ApplicationStopping);
+            var pdfresult = await PDFserver
+                .Source()
+                .FromHtml(HtmlSample(),5000)
+                .Run(applifetime.ApplicationStopping);
 
             Console.WriteLine($"HtmlPdfServer IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 
@@ -47,13 +43,34 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerV2
             if (pdfresult.IsSuccess)
             {
                 var fullpath = Path.Combine(PathToSamples, "html2pdfHtml.pdf");
-                await File.WriteAllBytesAsync(fullpath, pdfresult.DecompressBytes()!);
+                await File.WriteAllBytesAsync(fullpath, pdfresult.OutputData!);
                 Console.WriteLine($"File PDF generate at {fullpath}");
             }
             else
             {
                 Console.WriteLine($"HtmlPdfServer error: {pdfresult.Error}");
             }
+
+            //Performs conversion on the server
+             pdfresult = await PDFserver
+                .Source()
+                .FromUrl(new Uri("https://github.com/FRACerqueira/HtmlPdfPlus"), 5000)
+                .Run(applifetime.ApplicationStopping);
+
+            Console.WriteLine($"HtmlPdfServer IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
+
+            //performs writing to file after performing conversion
+            if (pdfresult.IsSuccess)
+            {
+                var fullpath = Path.Combine(PathToSamples, "HtmlPdfPlus.pdf");
+                await File.WriteAllBytesAsync(fullpath, pdfresult.OutputData!);
+                Console.WriteLine($"File PDF generate at {fullpath}");
+            }
+            else
+            {
+                Console.WriteLine($"HtmlPdfServer error: {pdfresult.Error}");
+            }
+
             Console.WriteLine("Press any key");
             Console.ReadKey();
 
@@ -72,10 +89,6 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerV2
                 {
                     services.AddHtmlPdfService((cfg) =>
                     {
-                        //when run in the same context, not Compress is fast because it is not required to transfer data over the network
-                        //Remove the comment to disable compression (recommended)
-                        //if you want to disable compression,change compress to false at line 41
-                        //cfg.DisableFeatures(DisableOptionsHtmlToPdf.DisableCompress);
                         cfg.Logger(LogLevel.Debug, "MyPDFServer")
                            .DefaultConfig((page) =>
                            {

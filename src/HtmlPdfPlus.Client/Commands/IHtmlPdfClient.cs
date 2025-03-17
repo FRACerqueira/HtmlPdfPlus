@@ -41,12 +41,19 @@ namespace HtmlPdfPlus
         IHtmlPdfClient Logger(ILogger? logger, LogLevel logLevel = LogLevel.Debug);
 
         /// <summary>
-        /// Register HTML template to be executed by the server.
+        /// Register HTML to be executed by the server.
         /// </summary>
         /// <param name="html">The HTML content.</param>
         /// <returns><see cref="IHtmlPdfClient"/> instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the HTML content is null.</exception>
         IHtmlPdfClient FromHtml(string html);
+
+        /// <summary>
+        /// ;Register Page Url to be executed by the server.
+        /// </summary>
+        /// <param name="value">The url</param>
+        /// <returns><see cref="IHtmlPdfClient"/> instance.</returns>
+        IHtmlPdfClient FromUrl(Uri value);
 
         /// <summary>
         /// Execute the Razor HTML template with the data and register the HTML.
@@ -62,7 +69,7 @@ namespace HtmlPdfPlus
         /// Execute parse validation of the HTML before sending it to the server.
         /// </summary>
         /// <param name="validate">Execute validation.Default <c>false</c></param>
-        /// <param name="whenhaserror">Action when has errror. The action input is VisualStudio format error message file(startline[-endline]?,startcol[-endcol]?):[subcategory] category [errorcode]: message</param>
+        /// <param name="whenhaserror">Action when has errror. The action input is VisualStudio string format error message </param>
         /// <returns><see cref="IHtmlPdfClient"/> instance.</returns>
         IHtmlPdfClient HtmlParser(bool validate, Action<string> whenhaserror);
 

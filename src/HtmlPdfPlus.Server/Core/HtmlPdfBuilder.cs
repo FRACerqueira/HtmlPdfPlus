@@ -9,7 +9,6 @@ using HtmlPdfPlus.Shared.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 using NUglify;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace HtmlPdfPlus.Server.Core
 {

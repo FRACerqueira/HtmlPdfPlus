@@ -17,7 +17,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         public void BeforePDF_ThrowsArgumentNullException_WhenInputParamIsNull()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").BeforePDF(null));
+            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").Source(null).BeforePDF(null));
         }
 
 
@@ -25,7 +25,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         public void AfterPDF_ThrowsArgumentNullException_WhenInputParamIsNull()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").AfterPDF(null));
+            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").Source(null).AfterPDF(null));
         }
 
         [Fact]
@@ -71,7 +71,8 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             // Arrange
             using var objbuilder = new HtmlPdfBuilder(null);
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentException>(async () => await new HtmlPdfServer<string, string>(objbuilder, "Teste").Run("teste", CancellationToken.None));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await new HtmlPdfServer<string, string>(objbuilder, "Teste").Run(
+                new RequestHtmlPdf<string>("","Teste", new PdfPageConfig(), 10000).ToStringCompress(), CancellationToken.None));
         }
 
         [Fact]
@@ -97,8 +98,9 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 
             // Act & Assert
             var result = await new HtmlPdfServer<string, byte[]>(objbuilder, "Server")
+                .Request(requestHtmlPdf)
                 .BeforePDF((_, _, _) => throw new InvalidTimeZoneException("Test"))
-                .Run(requestHtmlPdf, CancellationToken.None);
+                .Run(CancellationToken.None);
             Assert.IsType<InvalidTimeZoneException>(result.Error);
             Assert.False(result.IsSuccess);
             Assert.True(result.ElapsedTime.TotalMilliseconds > 0);
@@ -148,9 +150,10 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 
             // Act & Assert
             var result = await new HtmlPdfServer<object, string>(objbuilder, "Server")
+                .Request(requestHtmlPdf)
                 .BeforePDF((_,_,_) => Task.FromResult<string>("<h3>Test</h3>"))
                 .AfterPDF((_,_,_) => Task.FromResult<string>("Test"))
-                .Run(requestHtmlPdf, CancellationToken.None);
+                .Run(CancellationToken.None);
             Assert.True(result.IsSuccess);
             Assert.Null(result.Error);
             Assert.True(result.ElapsedTime.TotalMilliseconds > 0);

@@ -6,7 +6,7 @@
 
 using RazorEngineCore;
 
-namespace HtmlPdfPlus.Client.Core
+namespace HtmlPdfPlus.Shared.Core
 {
     /// <summary>
     /// Razor Helpper
@@ -14,7 +14,7 @@ namespace HtmlPdfPlus.Client.Core
     internal sealed class RazorHelpper
     {
         private static readonly RazorEngine _engineRazor = new();
-         /// <summary>
+        /// <summary>
         /// Compiles and runs a Razor template with the specified model.
         /// </summary>
         /// <typeparam name="T">The type of the model.</typeparam>

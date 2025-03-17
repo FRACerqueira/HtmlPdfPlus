@@ -13,7 +13,7 @@ public IHtmlPdfClient HtmlParser(bool validate, Action<string> whenhaserror)
 | parameter | description |
 | --- | --- |
 | validate | Execute validation.Default `false` |
-| whenhaserror | Action when has errror. The action input is VisualStudio format error message file(startline[-endline]?,startcol[-endcol]?):[subcategory] category [errorcode]: message |
+| whenhaserror | Action when has errror. The action input is VisualStudio string format error message |
 
 ### Return Value
 

@@ -42,10 +42,24 @@ Features
     - AfterPDF : Save file, Send to cloud, etc
 - Disable features to improve/ balance performance (minify, compress and log)
 
-What's new in the latest version
---------------------------------
+What's new in the latest version 
+================================
 
-- Initial version
+- v0.3.0-beta (latest version)
+    - Added FromUrl(Uri value) command to client-side mode
+    - Fixed bug in server mode for multi thread safe when there is parameter customization and/or no client mode sending.
+        - Moved the BeforePDF(Func<string, TIn?, CancellationToken, Task<string>> inputParam) command to the execution context.
+        - Moved the AfterPDF(Func<byte[]?, TIn?, CancellationToken, Task<TOut>> outputParam) command to the execution context.
+        - Added command Source(TIn? inputparam = default) to transfer input parameter for server execution context and custom actions and html source.
+        - Added Request(string request Client) command to pass the request client data to the server execution context for custom actions and HTML source.
+        - Simplified execution commands for server side with execution context with fluid interface comands :
+            -  Removed static class RequestHtmlPdf
+            -  Added command FromHtml(string html, int converttimeout = 30000, bool minify = true)
+            -  Added command FromUrl(Uri value, int converttimeout = 30000)
+            -  Added command FromRazor\<T\>(string template, T model, int converttimeout = 30000, bool minify = true)
+         
+- v0.2.0-beta
+    - Initial version
 
 Prerequisites
 =============
@@ -176,8 +190,6 @@ Host.CreateDefaultBuilder(args)
     {
         services.AddHtmlPdfService((cfg) =>
         {
-            //when run in the same context, not Compress is fast because it is not required to transfer data over the network
-            cfg.DisableFeatures(DisableOptionsHtmlToPdf.DisableCompress);
                .Logger(LogLevel.Debug, "MyPDFServer")
                .DefaultConfig((page) =>
                {
@@ -191,12 +203,11 @@ Host.CreateDefaultBuilder(args)
 //instance of Html to Pdf Engine and Warmup HtmlPdfServerPlus
 var PDFserver = HostApp!.Services.GetHtmlPdfService();
 
-//create a request with default configuration and without compression to the server 
-//when run in the same context, not Compress is fast because it is not required to transfer data over the network
-var request = RequestHtmlPdf.Create(HtmlSample(), compress: false);
-
-//Performs conversion on the server
-var pdfresult = await PDFserver.Run(request, applifetime.ApplicationStopping);
+//Performs conversion and custom operations on the server
+var pdfresult = await PDFserver
+       .Source()
+       .FromHtml(HtmlSample(),5000)
+       .Run(applifetime.ApplicationStopping);
 
 //performs writing to file after performing conversion
 if (pdfresult.IsSuccess)
