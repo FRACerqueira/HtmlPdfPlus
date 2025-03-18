@@ -87,6 +87,20 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
 ## Installing
 [**Top**](#table-of-contents)
 
+### Installation Steps for Playwright (Windows)
+
+```
+dotnet tool update --global PowerShell
+dotnet tool install --global Microsoft.Playwright.CLI
+playwright.exe install --with-deps
+```
+
+_Note: Make sure that the path to the executable is mapped to: C:\Users\[YourU)ser]\.dotnet\tools._
+
+_If it is not, run it directly via the path C:\Users\[YourUser]\.dotnet\tools\playwright.exe install --with-deps__
+
+### Installation Steps for HtmlPdfPlus
+
 **Client library** can be installed via NuGet or line command. 
 ```
 Install-Package HtmlPdfPlus.Client [-pre]
