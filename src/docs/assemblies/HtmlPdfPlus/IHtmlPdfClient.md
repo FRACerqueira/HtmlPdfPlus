@@ -16,7 +16,7 @@ public interface IHtmlPdfClient
 | --- | --- |
 | [FromHtml](IHtmlPdfClient/FromHtml.md)(…) | Register HTML to be executed by the server. |
 | [FromRazor&lt;T&gt;](IHtmlPdfClient/FromRazor.md)(…) | Execute the Razor HTML template with the data and register the HTML. |
-| [FromUrl](IHtmlPdfClient/FromUrl.md)(…) | ;Register Page Url to be executed by the server. |
+| [FromUrl](IHtmlPdfClient/FromUrl.md)(…) | Register Page Url to be executed by the server. |
 | [HtmlParser](IHtmlPdfClient/HtmlParser.md)(…) | Execute parse validation of the HTML before sending it to the server. |
 | [Logger](IHtmlPdfClient/Logger.md)(…) | Set Logger integration. |
 | [PageConfig](IHtmlPdfClient/PageConfig.md)(…) | Set PDF page configuration. |

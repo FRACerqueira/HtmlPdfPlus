@@ -59,9 +59,9 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
     - AfterPDF : Save file, Send to cloud, etc
 - Disable features to improve/ balance performance (minify, compress and log)
 
-#### What's new in the latest version 
+### What's new in the latest version 
 
-- v0.3.0-beta (latest version)
+- **v0.3.0-beta (latest version)**
     - Added FromUrl(Uri value) command to client-side mode
     - Fixed bug in server mode for multi thread safe when there is parameter customization and/or no client mode sending.
         - Moved the BeforePDF(Func<string, TIn?, CancellationToken, Task<string>> inputParam) command to the execution context.
@@ -73,7 +73,7 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
             -  Added command FromHtml(string html, int converttimeout = 30000, bool minify = true)
             -  Added command FromUrl(Uri value, int converttimeout = 30000)
             -  Added command FromRazor\<T\>(string template, T model, int converttimeout = 30000, bool minify = true)
-- v0.2.0-beta
+- **v0.2.0-beta**
     - Initial version
 
 ## Prerequisites
@@ -86,6 +86,20 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
 
 ## Installing
 [**Top**](#table-of-contents)
+
+### Installation Steps for Playwright (Windows)
+
+```
+dotnet tool update --global PowerShell
+dotnet tool install --global Microsoft.Playwright.CLI
+playwright.exe install --with-deps
+```
+
+_Note: Make sure that the path to the executable is mapped to: C:\Users\\[login]\\.dotnet\tools._
+
+_If it is not, run it directly via the path C:\Users\\[login]\\.dotnet\tools\playwright.exe install --with-deps_
+
+### Installation Steps for HtmlPdfPlus
 
 **Client library** can be installed via NuGet or line command. 
 ```

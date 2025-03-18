@@ -49,7 +49,7 @@ namespace HtmlPdfPlus
         IHtmlPdfClient FromHtml(string html);
 
         /// <summary>
-        /// ;Register Page Url to be executed by the server.
+        /// Register Page Url to be executed by the server.
         /// </summary>
         /// <param name="value">The url</param>
         /// <returns><see cref="IHtmlPdfClient"/> instance.</returns>

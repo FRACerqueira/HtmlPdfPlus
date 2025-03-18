@@ -54,6 +54,6 @@
 		</AssemblyAttribute>
 		<PackageReference Include="RazorEngineCore" Version="2024.4.1" />
 		<PackageReference Include="NUglify" Version="1.21.13" />
-		<PackageReference Include="System.Text.Json" Version="9.0.3" />
+		<PackageReference Include="System.Text.Json" Version="[8.0.5,10)"  />
 	</ItemGroup>
 </Project>

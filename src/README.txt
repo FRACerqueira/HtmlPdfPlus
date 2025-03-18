@@ -75,8 +75,8 @@ dotnet tool update --global PowerShell
 dotnet tool install --global Microsoft.Playwright.CLI
 playwright.exe install --with-deps
 
-Note: Make sure that the path to the executable is mapped to: C:\Users\[YourU)ser]\.dotnet\tools.
-If it is not, run it directly via the path C:\Users\[YourUser]\.dotnet\tools\playwright.exe install --with-deps
+Note: Make sure that the path to the executable is mapped to: C:\Users\[login]\.dotnet\tools.
+If it is not, run it directly via the path C:\Users\[login]\.dotnet\tools\playwright.exe install --with-deps
 
 Usage
 =====

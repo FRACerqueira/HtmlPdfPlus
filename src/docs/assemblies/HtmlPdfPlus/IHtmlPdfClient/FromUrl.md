@@ -4,7 +4,7 @@
 </br>
 
 
-#### ;Register Page Url to be executed by the server.
+#### Register Page Url to be executed by the server.
 
 ```csharp
 public IHtmlPdfClient FromUrl(Uri value)
