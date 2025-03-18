@@ -14,19 +14,19 @@ namespace HtmlPdfPlus
     public interface IHtmlPdfServer<TIn, TOut> : IDisposable
     {
         /// <summary>
-        /// Transfer context for <see cref="IHtmlPdfServerContext{TIn, TOut}"/> server context  with input data,and custom actions.
+        /// Transfer context scope for <see cref="IHtmlPdfServerContext{TIn, TOut}"/> server with input data,and custom actions.
         /// <param name="inputparam">Input data, for customizing HTML before converting to PDF on the server.</param>
         /// </summary>
         /// <returns>An instance of <see cref="IHtmlPdfServerContext{TIn, TOut}"/>.</returns>
-        IHtmlPdfServerContext<TIn, TOut> Source(TIn? inputparam = default);
+        IHtmlPdfServerContext<TIn, TOut> ScopeData(TIn? inputparam = default);
 
 
         /// <summary>
-        /// Transfer request client for <see cref="IHtmlPdfServerContext{TIn, TOut}"/> server context for custom actions 
+        /// Transfer request client for <see cref="IHtmlPdfServerContext{TIn, TOut}"/> server context scope for custom actions 
         /// </summary>
         /// <param name="requestClient">The compressed data from the request HtmlPdfCliPlus client.</param>
         /// <returns>An instance of <see cref="IHtmlPdfServerContext{TIn, TOut}"/>.</returns>
-        IHtmlPdfServerContext<TIn, TOut> Request(string requestClient);
+        IHtmlPdfServerContext<TIn, TOut> ScopeRequest(string requestClient);
 
         /// <summary>
         /// Perform HTML to PDF conversion from the request HtmlPdfCliPlus client.

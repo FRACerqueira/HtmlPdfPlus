@@ -61,7 +61,12 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
 
 ### What's new in the latest version 
 
-- **v0.3.0-beta (latest version)**
+- **v0.4.0-beta (latest version)**
+    - Relaxation of Package Reference for .net8 to .net9
+    - Renamed the 'Source' command to 'Scope'
+    - Renamed the 'Request' command to 'ScopeRequest'
+
+- **v0.3.0-beta**
     - Added FromUrl(Uri value) command to client-side mode
     - Fixed bug in server mode for multi thread safe when there is parameter customization and/or no client mode sending.
         - Moved the BeforePDF(Func<string, TIn?, CancellationToken, Task<string>> inputParam) command to the execution context.
@@ -73,6 +78,7 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
             -  Added command FromHtml(string html, int converttimeout = 30000, bool minify = true)
             -  Added command FromUrl(Uri value, int converttimeout = 30000)
             -  Added command FromRazor\<T\>(string template, T model, int converttimeout = 30000, bool minify = true)
+
 - **v0.2.0-beta**
     - Initial version
 
@@ -284,7 +290,7 @@ var PDFserver = HostApp!.Services.GetHtmlPdfService();
 
 //Performs conversion and custom operations on the server
 var pdfresult = await PDFserver
-       .Source()
+       .ScopeData()
        .FromHtml(HtmlSample(),5000)
        .Run(applifetime.ApplicationStopping);
 

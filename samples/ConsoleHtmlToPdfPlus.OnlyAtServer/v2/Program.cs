@@ -33,7 +33,7 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerV2
 
             //Performs conversion on the server
             var pdfresult = await PDFserver
-                .Source()
+                .ScopeData()
                 .FromHtml(HtmlSample(),5000)
                 .Run(applifetime.ApplicationStopping);
 
@@ -53,7 +53,7 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerV2
 
             //Performs conversion on the server
              pdfresult = await PDFserver
-                .Source()
+                .ScopeData()
                 .FromUrl(new Uri("https://github.com/FRACerqueira/HtmlPdfPlus"), 5000)
                 .Run(applifetime.ApplicationStopping);
 

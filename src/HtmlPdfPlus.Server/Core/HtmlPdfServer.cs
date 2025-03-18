@@ -41,13 +41,13 @@ namespace HtmlPdfPlus.Server.Core
 
 
         /// <inheritdoc />
-        public IHtmlPdfServerContext<Tin, Tout> Source(Tin? inputparam)
+        public IHtmlPdfServerContext<Tin, Tout> ScopeData(Tin? inputparam)
         {
             return new HtmlPdfServerContext<Tin, Tout>(this, inputparam, null);
         }
 
         /// <inheritdoc />
-        public IHtmlPdfServerContext<Tin, Tout> Request(string requestClient)
+        public IHtmlPdfServerContext<Tin, Tout> ScopeRequest(string requestClient)
         {
             return new HtmlPdfServerContext<Tin, Tout>(this, default, requestClient);
         }

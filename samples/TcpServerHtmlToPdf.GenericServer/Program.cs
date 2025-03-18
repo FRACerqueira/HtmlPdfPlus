@@ -114,7 +114,7 @@ namespace TcpServerHtmlToPdf.GenericServer
             var request = Encoding.UTF8.GetString(e.Data.Array!, 0, e.Data.Count);
 
             var aux = PDFserver
-                .Request(request)
+                .ScopeRequest(request)
                 .Run(CancellationToken.None).Result;
 
             var sendata = JsonSerializer.Serialize<HtmlPdfResult<byte[]>>(aux);

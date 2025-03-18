@@ -17,7 +17,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         public void BeforePDF_ThrowsArgumentNullException_WhenInputParamIsNull()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").Source(null).BeforePDF(null));
+            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").ScopeData(null).BeforePDF(null));
         }
 
 
@@ -25,7 +25,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         public void AfterPDF_ThrowsArgumentNullException_WhenInputParamIsNull()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").Source(null).AfterPDF(null));
+            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").ScopeData(null).AfterPDF(null));
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 
             // Act & Assert
             var result = await new HtmlPdfServer<string, byte[]>(objbuilder, "Server")
-                .Request(requestHtmlPdf)
+                .ScopeRequest(requestHtmlPdf)
                 .BeforePDF((_, _, _) => throw new InvalidTimeZoneException("Test"))
                 .Run(CancellationToken.None);
             Assert.IsType<InvalidTimeZoneException>(result.Error);
@@ -150,7 +150,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 
             // Act & Assert
             var result = await new HtmlPdfServer<object, string>(objbuilder, "Server")
-                .Request(requestHtmlPdf)
+                .ScopeRequest(requestHtmlPdf)
                 .BeforePDF((_,_,_) => Task.FromResult<string>("<h3>Test</h3>"))
                 .AfterPDF((_,_,_) => Task.FromResult<string>("Test"))
                 .Run(CancellationToken.None);

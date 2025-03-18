@@ -33,7 +33,7 @@ app.UseHttpsRedirection();
 app.MapPost("/SavePdf", async ([FromServices] IHtmlPdfServer<DataSavePDF,string> PDFserver, [FromBody] string requestclienthtmltopdf, CancellationToken token) =>
 {
     return await PDFserver
-        .Request(requestclienthtmltopdf)
+        .ScopeRequest(requestclienthtmltopdf)
         .BeforePDF( (html,inputparam, _) =>
         {
             if (inputparam is null)
