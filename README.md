@@ -61,7 +61,7 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
 
 ### What's new in the latest version 
 
-- **v0.4.0-beta (latest version)**
+- **v0.4.0-rc (latest version)**
     - Relaxation of Package Reference for .net8 to .net9
     - Renamed the 'Source' command to 'Scope'
     - Renamed the 'Request' command to 'ScopeRequest'
