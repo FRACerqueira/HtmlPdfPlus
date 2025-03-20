@@ -5,6 +5,7 @@
 // ***************************************************************************************
 
 using System.Text;
+using System.Text.Json;
 using HtmlPdfPlus;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,9 +21,9 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
         private static readonly SimpleTcpClient ClientTcp = new("127.0.0.1:9000");
         private static readonly SemaphoreSlim SemaphoreSlim = new(1);
         private static readonly List<byte> ResponseTcp = [];
-        private static string? ResultTcp= null;
+        private static byte[]? ResultTcp= null;
         private static readonly object  Lockdatareceiver = new();
-        private static int TimeoutWaitResponse = 30000;
+        private static readonly int TimeoutWaitResponse = 30000;
 
         public static async Task Main(string[] args)
         {
@@ -62,7 +63,7 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
                              })
                              .Logger(HostApp.Services.GetService<ILogger<Program>>())
                              .FromHtml(HtmlSample())
-                             .Timeout(5000)
+                             .Timeout(500000)
                              .Run(SendToTcpServer, applifetime.ApplicationStopping);
 
             Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
@@ -90,7 +91,8 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
                 ResponseTcp.AddRange(e.Data.Array!);
                 if (ResponseTcp[^1] == 0) //token end message
                 {
-                    ResultTcp = Encoding.UTF8.GetString([.. ResponseTcp], 0, ResponseTcp.Count - 1);
+                    ResponseTcp.RemoveAt(ResponseTcp.Count - 1);
+                    ResultTcp = [.. ResponseTcp];
                     ResponseTcp.Clear();
                     SemaphoreSlim.Release();
                 }
@@ -107,7 +109,7 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
             Console.WriteLine($"*** Server {e.IpPort} connected");
         }
 
-        private static async Task<HtmlPdfResult<byte[]>> SendToTcpServer(string requestdata, CancellationToken token)
+        private static async Task<HtmlPdfResult<byte[]>> SendToTcpServer(byte[] requestdata, CancellationToken token)
         {
             // This code mybe not efficient, just to demonstrate the functionality of HtmltoPdfPlus
             try
@@ -121,9 +123,9 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
                 cts.CancelAfter(TimeoutWaitResponse);
                 //wait response to tcpserver (trigger by DataReceivedTcp release enter Semaphore)
                 await SemaphoreSlim.WaitAsync(TimeoutWaitResponse, token);
-                return ResultTcp!.ToHtmlPdfResult();
+                var aux = JsonSerializer.Deserialize<HtmlPdfResult<byte[]>>(Encoding.UTF8.GetString(ResultTcp!))!;
+                return aux.DecompressOutputData();
             }
-
             catch (Exception ex)
             {
                 return new HtmlPdfResult<byte[]>(false, false, TimeSpan.Zero, [], ex);

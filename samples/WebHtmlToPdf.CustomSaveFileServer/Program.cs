@@ -30,10 +30,11 @@ app.MapOpenApi();
 
 app.UseHttpsRedirection();
 
-app.MapPost("/SavePdf", async ([FromServices] IHtmlPdfServer<DataSavePDF,string> PDFserver, [FromBody] string requestclienthtmltopdf, CancellationToken token) =>
+app.MapPost("/SavePdf", async ([FromServices] IHtmlPdfServer<DataSavePDF,string> PDFserver, [FromBody] Stream requestclienthtmltopdf, CancellationToken token) =>
 {
+    var data = await requestclienthtmltopdf.ReadToBytesAsync();
     return await PDFserver
-        .ScopeRequest(requestclienthtmltopdf)
+        .ScopeRequest(data)
         .BeforePDF( (html,inputparam, _) =>
         {
             if (inputparam is null)

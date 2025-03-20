@@ -89,7 +89,8 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerV2
                 {
                     services.AddHtmlPdfService((cfg) =>
                     {
-                        cfg.Logger(LogLevel.Debug, "MyPDFServer")
+                        cfg.DisableFeatures(HtmlPdfPlus.DisableOptionsHtmlToPdf.DisableCompress)
+                           .Logger(LogLevel.Debug, "MyPDFServer")
                            .DefaultConfig((page) =>
                            {
                                page.DisplayHeaderFooter(true)

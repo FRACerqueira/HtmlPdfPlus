@@ -24,18 +24,18 @@ namespace HtmlPdfPlus
         /// <summary>
         /// Transfer request client for <see cref="IHtmlPdfServerContext{TIn, TOut}"/> server context scope for custom actions 
         /// </summary>
-        /// <param name="requestClient">The compressed data from the request HtmlPdfCliPlus client.</param>
+        /// <param name="requestClient">The compressed byte[] data from the request HtmlPdfCliPlus client.</param>
         /// <returns>An instance of <see cref="IHtmlPdfServerContext{TIn, TOut}"/>.</returns>
-        IHtmlPdfServerContext<TIn, TOut> ScopeRequest(string requestClient);
+        IHtmlPdfServerContext<TIn, TOut> ScopeRequest(byte[] requestClient);
 
         /// <summary>
         /// Perform HTML to PDF conversion from the request HtmlPdfCliPlus client.
         /// </summary>
-        /// <param name="requestClient">The compressed data from the request HtmlPdfCliPlus client.</param>
+        /// <param name="requestClient">The compressed byte[] data from the request HtmlPdfCliPlus client.</param>
         /// <param name="token">The <see cref="CancellationToken"/> to perform the conversion.</param>
         /// <returns>An instance of <see cref="HtmlPdfResult{TOut}"/>.</returns>
         /// <exception cref="ArgumentException">Thrown when <typeparamref name="TOut"/> is invalid.</exception>
         /// <exception cref="ArgumentException">Thrown when <paramref name="requestClient"/> is invalid.</exception>
-        Task<HtmlPdfResult<TOut>> Run(string requestClient, CancellationToken token = default);
+        Task<HtmlPdfResult<TOut>> Run(byte[] requestClient, CancellationToken token = default);
     }
 }

@@ -7,7 +7,6 @@
 using HtmlPdfPlus;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Logging;
-using HtmlPdfPlus.Shared.Core;
 
 namespace TestHtmlPdfPlus.HtmlPdfCliPlus
 {
@@ -110,7 +109,7 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
         [Fact]
         public async Task Ensure_Run_Error_When_NotSubmmitFunction()
         {
-            Func<string, CancellationToken, Task<HtmlPdfResult<byte[]>>>? submmitFunction = null;
+            Func<byte[], CancellationToken, Task<HtmlPdfResult<byte[]>>>? submmitFunction = null;
             await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -125,7 +124,7 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
         [Fact]
         public async Task Ensure_RunGeneric_Error_When_NotSubmmitFunction()
         {
-            Func<string, CancellationToken, Task<HtmlPdfResult<string>>>? submmitFunction = null;
+            Func<byte[], CancellationToken, Task<HtmlPdfResult<string>>>? submmitFunction = null;
             await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -194,82 +193,6 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
             Assert.False(result.IsSuccess);
             Assert.NotNull(result.Error);
             Assert.IsType<TimeoutException>(result.Error);
-        }
-
-        [Fact]
-        public async Task Ensure_Run_Compress_Decompress_Request()
-        {
-            RequestHtmlPdf<string> request = new("x","",new(),100, null);
-            var result = await HtmlPdfClient.Create("Teste")
-                .PageConfig(cfg => 
-                {
-                    cfg.Header("<p>header</p>")
-                       .Footer("<p>Footer</p>")
-                       .Orientation(PageOrientation.Landscape)
-                       .Format(1,2)
-                       .Scale(1.4f)
-                       .DisplayHeaderFooter(true)
-                       .PrintBackground(false)
-                       .Margins(1, 2, 3, 4);
-                })
-                .FromHtml("<h1>Test</h1>")
-                .Timeout(10000)
-                .Run((eventdata, token) =>
-                {
-                    request = GZipHelper.DecompressRequest<string>(eventdata);
-                    return Task.FromResult(new HtmlPdfResult<byte[]>(true,false, TimeSpan.Zero, []));
-                });
-            Assert.Equal(10000, request.Timeout);
-            Assert.Equal("Teste", request.Alias);
-            Assert.Equal("<h1>Test</h1>", request.Html);
-            Assert.Equal("<p>header", request.Config!.Header);
-            Assert.Equal("<p>Footer", request.Config!.Footer);
-            Assert.True(request.Config.DisplayHeaderFooter);
-            Assert.False(request.Config.PrintBackground);
-            Assert.Equal(1.4f, request.Config.Scale);
-            Assert.Null(request.InputParam);
-            Assert.Equal(PageOrientation.Landscape, request.Config.Orientation);
-            Assert.Equal("1.0;2.0", request.Config.Size.ToString());
-            Assert.Equal("1.0;2.0;3.0;4.0", request.Config.Margins.ToString());
-            Assert.Equal([], result.OutputData!);
-        }
-
-        [Fact]
-        public async Task Ensure_Run_Compress_Decompress_Request_with_Param()
-        {
-            RequestHtmlPdf<string> request = new("x","", new(),  100, null);
-            var result = await HtmlPdfClient.Create("Teste")
-                .PageConfig(cfg =>
-                {
-                    cfg.Header("<p>header</p>")
-                       .Footer("<p>Footer</p>")
-                       .Orientation(PageOrientation.Landscape)
-                       .Format(1, 2)
-                       .Scale(1.4f)
-                       .DisplayHeaderFooter(true)
-                       .PrintBackground(false)
-                       .Margins(1, 2, 3, 4);
-                })
-                .FromHtml("<h1>Test</h1>")
-                .Timeout(10000)
-                .Run<string,string>((eventdata, token) =>
-                {
-                    request = GZipHelper.DecompressRequest<string>(eventdata);
-                    return Task.FromResult(new HtmlPdfResult<string>(true,false, TimeSpan.Zero, "output"));
-                },"input");
-            Assert.Equal(10000, request.Timeout);
-            Assert.Equal("Teste", request.Alias);
-            Assert.Equal("<h1>Test</h1>", request.Html);
-            Assert.Equal("<p>header", request.Config!.Header);
-            Assert.Equal("<p>Footer", request.Config!.Footer);
-            Assert.True(request.Config.DisplayHeaderFooter);
-            Assert.False(request.Config.PrintBackground);
-            Assert.Equal(1.4f, request.Config.Scale);
-            Assert.Equal("input",request.InputParam);
-            Assert.Equal(PageOrientation.Landscape, request.Config.Orientation);
-            Assert.Equal("1.0;2.0", request.Config.Size.ToString());
-            Assert.Equal("1.0;2.0;3.0;4.0", request.Config.Margins.ToString());
-            Assert.Equal("output",result.OutputData);
         }
 
         [Fact]

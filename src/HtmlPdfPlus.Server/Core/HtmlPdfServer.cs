@@ -6,6 +6,7 @@
 
 using System.Diagnostics;
 using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using HtmlPdfPlus.Shared.Core;
 using Microsoft.Extensions.Logging;
@@ -47,15 +48,15 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         /// <inheritdoc />
-        public IHtmlPdfServerContext<Tin, Tout> ScopeRequest(string requestClient)
+        public IHtmlPdfServerContext<Tin, Tout> ScopeRequest(byte[] requestClient)
         {
             return new HtmlPdfServerContext<Tin, Tout>(this, default, requestClient);
         }
 
         /// <inheritdoc />
-        public async Task<HtmlPdfResult<Tout>> Run(string requestclient, CancellationToken token = default)
+        public async Task<HtmlPdfResult<Tout>> Run(byte[] requestclient, CancellationToken token = default)
         {
-            if (string.IsNullOrEmpty(requestclient))
+            if (requestclient is null || requestclient.Length ==0)
             {
                 throw new ArgumentNullException(nameof(requestclient), "request client is null or empty");
             }
@@ -63,15 +64,17 @@ namespace HtmlPdfPlus.Server.Core
             RequestHtmlPdf<Tin> requestHtmlPdf;
             try
             {
+                string data;
                 if (PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
                 {
-                    requestHtmlPdf = JsonSerializer.Deserialize<RequestHtmlPdf<Tin>>(requestclient, GZipHelper.JsonOptions)!;
+                    data = Encoding.UTF8.GetString(requestclient);
                 }
                 else
                 {
-                    requestHtmlPdf = GZipHelper.DecompressRequest<Tin>(requestclient);
+                    data = Encoding.UTF8.GetString(await GZipHelper.DecompressAsync(requestclient,token));
                     LogMessage($"Decompress Request after {sw.Elapsed}");
                 }
+                requestHtmlPdf = JsonSerializer.Deserialize<RequestHtmlPdf<Tin>>(data, GZipHelper.JsonOptions)!;
                 requestHtmlPdf.Config ??= PdfSrvBuilder.Config;
 
                 if (requestHtmlPdf.Timeout < 1)
@@ -189,7 +192,197 @@ namespace HtmlPdfPlus.Server.Core
                 catch (Exception ex)
                 {
                     cts.Cancel(); // cancel pending task  
-                    LogMessage($"Error Generate PDF from serverless browser after {sw.Elapsed} : {ex}");
+                    LogMessage($"Error Generate PDF from " +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"" +
+                        $"browser after {sw.Elapsed} : {ex}");
                     return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
                 }
             }
@@ -212,16 +405,14 @@ namespace HtmlPdfPlus.Server.Core
                         var aux = await outputparam(bytespdf, requestHtmlPdf.InputParam, executeToken.Token);
                         if (typeof(Tout) == typeof(byte[]))
                         {
-                            if (disableCompress)
+                            if (!disableCompress)
                             {
                                 result = new HtmlPdfResult<Tout>(true, false, sw.Elapsed, aux, null);
                             }
                             else
                             {
-                                var auxBytes = (byte[]?)Convert.ChangeType(aux, typeof(byte[])) ??
-                                    throw new InvalidOperationException("Conversion to byte[] resulted in null");
-                                var compresspdf = GZipHelper.Compress(auxBytes);
-                                result = new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout?)Convert.ChangeType(compresspdf, typeof(Tout)), null);
+                                var compresspdf = await GZipHelper.CompressAsync((byte[])(object)aux!,token);
+                                result = new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout)(object)compresspdf, null);
                             }
                         }
                         else
@@ -274,13 +465,13 @@ namespace HtmlPdfPlus.Server.Core
                 LogMessage($"End Convert Html to PDF from Server with AfterPDF function at {DateTime.Now} after {sw.Elapsed}");
                 return result!;
             }
-            LogMessage($"End Convert Html to PDF from Server at {DateTime.Now} after {sw.Elapsed}");
-            if (disableCompress)
+            //output is byte[]
+            if (!disableCompress)
             {
-                return new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout?)Convert.ChangeType(bytespdf, typeof(Tout)), null);
+                bytespdf = await GZipHelper.CompressAsync(bytespdf, token);
             }
-            var compresspdf = GZipHelper.Compress(bytespdf);
-            return new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout?)Convert.ChangeType(compresspdf, typeof(Tout)), null);
+            LogMessage($"End Convert Html to PDF from Server at {DateTime.Now} after {sw.Elapsed}");
+            return new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout)(object)bytespdf, null);
         }
 
         private async Task<byte[]?> GeneratePDF(bool isurl, RequestHtmlPdf<Tin> request, long remaindtime, CancellationToken token)

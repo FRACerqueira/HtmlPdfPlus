@@ -57,19 +57,21 @@ namespace HtmlPdfPlus
         /// <summary>
         /// Output custom data or PDF in byte[]
         /// </summary>
-        public T? OutputData { get; }
+        public T? OutputData { get; internal set; }
 
         /// <summary>
-        /// Decompress output data if it is byte[]
+        /// Decompress OutputData when type is byte[]
         /// </summary>
-        /// <returns>Output data decompressed</returns>
-        public byte[]? DecompressBytes()
+        /// <returns>The <see cref="HtmlPdfResult{T}"/> with OutputData Decompressed when type is byte[]</returns>
+        /// <exception cref="InvalidOperationException">OutputData is not byte[]</exception>
+        public HtmlPdfResult<T> DecompressOutputData()
         {
-            if (OutputData is byte[] data && OutputData is not null)
+            if (OutputData is byte[] data)
             {
-                return GZipHelper.Decompress(data);
+                OutputData = (T)(object)GZipHelper.DecompressAsync(data).Result;
+                return this;
             }
-            return null;
+            throw new InvalidOperationException("OutputData is not byte[]");
         }
     }
 }

@@ -6,8 +6,6 @@
 
 using System.Text;
 using System.Text.Json;
-using HtmlPdfPlus;
-using HtmlPdfPlus.Shared.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -81,7 +79,7 @@ namespace TcpServerHtmlToPdf.GenericServer
                 {
                     services.AddHtmlPdfService((cfg) =>
                     {
-                        cfg.DefaultConfig((cfg) =>
+                           cfg.DefaultConfig((cfg) =>
                             {
                                 cfg.DisplayHeaderFooter(true)
                                    .Margins(10);
@@ -111,15 +109,11 @@ namespace TcpServerHtmlToPdf.GenericServer
 
             var PDFserver = HostApp!.Services.GetHtmlPdfService();
 
-            var request = Encoding.UTF8.GetString(e.Data.Array!, 0, e.Data.Count);
-
             var aux = PDFserver
-                .ScopeRequest(request)
+                .ScopeRequest(e.Data.Array!)
                 .Run(CancellationToken.None).Result;
 
-            var sendata = JsonSerializer.Serialize<HtmlPdfResult<byte[]>>(aux);
-
-            _ServerTCP.Send(e.IpPort, sendata);
+            _ServerTCP.Send(e.IpPort, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(aux)));
             _ServerTCP.Send(e.IpPort, [0]); //token end message
         }
 

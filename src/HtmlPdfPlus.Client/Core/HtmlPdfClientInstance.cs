@@ -147,13 +147,13 @@ namespace HtmlPdfPlus.Client.Core
 
 
         /// <inheritdoc />
-        public async Task<HtmlPdfResult<byte[]>> Run(Func<string, CancellationToken, Task<HtmlPdfResult<byte[]>>> submitHtmlToPdf, CancellationToken token = default)
+        public async Task<HtmlPdfResult<byte[]>> Run(Func<byte[], CancellationToken, Task<HtmlPdfResult<byte[]>>> submitHtmlToPdf, CancellationToken token = default)
         {
-            return await Run<object, byte[]>(submitHtmlToPdf, null, token).ConfigureAwait(false);
+            return await Run<object, byte[]>(submitHtmlToPdf, null, token);
         }
 
         /// <inheritdoc />
-        public async Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(Func<string, CancellationToken, Task<HtmlPdfResult<Tout>>> submitHtmlToPdf, Tin? inputparam, CancellationToken token = default)
+        public async Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(Func<byte[], CancellationToken, Task<HtmlPdfResult<Tout>>> submitHtmlToPdf, Tin? inputparam, CancellationToken token = default)
         {
             if (_html.Length == 0)
             {
@@ -163,7 +163,7 @@ namespace HtmlPdfPlus.Client.Core
             {
                 throw new ArgumentNullException(nameof(submitHtmlToPdf), "Function for submit is null");
             }
-            return await SubmitAsync<Tin, Tout>(submitHtmlToPdf, inputparam, token).ConfigureAwait(false);
+            return await SubmitAsync<Tin, Tout>(submitHtmlToPdf, inputparam, token);
         }
 
         /// <inheritdoc />
@@ -196,12 +196,12 @@ namespace HtmlPdfPlus.Client.Core
                 _parseError.Invoke(_errorparse);
             }
             var sw = Stopwatch.StartNew();
-            HttpContent content = CreateHttpContent(customdata);
+            HttpContent content = await CreateHttpContent(customdata);
             content.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Application.Json);
             try
             {
-                var result = await httpclient.PostAsync(endpoint, content, token).ConfigureAwait(false);
-                return await HandleHttpResponse<Tout>(result, sw, token).ConfigureAwait(false);
+                var result = await httpclient.PostAsync(endpoint, content, token);
+                return await HandleHttpResponse<Tout>(result, sw, token);
             }
             catch (HttpRequestException ex)
             {
@@ -222,7 +222,7 @@ namespace HtmlPdfPlus.Client.Core
         /// <param name="inputparam">The input parameter.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>The result of the HTML to PDF conversion.</returns>
-        private async Task<HtmlPdfResult<Tout>> SubmitAsync<Tin, Tout>(Func<string, CancellationToken, Task<HtmlPdfResult<Tout>>> submitHtmlToPdf, Tin? inputparam, CancellationToken token)
+        private async Task<HtmlPdfResult<Tout>> SubmitAsync<Tin, Tout>(Func<byte[], CancellationToken, Task<HtmlPdfResult<Tout>>> submitHtmlToPdf, Tin? inputparam, CancellationToken token)
         {
             if (_html.Length == 0)
             {
@@ -240,11 +240,11 @@ namespace HtmlPdfPlus.Client.Core
                 using var linkcts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, token);
                 try
                 {
-                    string? requestsend = CreateRequestSend(inputparam);
+                    byte[] requestsend = await CreateRequestSend(inputparam);
                     cts.CancelAfter(_timeout);
                     var tasksubmit = Task.Run(async () => result = await submitHtmlToPdf(requestsend, linkcts.Token).ConfigureAwait(false), linkcts.Token);
 
-                    var completed = await Task.WhenAny(tasksubmit, Task.Delay(_timeout, linkcts.Token)).ConfigureAwait(false);
+                    var completed = await Task.WhenAny(tasksubmit, Task.Delay(_timeout, linkcts.Token));
                     if (completed != tasksubmit)
                     {
                         result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Canceled by Timeout({_timeout})"));
@@ -277,7 +277,7 @@ namespace HtmlPdfPlus.Client.Core
                 }
                 else
                 {
-                    return new HtmlPdfResult<Tout>(result.IsSuccess, result.BufferDrained, result.ElapsedTime, (Tout?)Convert.ChangeType(result.DecompressBytes(), typeof(Tout)), result.Error);
+                    return new HtmlPdfResult<Tout>(result.IsSuccess, result.BufferDrained, result.ElapsedTime, (Tout)(object)result.OutputData, result.Error);
                 }
             }
             return result;
@@ -299,13 +299,12 @@ namespace HtmlPdfPlus.Client.Core
         /// </summary>
         /// <typeparam name="T">The type of the custom data.</typeparam>
         /// <param name="customdata">The custom data.</param>
-        /// <returns>The HTTP content.</returns>
-        private StringContent CreateHttpContent<T>(T? customdata)
+        /// <returns>The HTTP <see cref="ByteArrayContent"/>.</returns>
+        private async Task<ByteArrayContent> CreateHttpContent<T>(T? customdata)
         {
             return disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress)
-                ? new StringContent(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata).ToString())
-                : new StringContent(JsonSerializer.Serialize(
-                    new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata).ToStringCompress()));
+                ? new ByteArrayContent(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata).ToBytes())
+                : new ByteArrayContent(await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata).ToBytesCompress());
         }
 
         /// <summary>
@@ -313,12 +312,12 @@ namespace HtmlPdfPlus.Client.Core
         /// </summary>
         /// <typeparam name="T">The type of the input parameter.</typeparam>
         /// <param name="inputparam">The input parameter.</param>
-        /// <returns>The request send string.</returns>
-        private string CreateRequestSend<T>(T? inputparam)
+        /// <returns>The request send in byte[].</returns>
+        private async Task<byte[]> CreateRequestSend<T>(T? inputparam)
         {
             return disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress)
-                ? JsonSerializer.Serialize(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam), GZipHelper.JsonOptions)
-                : GZipHelper.CompressRequest(sourcealias, _pdfPageConfig, _html, _timeout, inputparam);
+                ? new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam).ToBytes()
+                : await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam).ToBytesCompress();
         }
 
         /// <summary>
@@ -355,25 +354,26 @@ namespace HtmlPdfPlus.Client.Core
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
 #if NETSTANDARD2_1
-                var resultconvert = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
+                using var resultconvert = await result.Content.ReadAsStreamAsync();
 #endif
 #if NET8_0_OR_GREATER
-                    var resultconvert = await result.Content.ReadAsStringAsync(token).ConfigureAwait(false);
+                using var resultconvert = await result.Content.ReadAsStreamAsync(token);
 #endif
                 if (typeof(Tout) == typeof(byte[]))
                 {
                     if (disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
                     {
-                        return JsonSerializer.Deserialize<HtmlPdfResult<Tout>>(resultconvert, GZipHelper.JsonOptions)!;
+                        return (await JsonSerializer.DeserializeAsync<HtmlPdfResult<Tout>>(resultconvert, GZipHelper.JsonOptions, token))!;
                     }
                     else
                     {
-                        var auxresult = JsonSerializer.Deserialize<HtmlPdfResult<Tout>>(resultconvert, GZipHelper.JsonOptions)!;
-                        if (auxresult.OutputData is null)
+                        var auxresult = await JsonSerializer.DeserializeAsync<HtmlPdfResult<Tout>>(resultconvert, GZipHelper.JsonOptions, token)!;
+                        if (auxresult!.OutputData is null)
                         {
                             return auxresult;
                         }
-                        return new HtmlPdfResult<Tout>(auxresult.IsSuccess, auxresult.BufferDrained, auxresult.ElapsedTime, (Tout?)Convert.ChangeType(auxresult.DecompressBytes(), typeof(Tout)), auxresult.Error);
+                        var output = await GZipHelper.DecompressAsync((byte[])(object)auxresult.OutputData,token);
+                        return new HtmlPdfResult<Tout>(auxresult.IsSuccess, auxresult.BufferDrained, auxresult.ElapsedTime, (Tout)(object)output, auxresult.Error);
                     }
                 }
                 else

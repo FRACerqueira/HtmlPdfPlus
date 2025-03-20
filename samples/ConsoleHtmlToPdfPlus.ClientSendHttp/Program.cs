@@ -105,11 +105,11 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
             Console.WriteLine($"HtmlPdfClient send Url to PDF Server via http post");
 
             pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
-                                 .PageConfig((cfg) => cfg.Margins(10))
-                                 .Logger(HostApp.Services.GetService<ILogger<Program>>())
-                                 .FromUrl(new Uri("https://github.com/FRACerqueira/HtmlPdfPlus"))
-                                 .Timeout(15000)
-                                 .Run(clienthttp, applifetime.ApplicationStopping);
+                                .PageConfig((cfg) => cfg.Margins(10))
+                                .Logger(HostApp.Services.GetService<ILogger<Program>>())
+                                .FromUrl(new Uri("https://github.com/FRACerqueira/HtmlPdfPlus"))
+                                .Timeout(15000)
+                                .Run(clienthttp, applifetime.ApplicationStopping);
 
             Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 

@@ -84,7 +84,7 @@ namespace HtmlPdfPlus
         /// <returns>Returns bytes[] from <see cref="HtmlPdfResult{T}"/> representing the asynchronous operation of converting HTML to PDF.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the empty Html source.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the submitHtmlToPdf function is null.</exception>
-        Task<HtmlPdfResult<byte[]>> Run(Func<string, CancellationToken, Task<HtmlPdfResult<byte[]>>> submitHtmlToPdf, CancellationToken token = default);
+        Task<HtmlPdfResult<byte[]>> Run(Func<byte[], CancellationToken, Task<HtmlPdfResult<byte[]>>> submitHtmlToPdf, CancellationToken token = default);
 
         /// <summary>
         /// Submit the HTML to convert to PDF in byte[] via POST <see cref="HttpClient"/>.
@@ -119,7 +119,7 @@ namespace HtmlPdfPlus
         /// <returns>Returns <see cref="HtmlPdfResult{Tout}"/> representing the asynchronous operation of converting HTML to PDF.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the empty Html source.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the submitHtmlToPdf function or customData is null.</exception>
-        Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(Func<string, CancellationToken, Task<HtmlPdfResult<Tout>>> submitHtmlToPdf, Tin? customData, CancellationToken token = default);
+        Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(Func<byte[], CancellationToken, Task<HtmlPdfResult<Tout>>> submitHtmlToPdf, Tin? customData, CancellationToken token = default);
 
         /// <summary>
         /// Submit the HTML to convert to PDF in custom output via POST <see cref="HttpClient"/>.
