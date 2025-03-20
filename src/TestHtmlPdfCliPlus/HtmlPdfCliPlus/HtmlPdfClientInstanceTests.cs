@@ -11,7 +11,6 @@ using HtmlPdfPlus;
 
 namespace TestHtmlPdfPlus.HtmlPdfCliPlus
 {
-
     public class HtmlPdfClientInstanceTests
     {
         private readonly HttpClient _mockHttpClient;

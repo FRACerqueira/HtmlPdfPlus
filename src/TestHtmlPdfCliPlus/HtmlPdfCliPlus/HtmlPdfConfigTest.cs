@@ -16,7 +16,7 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
         public void Ensure_Create_HtmlPdfConfig_FormatByWH()
         {
             var result = new HtmlPdfConfig();
-            result.Format(); 
+            result.Format();
             Assert.Equal("210.0;297.0", result.PageConfig.Size.ToString());
         }
 
@@ -66,7 +66,7 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
         public void Ensure_Create_HtmlPdfConfig_Margins()
         {
             var result = new HtmlPdfConfig();
-            result.Margins(1,2,3,4);
+            result.Margins(1, 2, 3, 4);
             Assert.Equal("1.0;2.0;3.0;4.0", result.PageConfig.Margins.ToString());
         }
 
@@ -74,7 +74,7 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
         public void Ensure_Create_HtmlPdfConfig_MarginsClass()
         {
             var result = new HtmlPdfConfig();
-            result.Margins(PageMargins.Create(1,2,3,4));
+            result.Margins(PageMargins.Create(1, 2, 3, 4));
             Assert.Equal("1.0;2.0;3.0;4.0", result.PageConfig.Margins.ToString());
         }
 

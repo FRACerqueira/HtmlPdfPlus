@@ -9,7 +9,6 @@ using HtmlPdfPlus.Client.Core;
 
 namespace TestHtmlPdfPlus.HtmlPdfCliPlus
 {
-
     public class HtmlPdfConfigTests
     {
         private readonly HtmlPdfConfig _config;
