@@ -70,7 +70,11 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
     - Changed parameter for command ScopeRequest to byte[] instead of string
     - Removed DecompressBytes() method to class HtmlPdfResult
     - Added DecompressOutputData() method to class HtmlPdfResult for custom scenarios
-
+    - Improvements in the compression/decompression process to use asynchronous methods
+    - Small code reviews
+    - Updated documentation
+    - Preparation for GA version
+ 
 - **v0.3.0-beta**
     - Added FromUrl(Uri value) command to client-side mode
     - Fixed bug in server mode for multi thread safe when there is parameter customization and/or no client mode sending.

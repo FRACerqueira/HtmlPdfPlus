@@ -54,6 +54,10 @@ What's new in the latest version
     - Changed parameter for command ScopeRequest to byte[] instead of string
     - Removed DecompressBytes() method to class HtmlPdfResult
     - Added DecompressOutputData() method to class HtmlPdfResult for custom scenarios
+    - Improvements in the compression/decompression process to use asynchronous methods
+    - Small code reviews
+    - Updated documentation
+    - Preparation for GA version
 
 - v0.3.0-beta
 
