@@ -59,9 +59,23 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
     - AfterPDF : Save file, Send to cloud, etc
 - Disable features to improve/ balance performance (minify, compress and log)
 
-#### What's new in the latest version 
+### What's new in the latest version 
 
-- v0.3.0-beta (latest version)
+- **v0.4.0-beta (latest version)**
+    - Relaxation of Package Reference for .net8 to .net9
+    - Renamed the 'Source' command to 'Scope'
+    - Renamed the 'Request' command to 'ScopeRequest'
+    - Changed parameter in funcion SubmitHtmlToPdf to byte[] instead of string
+    - Changed parameter for command Run to byte[] instead of string
+    - Changed parameter for command ScopeRequest to byte[] instead of string
+    - Removed DecompressBytes() method to class HtmlPdfResult
+    - Added DecompressOutputData() method to class HtmlPdfResult for custom scenarios
+    - Improvements in the compression/decompression process to use asynchronous methods
+    - Small code reviews
+    - Updated documentation
+    - Preparation for GA version
+ 
+- **v0.3.0-beta**
     - Added FromUrl(Uri value) command to client-side mode
     - Fixed bug in server mode for multi thread safe when there is parameter customization and/or no client mode sending.
         - Moved the BeforePDF(Func<string, TIn?, CancellationToken, Task<string>> inputParam) command to the execution context.
@@ -73,7 +87,8 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
             -  Added command FromHtml(string html, int converttimeout = 30000, bool minify = true)
             -  Added command FromUrl(Uri value, int converttimeout = 30000)
             -  Added command FromRazor\<T\>(string template, T model, int converttimeout = 30000, bool minify = true)
-- v0.2.0-beta
+
+- **v0.2.0-beta**
     - Initial version
 
 ## Prerequisites
@@ -95,9 +110,9 @@ dotnet tool install --global Microsoft.Playwright.CLI
 playwright.exe install --with-deps
 ```
 
-_Note: Make sure that the path to the executable is mapped to: C:\Users\[YourU)ser]\.dotnet\tools._
+_Note: Make sure that the path to the executable is mapped to: C:\Users\\[login]\\.dotnet\tools._
 
-_If it is not, run it directly via the path C:\Users\[YourUser]\.dotnet\tools\playwright.exe install --with-deps__
+_If it is not, run it directly via the path C:\Users\\[login]\\.dotnet\tools\playwright.exe install --with-deps_
 
 ### Installation Steps for HtmlPdfPlus
 
@@ -164,11 +179,20 @@ var clienthttp = HostApp!.Services
 	.CreateClient("HtmlPdfServer");
 
 //create client instance and send to HtmlPdfPlus server endpoint    
-var pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
-    .PageConfig((cfg) => cfg.Margins(10))
-    .FromHtml(HtmlSample())
-    .Timeout(5000)
-    .Run(clienthttp, token);
+var pdfresult = await HtmlPdfClient
+    .Create("HtmlPdfPlusClient")
+    .PageConfig((cfg) =>
+    {
+       cfg.Margins(10)
+          .Footer("'<span style=\"text-align: center;width: 100%;font-size: 10px\"> <span class=\"pageNumber\"></span> of <span class=\"totalPages\"></span></span>")
+          .Header("'<span style=\"text-align: center;width: 100%;font-size: 10px\" class=\"title\"></span>")
+          .Orientation(PageOrientation.Landscape)
+          .DisplayHeaderFooter(true);
+     })
+     .Logger(HostApp.Services.GetService<ILogger<Program>>())
+     .FromHtml(HtmlSample())
+     .Timeout(5000)
+     .Run(clienthttp, applifetime.ApplicationStopping);
 
 //performs writing to file after performing conversion
 if (pdfresult.IsSuccess)
@@ -194,9 +218,11 @@ builder.Services.AddHtmlPdfService((cfg) =>
 });
 ...
 
-app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] string requestclienthtmltopdf, CancellationToken token) =>
+app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] Stream requestclienthtmltopdf, CancellationToken token) =>
 {
-    return await PDFserver.Run(requestclienthtmltopdf, token);
+    var data = await requestclienthtmltopdf.ReadToBytesAsync();
+    return await PDFserver
+        .Run(data, token);
 }).Produces<HtmlPdfResult<byte[]>>(200);
 
 ```
@@ -211,24 +237,31 @@ app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]>
 ```csharp
 using HtmlPdfPlus;
 
-//create client instance and send to HtmlPdfPlus server endpoint    
-var pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
-    .PageConfig((cfg) => cfg.Margins(10))
-    .FromHtml(HtmlSample())
-    .Timeout(5000)
-    .Run(SendToServer, token);
+// Generic suggestion for writing a file to a cloud like gcp/azure
+// Suggested return would be the full path "repo/filename"
+var paramTosave = new DataSavePDF("Filename.pdf","MyRepo","MyConnectionstring");
 
-//performs writing to file after performing conversion
+var pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
+      .PageConfig((cfg) =>
+      {
+         cfg.Margins(10);
+      })
+      .Logger(HostApp.Services.GetService<ILogger<Program>>())
+      .FromRazor(TemplateRazor(), order1)
+      .Timeout(50000)
+      .Run<DataSavePDF,string>(SendToServer,paramTosave, applifetime.ApplicationStopping);
+
+//Shwo result
 if (pdfresult.IsSuccess)
 {
-    await File.WriteAllBytesAsync("html2pdfsample.pdf", pdfresult.OutputData!);
+   Console.WriteLine($"File PDF generate at {pdfresult.OutputData}");
 }
 else
 {
-    //show error via pdfresult.Error
+    Console.WriteLine($"HtmlPdfClient error: {pdfresult.Error!}");
 }
 
-private static async Task<HtmlPdfResult<byte[]>> SendToServer(string requestdata, CancellationToken token)
+private static async Task<HtmlPdfResult<string>> SendToServer(byte[] requestdata, CancellationToken token)
 {
    //send requestdata to server and return result
 }
@@ -242,14 +275,35 @@ using HtmlPdfPlus;
 
 ...
 var builder = WebApplication.CreateBuilder(args);  
-builder.Services.AddHtmlPdfService((cfg) =>
+builder.Services.AddHtmlPdfService<DataSavePDF,string>((cfg) =>
 {
     cfg.Logger(LogLevel.Debug, "MyPDFServer");
 });
 ...
 var PDFserver = HostApp.Services.GetHtmlPdfService();
 
-var result = await PDFserver.Run(requestdata , Token);
+var result = await PDFserver
+        .ScopeRequest(data)
+        .BeforePDF( (html,inputparam, _) =>
+        {
+            if (inputparam is null)
+            {
+                return Task.FromResult(html);
+            }
+            //performs replacement token substitution in the HTML source before performing the conversion
+            var aux = html.Replace("[{FileName}]", inputparam.Filename);
+            return Task.FromResult(aux);
+        })
+        .AfterPDF( (pdfbyte, inputparam, token) =>
+        {
+            if (inputparam is null)
+            {
+                return Task.FromResult(string.Empty);
+            }
+            //TODO : performs writing to file  after performing conversion
+            return Task.FromResult(inputparam.Filename);
+        })
+        .Run(token);
 
 //send result to client
 
@@ -284,7 +338,7 @@ var PDFserver = HostApp!.Services.GetHtmlPdfService();
 
 //Performs conversion and custom operations on the server
 var pdfresult = await PDFserver
-       .Source()
+       .ScopeData()
        .FromHtml(HtmlSample(),5000)
        .Run(applifetime.ApplicationStopping);
 

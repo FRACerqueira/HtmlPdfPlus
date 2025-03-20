@@ -70,7 +70,7 @@ namespace HtmlPdfPlus
         /// <returns>An instance of <see cref="HtmlPdfResult{TOut}"/>.</returns>
         /// <exception cref="ArgumentException">Thrown when the empty source Html or Url.</exception>
         /// <exception cref="ArgumentException">Thrown when <typeparamref name="TOut"/> is invalid.</exception>
-        /// <exception cref="ArgumentException">Thrown when <see cref="IHtmlPdfServer{TIn, TOut}.Request(string)"/> is invalid.</exception>
+        /// <exception cref="ArgumentException">Thrown when <see cref="IHtmlPdfServer{TIn, TOut}.ScopeRequest(byte[])"/> is invalid.</exception>
         Task<HtmlPdfResult<TOut>> Run(CancellationToken token = default);
     }
 }

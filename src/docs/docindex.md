@@ -7,6 +7,7 @@
 
 | public type | description |
 | --- | --- |
+| static Extension [ReadToBytesAsync](./assemblies/HtmlPdfPlus/StreamExtension/ReadToBytesAsync.md) | Read the stream and return the content as a byte[] |
 | static class [HtmlPdfClient](./assemblies/HtmlPdfPlus/HtmlPdfClient.md) | Fluent interface commands to perform client HTML to PDF conversion |
 | class [HtmlPdfResult&lt;T&gt;](./assemblies/HtmlPdfPlus/HtmlPdfResult-1.md) | Result of converting Html to PDF |
 | class [PageMargins](./assemblies/HtmlPdfPlus/PageMargins.md) | Page margins. |

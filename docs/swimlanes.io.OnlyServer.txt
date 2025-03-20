@@ -1,19 +1,25 @@
-title: Generate PDF Client-Sever via only server
+title: Generate PDF Client-Sever via any process
 
-note: Compress disabled (via DisableOptionsHtmlToPdf)
+note: Minify, Compress and Logging can be disabled (via DisableOptionsHtmlToPdf)
 
-HtmlPdfServer ->App Client: AddHtmlPdfService (Optional Default PageConfig)
-App Client --> App Client : Warmup HtmlPdfService
-App Client --> Request HtmlPdf: Html + PageConfig(Optional) + timeout
-Request HtmlPdf --> Request HtmlPdf : Minify Html
-
-
-App Client ->  HtmlPdfServer: ** Run (Optional Input param) **
+HtmlPdfServer -> App Server: AddHtmlPdfService
+App Server --> App Server : Warmup HtmlPdfService
+App Server --> HtmlPdfServer: FromHtml (Disable Compress)
+HtmlPdfServer --> HtmlPdfServer : Minify Html 
+App Server --> HtmlPdfServer: FromRazor (Disable Compress)
+HtmlPdfServer --> HtmlPdfServer : Execute Razor Engine
+HtmlPdfServer  --> HtmlPdfServer : Minify Html
+App Server --> HtmlPdfServer: FromUrl (Disable Compress and Minify )
+App Server --> HtmlPdfServer: Input param (opc)
+App Server --> HtmlPdfServer: Timeout (opc)
+App Server --> HtmlPdfServer: PageConfig (opc)
+App Server --> HtmlPdfServer: BeforePDF (opc) 
+App Server --> HtmlPdfServer: AfterPDF (opc)
+App Server -> HtmlPdfServer: ** Run **
 
 HtmlPdfServer --> HtmlPdfServer : Exec BeforePdf (Input param)
 HtmlPdfServer --> HtmlPdfServer : **Generate PDF**
 HtmlPdfServer --> HtmlPdfServer : Exec AfterPdf (Input param and Transform output type) 
+HtmlPdfServer -> App Server : ** Result HtmlPdf** 
 
-HtmlPdfServer -> App Client : ** Result HtmlPdf** 
-
-Order: App Client, Request HtmlPdf,  HtmlPdfServer
+Order: App Server, HtmlPdfServer

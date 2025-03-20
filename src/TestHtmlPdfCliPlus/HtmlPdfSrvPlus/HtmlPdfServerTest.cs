@@ -17,7 +17,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         public void BeforePDF_ThrowsArgumentNullException_WhenInputParamIsNull()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").Source(null).BeforePDF(null));
+            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").ScopeData(null).BeforePDF(null));
         }
 
 
@@ -25,7 +25,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         public void AfterPDF_ThrowsArgumentNullException_WhenInputParamIsNull()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").Source(null).AfterPDF(null));
+            Assert.Throws<ArgumentNullException>(() => new HtmlPdfServer<object, byte[]>(null, "teste").ScopeData(null).AfterPDF(null));
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             // Arrange
             using var objbuilder = new HtmlPdfBuilder(null);
             // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await new HtmlPdfServer<string, byte[]>(objbuilder, "Test").Run("", CancellationToken.None));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await new HtmlPdfServer<string, byte[]>(objbuilder, "Test").Run([], CancellationToken.None));
         }
 
         [Fact]
@@ -72,20 +72,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             using var objbuilder = new HtmlPdfBuilder(null);
             // Act & Assert
             await Assert.ThrowsAsync<ArgumentException>(async () => await new HtmlPdfServer<string, string>(objbuilder, "Teste").Run(
-                new RequestHtmlPdf<string>("","Teste", new PdfPageConfig(), 10000).ToStringCompress(), CancellationToken.None));
-        }
-
-        [Fact]
-        public async Task Run_Resultfalse_WhenInvalidFormatRequestclient()
-        {
-            // Arrange
-            using var objbuilder = new HtmlPdfBuilder(null);
-            // Act & Assert
-            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, "Teste").Run("teste", CancellationToken.None);
-            Assert.IsType<InvalidOperationException>(result.Error);
-            Assert.False(result.IsSuccess);
-            Assert.True(result.ElapsedTime.TotalMilliseconds > 0);
-            Assert.Null(result.OutputData);
+                await new RequestHtmlPdf<string>("","Teste", new PdfPageConfig(), 10000).ToBytesCompress(), CancellationToken.None));
         }
 
 
@@ -94,11 +81,10 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         {
             // Arrange
             using var objbuilder = new HtmlPdfBuilder(null);
-            var requestHtmlPdf = GZipHelper.CompressRequest<string>("Client", new PdfPageConfig(), "<h1>Test</h1>", 10000, "teste");
-
+            var requestHtmlPdf = await new RequestHtmlPdf<object>("<h1>Test</h1>","teste", new PdfPageConfig(),10000).ToBytesCompress();
             // Act & Assert
-            var result = await new HtmlPdfServer<string, byte[]>(objbuilder, "Server")
-                .Request(requestHtmlPdf)
+            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, "Server")
+                .ScopeRequest(requestHtmlPdf)
                 .BeforePDF((_, _, _) => throw new InvalidTimeZoneException("Test"))
                 .Run(CancellationToken.None);
             Assert.IsType<InvalidTimeZoneException>(result.Error);
@@ -120,7 +106,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
                 Orientation = PageOrientation.Landscape,
                 Size = PageSize.A3
             };
-            var requestHtmlPdf = GZipHelper.CompressRequest<object>("Client", config, "<h1>Test</h1>", 5000, null);
+            var requestHtmlPdf = await new RequestHtmlPdf<byte[]>("<h1>Test</h1>", "teste", new PdfPageConfig(), 5000).ToBytesCompress();
 
             // Act & Assert
             var result = await new HtmlPdfServer<object, byte[]>(objbuilder, "Server")
@@ -146,11 +132,11 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
                 Orientation = PageOrientation.Landscape,
                 Size = PageSize.A3,
             };
-            var requestHtmlPdf = GZipHelper.CompressRequest<object>("Client", config, "<h1>Test</h1>", 50000, null);
+            var requestHtmlPdf = await new RequestHtmlPdf<byte[]>("<h1>Test</h1>", "teste", new PdfPageConfig(), 5000).ToBytesCompress();
 
             // Act & Assert
             var result = await new HtmlPdfServer<object, string>(objbuilder, "Server")
-                .Request(requestHtmlPdf)
+                .ScopeRequest(requestHtmlPdf)
                 .BeforePDF((_,_,_) => Task.FromResult<string>("<h3>Test</h3>"))
                 .AfterPDF((_,_,_) => Task.FromResult<string>("Test"))
                 .Run(CancellationToken.None);

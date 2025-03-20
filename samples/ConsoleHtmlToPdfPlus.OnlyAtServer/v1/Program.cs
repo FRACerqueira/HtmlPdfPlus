@@ -36,7 +36,7 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerV1
 
             //Performs conversion and custom operations on the server
             var pdfresult = await PDFserver
-                .Source(Path.Combine(PathToSamples, "html2pdfHtml.pdf"))
+                .ScopeData(Path.Combine(PathToSamples, "html2pdfHtml.pdf"))
                 .FromHtml(HtmlSample(), 5000)
                 .BeforePDF((html, _, _) =>
                 {

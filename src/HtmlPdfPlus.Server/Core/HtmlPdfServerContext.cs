@@ -5,8 +5,10 @@
 // ***************************************************************************************
 
 using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 using HtmlPdfPlus.Shared.Core;
+using Microsoft.Extensions.Logging;
 using NUglify;
 
 namespace HtmlPdfPlus.Server.Core
@@ -20,7 +22,7 @@ namespace HtmlPdfPlus.Server.Core
     /// <param name="htmlPdfServer">Instance of <see cref="HtmlPdfServer{Tin, Tout}"/>.</param>
     /// <param name="inputparam">Input data, for customizing HTML before converting to PDF on the server.</param>
     /// <param name="requestClient">The compressed data from the request HtmlPdfCliPlus client.</param>
-    internal sealed class HtmlPdfServerContext<TIn, TOut>(HtmlPdfServer<TIn, TOut> htmlPdfServer, TIn? inputparam, string? requestClient) : IHtmlPdfServerContext<TIn, TOut>, IDisposable
+    internal sealed class HtmlPdfServerContext<TIn, TOut>(HtmlPdfServer<TIn, TOut> htmlPdfServer, TIn? inputparam, byte[]? requestClient) : IHtmlPdfServerContext<TIn, TOut>, IDisposable
     {
         private bool isDisposed;
         private Func<string, TIn?, CancellationToken, Task<string>>? _inputparam = null;
@@ -94,16 +96,23 @@ namespace HtmlPdfPlus.Server.Core
         {
             var sw = Stopwatch.StartNew();
             RequestHtmlPdf<TIn> requestHtmlPdf;
-            if (!string.IsNullOrEmpty(requestClient))
+            string data;
+            if (requestClient is not null)
             {
+                if (requestClient.Length == 0)
+                {
+                    throw new ArgumentException("request client is empty");
+                }
                 if (htmlPdfServer.PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
                 {
-                    requestHtmlPdf = JsonSerializer.Deserialize<RequestHtmlPdf<TIn>>(requestClient, GZipHelper.JsonOptions)!;
+                    data = Encoding.UTF8.GetString(requestClient);
                 }
                 else
                 {
-                    requestHtmlPdf = GZipHelper.DecompressRequest<TIn>(requestClient);
+                    data = Encoding.UTF8.GetString(await GZipHelper.DecompressAsync(requestClient, token));
+                    LogMessage($"Decompress Request after {sw.Elapsed}");
                 }
+                requestHtmlPdf = JsonSerializer.Deserialize<RequestHtmlPdf<TIn>>(data, GZipHelper.JsonOptions)!;
                 requestHtmlPdf.Config ??= htmlPdfServer.PdfSrvBuilder.Config;
             }
             else
@@ -130,11 +139,7 @@ namespace HtmlPdfPlus.Server.Core
                 return new HtmlPdfResult<TOut>(false, false, sw.Elapsed, default, ex);
             }
             var isurl = Uri.IsWellFormedUriString(requestHtmlPdf.Html, UriKind.RelativeOrAbsolute);
-            var disabledcompress = false;
-            if (!string.IsNullOrEmpty(requestClient))
-            {
-                disabledcompress = htmlPdfServer.PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress);
-            }
+            var disabledcompress = htmlPdfServer.PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress);
             return await htmlPdfServer.RunServer(isurl, _inputparam, _outputparam, sw, requestHtmlPdf, disabledcompress, token);
         }
 
@@ -153,5 +158,31 @@ namespace HtmlPdfPlus.Server.Core
         {
             htmlPdfServer?.Dispose();
         }
+
+        private void LogMessage(string message)
+        {
+            if (htmlPdfServer.PdfSrvBuilder is null || htmlPdfServer.PdfSrvBuilder.Log is null || (!htmlPdfServer.PdfSrvBuilder.Log?.IsEnabled(htmlPdfServer.PdfSrvBuilder.LevelLog) ?? false)) return;
+
+            switch (htmlPdfServer.PdfSrvBuilder.LevelLog)
+            {
+                case LogLevel.None:
+                    return;
+                case LogLevel.Trace:
+                    logMessageForTrc(htmlPdfServer.PdfSrvBuilder.Log!, htmlPdfServer.SourceAlias, message, null);
+                    break;
+                case LogLevel.Information:
+                    logMessageForInf(htmlPdfServer.PdfSrvBuilder.Log!, htmlPdfServer.SourceAlias, message, null);
+                    break;
+                case LogLevel.Debug:
+                    logMessageForDbg(htmlPdfServer.PdfSrvBuilder.Log!, htmlPdfServer.SourceAlias, message, null);
+                    break;
+            }
+        }
+
+        // Reusable logging
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfServerContext({source}) : {message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfServerContext({source}) : {message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfServerContext({source}) : {message}");
+
     }
 }

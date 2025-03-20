@@ -1,18 +1,18 @@
 ![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/iconsmall.png)
 
-### IHtmlPdfServer&lt;TIn,TOut&gt;.Request method
+### IHtmlPdfServer&lt;TIn,TOut&gt;.ScopeRequest method
 </br>
 
 
-#### Transfer request client for [`IHtmlPdfServerContext`](../IHtmlPdfServerContext-2.md) server context for custom actions
+#### Transfer request client for [`IHtmlPdfServerContext`](../IHtmlPdfServerContext-2.md) server context scope for custom actions
 
 ```csharp
-public IHtmlPdfServerContext<TIn, TOut> Request(string requestClient)
+public IHtmlPdfServerContext<TIn, TOut> ScopeRequest(byte[] requestClient)
 ```
 
 | parameter | description |
 | --- | --- |
-| requestClient | The compressed data from the request HtmlPdfCliPlus client. |
+| requestClient | The compressed byte[] data from the request HtmlPdfCliPlus client. |
 
 ### Return Value
 

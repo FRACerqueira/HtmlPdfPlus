@@ -16,8 +16,6 @@ public static class HtmlPdfClient
 | --- | --- |
 | static [DisableOptions](HtmlPdfClient/DisableOptions.md) { get; set; } | Options for disabling internal features. |
 | static [Create](HtmlPdfClient/Create.md)(…) | Create an instance of Html to Pdf Client |
-| static [ToHtmlPdfResult](HtmlPdfClient/ToHtmlPdfResult.md)(…) | Convert Response Data from server HtmlPdfPlus |
-| static [ToHtmlPdfResult&lt;T&gt;](HtmlPdfClient/ToHtmlPdfResult.md)(…) | Convert Response Data from server HtmlPdfPlus |
 
 ### See Also
 

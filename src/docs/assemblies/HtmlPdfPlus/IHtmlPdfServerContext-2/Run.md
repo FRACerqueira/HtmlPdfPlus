@@ -24,7 +24,7 @@ An instance of HtmlPdfResult.
 | --- | --- |
 | ArgumentException | Thrown when the empty source Html or Url. |
 | ArgumentException | Thrown when *TOut* is invalid. |
-| ArgumentException | Thrown when [`Request`](../IHtmlPdfServer-2/Request.md) is invalid. |
+| ArgumentException | Thrown when [`ScopeRequest`](../IHtmlPdfServer-2/ScopeRequest.md) is invalid. |
 
 ### See Also
 

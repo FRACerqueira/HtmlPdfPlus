@@ -8,7 +8,7 @@
 
 ```csharp
 public Task<HtmlPdfResult<byte[]>> Run(
-    Func<string, CancellationToken, Task<HtmlPdfResult<byte[]>>> submitHtmlToPdf, 
+    Func<byte[], CancellationToken, Task<HtmlPdfResult<byte[]>>> submitHtmlToPdf, 
     CancellationToken token = default)
 ```
 
@@ -103,7 +103,7 @@ Returns bytes[] from HtmlPdfResult representing the asynchronous operation of co
 
 ```csharp
 public Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(
-    Func<string, CancellationToken, Task<HtmlPdfResult<Tout>>> submitHtmlToPdf, Tin? customData, 
+    Func<byte[], CancellationToken, Task<HtmlPdfResult<Tout>>> submitHtmlToPdf, Tin? customData, 
     CancellationToken token = default)
 ```
 

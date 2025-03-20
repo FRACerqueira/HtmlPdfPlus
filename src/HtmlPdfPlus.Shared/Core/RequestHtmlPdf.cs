@@ -4,6 +4,7 @@
 // https://github.com/FRACerqueira/HtmlPdfPlus
 // ***************************************************************************************
 
+using System.Text;
 using System.Text.Json;
 using NUglify;
 
@@ -94,21 +95,21 @@ namespace HtmlPdfPlus.Shared.Core
         }
 
         /// <summary>
-        /// Returns a JSON string representation of the <see cref="RequestHtmlPdf{T}"/>.
+        /// Returns a byte[] of JSON string representation of the <see cref="RequestHtmlPdf{T}"/>.
         /// </summary>
         /// <returns>JSON string representation</returns>
-        public override string ToString()
+        public byte[] ToBytes()
         {
-            return JsonSerializer.Serialize(this);
+            return Encoding.UTF8.GetBytes(JsonSerializer.Serialize(this));
         }
 
         /// <summary>
-        /// Returns a compressed (gzip) base64 JSON string representation of the <see cref="RequestHtmlPdf{T}"/>.
+        /// Returns a a compressed (gzip) byte[] of JSON string representation of the <see cref="RequestHtmlPdf{T}"/>.
         /// </summary>
-        /// <returns>Compressed (gzip) base64 JSON string representation</returns>
-        public string ToStringCompress()
+        /// <returns>JSON string representation</returns>
+        public async Task<byte[]>  ToBytesCompress()
         {
-            return GZipHelper.Compress(ToString());
+            return await GZipHelper.CompressAsync(ToBytes());
         }
     }
 }

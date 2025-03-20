@@ -19,9 +19,9 @@ public interface IHtmlPdfServer<TIn, TOut> : IDisposable
 
 | name | description |
 | --- | --- |
-| [Request](IHtmlPdfServer-2/Request.md)(…) | Transfer request client for [`IHtmlPdfServerContext`](./IHtmlPdfServerContext-2.md) server context for custom actions |
 | [Run](IHtmlPdfServer-2/Run.md)(…) | Perform HTML to PDF conversion from the request HtmlPdfCliPlus client. |
-| [Source](IHtmlPdfServer-2/Source.md)(…) | Transfer context for [`IHtmlPdfServerContext`](./IHtmlPdfServerContext-2.md) server context with input data,and custom actions. Input data, for customizing HTML before converting to PDF on the server. |
+| [ScopeData](IHtmlPdfServer-2/ScopeData.md)(…) | Transfer context scope for [`IHtmlPdfServerContext`](./IHtmlPdfServerContext-2.md) server with input data,and custom actions. Input data, for customizing HTML before converting to PDF on the server. |
+| [ScopeRequest](IHtmlPdfServer-2/ScopeRequest.md)(…) | Transfer request client for [`IHtmlPdfServerContext`](./IHtmlPdfServerContext-2.md) server context scope for custom actions |
 
 ### See Also
 

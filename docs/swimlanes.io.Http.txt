@@ -6,20 +6,21 @@ HtmlPdfServer -> App Server: AddHtmlPdfService
 App Server --> App Server : Warmup HtmlPdfService
 App Client --> HtmlPdfClient: FromHtml
 HtmlPdfClient --> HtmlPdfClient : Minify Html
-App Client --> HtmlPdfClient: FromRazor(Optional)
+App Client --> HtmlPdfClient: FromRazor
 HtmlPdfClient --> HtmlPdfClient : Execute Razor Engine
 HtmlPdfClient --> HtmlPdfClient : Minify Html
+App Client --> HtmlPdfClient: FromUrl
 App Client --> HtmlPdfClient: PageConfig
 App Client --> HtmlPdfClient: Timeout
 App Client -> HtmlPdfClient: ** Run (Optional Input param) **
-HtmlPdfClient --> HtmlPdfClient : Create and Compress RequestHtmlPdf in Base64
+HtmlPdfClient --> HtmlPdfClient : Create and Compress RequestHtmlPdf
 HtmlPdfClient -> App Server : ** HTTP/POST  **
 
 App Server --> HtmlPdfServer: BeforePDF  
 App Server --> HtmlPdfServer: AfterPDF
-App Server -> HtmlPdfServer: ** Run (Compress Base64) **
+App Server -> HtmlPdfServer: ** Run (Compress) **
 
-HtmlPdfServer --> HtmlPdfServer : Uncompress Base64 to RequestHtmlPdf
+HtmlPdfServer --> HtmlPdfServer : Uncompress to RequestHtmlPdf
 HtmlPdfServer --> HtmlPdfServer : Exec BeforePdf (Input param)
 HtmlPdfServer --> HtmlPdfServer : **Generate PDF**
 HtmlPdfServer --> HtmlPdfServer : Exec AfterPdf (Input param and Transform output type) 

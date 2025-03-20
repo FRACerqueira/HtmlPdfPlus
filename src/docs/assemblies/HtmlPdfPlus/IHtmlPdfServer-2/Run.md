@@ -7,12 +7,12 @@
 #### Perform HTML to PDF conversion from the request HtmlPdfCliPlus client.
 
 ```csharp
-public Task<HtmlPdfResult<TOut>> Run(string requestClient, CancellationToken token = default)
+public Task<HtmlPdfResult<TOut>> Run(byte[] requestClient, CancellationToken token = default)
 ```
 
 | parameter | description |
 | --- | --- |
-| requestClient | The compressed data from the request HtmlPdfCliPlus client. |
+| requestClient | The compressed byte[] data from the request HtmlPdfCliPlus client. |
 | token | The CancellationToken to perform the conversion. |
 
 ### Return Value

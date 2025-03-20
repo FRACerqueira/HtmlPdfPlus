@@ -163,12 +163,12 @@ namespace HtmlPdfPlus.Server.Core
 
         internal async Task<IHtmlPdfServer<object, byte[]>> BuildAsync(string sourcealias)
         {
-            return await BuildAsync<object, byte[]>(sourcealias).ConfigureAwait(false);
+            return await BuildAsync<object, byte[]>(sourcealias);
         }
 
         internal async Task<IHtmlPdfServer<Tin, Tout>> BuildAsync<Tin, Tout>(string sourcealias)
         {
-            return await ExecuteBuildAsync<Tin, Tout>(sourcealias).ConfigureAwait(false);
+            return await ExecuteBuildAsync<Tin, Tout>(sourcealias);
         }
 
         private async Task<IHtmlPdfServer<Tin, Tout>> ExecuteBuildAsync<Tin, Tout>(string sourcealias)
@@ -176,7 +176,7 @@ namespace HtmlPdfPlus.Server.Core
             _sourcealias = sourcealias;
             try
             {
-                _playwright = await Playwright.CreateAsync().ConfigureAwait(false);
+                _playwright = await Playwright.CreateAsync();
                 if (_args.Length == 0)
                 {
                     _args = ["--run-all-compositor-stages-before-draw", "--disable-dev-shm-usage", "-disable-setuid-sandbox", "--no-sandbox"];
@@ -185,7 +185,7 @@ namespace HtmlPdfPlus.Server.Core
                 LogMessage($"Build Chromium with args { string.Join("", _args) }");
                 for (int i = 0; i < _pagesbuffer; i++)
                 {
-                    _availableBuffer.Enqueue(await _browser.NewPageAsync().ConfigureAwait(false));
+                    _availableBuffer.Enqueue(await _browser.NewPageAsync());
                 }
                 LogMessage($"Build Chromium with buffer {_pagesbuffer}");
             }

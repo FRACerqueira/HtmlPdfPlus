@@ -4,9 +4,7 @@
 // https://github.com/FRACerqueira/HtmlPdfPlus
 // ***************************************************************************************
 
-using System.Text.Json;
 using HtmlPdfPlus.Client.Core;
-using HtmlPdfPlus.Shared.Core;
 
 namespace HtmlPdfPlus
 {
@@ -28,32 +26,6 @@ namespace HtmlPdfPlus
         public static IHtmlPdfClient Create(string? alias = null)
         {
             return new HtmlPdfClientInstance(alias ?? string.Empty, DisableOptions);
-        }
-
-        /// <summary>
-        /// Convert Response Data from server HtmlPdfPlus   
-        /// </summary>
-        /// <param name="dataresponse">Response data</param>
-        /// <returns><see cref="HtmlPdfResult{T}"/></returns>
-        public static HtmlPdfResult<byte[]> ToHtmlPdfResult(this string dataresponse)
-        {
-            return dataresponse.ToHtmlPdfResult<byte[]>();
-        }
-
-        /// <summary>
-        /// Convert Response Data from server HtmlPdfPlus   
-        /// </summary>
-        /// <typeparam name="T">Type of result</typeparam>
-        /// <param name="dataresponse">Response data</param>
-        /// <returns><see cref="HtmlPdfResult{T}"/></returns>
-        public static HtmlPdfResult<T> ToHtmlPdfResult<T>(this string dataresponse)
-        {
-            if (string.IsNullOrEmpty(dataresponse))
-            {
-                throw new ArgumentException("Response data cannot be null or empty", nameof(dataresponse));
-            }
-
-            return JsonSerializer.Deserialize<HtmlPdfResult<T>>(dataresponse, GZipHelper.JsonOptions)!;
         }
     }
 }
