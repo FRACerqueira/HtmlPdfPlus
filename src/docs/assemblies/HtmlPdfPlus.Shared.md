@@ -14,7 +14,7 @@
 | enum [PageOrientation](./HtmlPdfPlus/PageOrientation.md) | Orientation Page PDF |
 | class [PageSize](./HtmlPdfPlus/PageSize.md) | Page size for PDF. |
 | class [PdfPageConfig](./HtmlPdfPlus/PdfPageConfig.md) | The Config PDF page. |
-| static class [StreamExtension](./HtmlPdfPlus/StreamExtension.md) | Extend function for Stream |
+| class [RequestHtmlPdf&lt;T&gt;](./HtmlPdfPlus/RequestHtmlPdf-1.md) | Request data to convert Html to PDF |
 
 ### See Also
 * [Main Index](../docindex.md)

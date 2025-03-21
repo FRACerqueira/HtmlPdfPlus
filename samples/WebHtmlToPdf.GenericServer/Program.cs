@@ -28,11 +28,10 @@ app.MapOpenApi();
 
 app.UseHttpsRedirection();
 
-app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] Stream requestclienthtmltopdf, CancellationToken token) =>
+app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] byte[] requestclienthtmltopdf, CancellationToken token) =>
 {
-    var data = await requestclienthtmltopdf.ReadToBytesAsync();
     return await PDFserver
-        .Run(data, token);
+        .Run(requestclienthtmltopdf, token);
 }).Produces<HtmlPdfResult<byte[]>>(200);
 
 app.Run();

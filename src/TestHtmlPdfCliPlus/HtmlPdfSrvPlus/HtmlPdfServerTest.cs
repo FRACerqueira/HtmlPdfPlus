@@ -6,7 +6,6 @@
 
 using HtmlPdfPlus;
 using HtmlPdfPlus.Server.Core;
-using HtmlPdfPlus.Shared.Core;
 
 namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 {

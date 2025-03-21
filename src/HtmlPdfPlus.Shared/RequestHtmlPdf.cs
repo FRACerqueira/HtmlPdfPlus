@@ -6,9 +6,10 @@
 
 using System.Text;
 using System.Text.Json;
+using HtmlPdfPlus.Shared.Core;
 using NUglify;
 
-namespace HtmlPdfPlus.Shared.Core
+namespace HtmlPdfPlus
 {
     /// <summary>
     /// Request data to convert Html to PDF
@@ -17,12 +18,12 @@ namespace HtmlPdfPlus.Shared.Core
     /// <remarks>
     /// Request data to convert Html to PDF with all data
     /// </remarks>
-    internal sealed class RequestHtmlPdf<T>
+    public sealed class RequestHtmlPdf<T>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RequestHtmlPdf{T}"/> class.
         /// </summary>
-        /// <param name="html">The Html to render on browser. Html is required and must not be empty.</param>
+        /// <param name="html">The Html/url to render on browser. Html is required and must not be empty.</param>
         /// <param name="alias">The alias for request and must not be null</param>
         /// <param name="config">The Config PDF page. <see cref="PdfPageConfig"/></param>
         /// <param name="timeout">The timeout convert (default 30000ms) and value must be greater than zero</param>
@@ -53,12 +54,12 @@ namespace HtmlPdfPlus.Shared.Core
         public string? Alias { get; }
 
         /// <summary>
-        /// Gets or sets the Config PDF page. <see cref="PdfPageConfig"/>
+        /// Gets the Config PDF page. <see cref="PdfPageConfig"/>
         /// </summary>
         public PdfPageConfig? Config { get; internal set; }
 
         /// <summary>
-        /// Gets the Html to render on browser. Html is required (must not be empty).
+        /// Gets the Html/url to render on browser. Html/url is required (must not be empty).
         /// </summary>
         public string Html { get; private set; }
 
@@ -97,7 +98,7 @@ namespace HtmlPdfPlus.Shared.Core
         /// <summary>
         /// Returns a byte[] of JSON string representation of the <see cref="RequestHtmlPdf{T}"/>.
         /// </summary>
-        /// <returns>JSON string representation</returns>
+        /// <returns>Byte[] representation</returns>
         public byte[] ToBytes()
         {
             return Encoding.UTF8.GetBytes(JsonSerializer.Serialize(this));
@@ -106,10 +107,30 @@ namespace HtmlPdfPlus.Shared.Core
         /// <summary>
         /// Returns a a compressed (gzip) byte[] of JSON string representation of the <see cref="RequestHtmlPdf{T}"/>.
         /// </summary>
-        /// <returns>JSON string representation</returns>
-        public async Task<byte[]>  ToBytesCompress()
+        /// <returns>Byte[] compressed representation</returns>
+        public async Task<byte[]> ToBytesCompress()
         {
             return await GZipHelper.CompressAsync(ToBytes());
+        }
+
+        /// <summary>
+        /// Returns a <see cref="RequestHtmlPdf{T}"/> from a byte[].
+        /// </summary>
+        /// <param name="value">The <see cref="byte"/> array.</param>
+        /// <returns><see cref="RequestHtmlPdf{T}"/>.</returns>
+        public static RequestHtmlPdf<T> FromBytes(byte[] value)
+        {
+            return JsonSerializer.Deserialize<RequestHtmlPdf<T>>(Encoding.UTF8.GetString(value))!;
+        }
+
+        /// <summary>
+        /// Returns a <see cref="RequestHtmlPdf{T}"/> from a compressed byte[].
+        /// </summary>
+        /// <param name="value">The <see cref="byte"/> array compressed.</param>
+        /// <returns><see cref="RequestHtmlPdf{T}"/>.</returns>
+        public static RequestHtmlPdf<T> FromBytesCompress(byte[] value)
+        {
+            return JsonSerializer.Deserialize<RequestHtmlPdf<T>>(Encoding.UTF8.GetString(GZipHelper.DecompressAsync(value).Result))!;
         }
     }
 }

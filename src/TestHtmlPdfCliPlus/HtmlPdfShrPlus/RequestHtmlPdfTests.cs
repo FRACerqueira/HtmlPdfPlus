@@ -148,5 +148,43 @@ namespace TestHtmlPdfPlus.HtmlPdfShrPlus
             // Assert
             Assert.Equal(expectedCompressedBytes, result);
         }
+
+        [Fact]
+        public void FromBytes_ShouldReturnRequestHtmlPdf()
+        {
+            // Arrange
+            var html = "<html>   <body>   Test   </body>   </html>";
+            var request = new RequestHtmlPdf<string>(html);
+            var bytes = request.ToBytes();
+
+            // Act
+            var result = RequestHtmlPdf<string>.FromBytes(bytes);
+
+            // Assert
+            Assert.Equal(request.Html, result.Html);
+            Assert.Equal(request.Alias, result.Alias);
+            Assert.Equal(request.Config, result.Config);
+            Assert.Equal(request.Timeout, result.Timeout);
+            Assert.Equal(request.InputParam, result.InputParam);
+        }
+
+        [Fact]
+        public async Task FromBytesCompress_ShouldReturnRequestHtmlPdf()
+        {
+            // Arrange
+            var html = "<html>   <body>   Test   </body>   </html>";
+            var request = new RequestHtmlPdf<string>(html);
+            var bytes = await GZipHelper.CompressAsync(request.ToBytes());
+
+            // Act
+            var result = RequestHtmlPdf<string>.FromBytesCompress(bytes);
+
+            // Assert
+            Assert.Equal(request.Html, result.Html);
+            Assert.Equal(request.Alias, result.Alias);
+            Assert.Equal(request.Config, result.Config);
+            Assert.Equal(request.Timeout, result.Timeout);
+            Assert.Equal(request.InputParam, result.InputParam);
+        }
     }
 }

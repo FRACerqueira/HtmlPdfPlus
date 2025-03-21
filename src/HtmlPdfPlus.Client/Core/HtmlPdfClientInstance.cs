@@ -300,11 +300,11 @@ namespace HtmlPdfPlus.Client.Core
         /// <typeparam name="T">The type of the custom data.</typeparam>
         /// <param name="customdata">The custom data.</param>
         /// <returns>The HTTP <see cref="ByteArrayContent"/>.</returns>
-        private async Task<ByteArrayContent> CreateHttpContent<T>(T? customdata)
+        private async Task<StringContent> CreateHttpContent<T>(T? customdata)
         {
             return disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress)
-                ? new ByteArrayContent(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata).ToBytes())
-                : new ByteArrayContent(await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata).ToBytesCompress());
+                ? new StringContent(JsonSerializer.Serialize(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata).ToBytes()))
+                : new StringContent(JsonSerializer.Serialize(await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata).ToBytesCompress()));
         }
 
         /// <summary>

@@ -53,7 +53,8 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
 - Communicate with the server using REST API (with compressed request) or user custom protocol
 - Minify HTML and CSS
 - Client-side HTML parser with custom error action (optional)
-- Compress PDF using GZip over network (Only type bytes array output)
+- Compress send data over network
+- Compress result PDF using GZip over network (Only type bytes array output)
 - Extension on server side to customize the conversion process (before and after conversion)
     - BeforePDF : Normalize HTML, Replace tokens, etc
     - AfterPDF : Save file, Send to cloud, etc
@@ -61,7 +62,14 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
 
 ### What's new in the latest version 
 
-- **v0.4.0-rc (latest version)**
+- **v0.5.0-rc (latest version)**
+    - Simplified sending data to the server via http client (now aceept byte[] instead of stream)
+    - Removed ReadToBytesAsync stream extension method
+    - Exposing the RequestHtmlPdf\<T\> class for scenarios of handling sending parameters
+    - Updated documentation
+    - Preparation for GA version
+
+- **v0.4.0-rc**
     - Relaxation of Package Reference for .net8 to .net9
     - Renamed the 'Source' command to 'Scope'
     - Renamed the 'Request' command to 'ScopeRequest'
@@ -72,8 +80,6 @@ The current version (V.1.50.0) of **Playwright** supports **only the Chromium br
     - Added DecompressOutputData() method to class HtmlPdfResult for custom scenarios
     - Improvements in the compression/decompression process to use asynchronous methods
     - Small code reviews
-    - Updated documentation
-    - Preparation for GA version
  
 - **v0.3.0-beta**
     - Added FromUrl(Uri value) command to client-side mode
@@ -218,11 +224,10 @@ builder.Services.AddHtmlPdfService((cfg) =>
 });
 ...
 
-app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] Stream requestclienthtmltopdf, CancellationToken token) =>
+app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] byte[] requestclienthtmltopdf, CancellationToken token) =>
 {
-    var data = await requestclienthtmltopdf.ReadToBytesAsync();
     return await PDFserver
-        .Run(data, token);
+        .Run(requestclienthtmltopdf, token);
 }).Produces<HtmlPdfResult<byte[]>>(200);
 
 ```

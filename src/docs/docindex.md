@@ -7,12 +7,12 @@
 
 | public type | description |
 | --- | --- |
-| static Extension [ReadToBytesAsync](./assemblies/HtmlPdfPlus/StreamExtension/ReadToBytesAsync.md) | Read the stream and return the content as a byte[] |
 | static class [HtmlPdfClient](./assemblies/HtmlPdfPlus/HtmlPdfClient.md) | Fluent interface commands to perform client HTML to PDF conversion |
 | class [HtmlPdfResult&lt;T&gt;](./assemblies/HtmlPdfPlus/HtmlPdfResult-1.md) | Result of converting Html to PDF |
 | class [PageMargins](./assemblies/HtmlPdfPlus/PageMargins.md) | Page margins. |
 | class [PageSize](./assemblies/HtmlPdfPlus/PageSize.md) | Page size for PDF. |
 | class [PdfPageConfig](./assemblies/HtmlPdfPlus/PdfPageConfig.md) | The Config PDF page. |
+| class [RequestHtmlPdf&lt;T&gt;](./assemblies/HtmlPdfPlus/RequestHtmlPdf-1.md) | Request data to convert Html to PDF |
 | interface [IHtmlPdfClient](./assemblies/HtmlPdfPlus/IHtmlPdfClient.md) | Fluent interface commands to HtmlPdfClientInstance. |
 | interface [IHtmlPdfServer&lt;TIn,TOut&gt;](./assemblies/HtmlPdfPlus/IHtmlPdfServer-2.md) | Fluent interface commands to perform HTML to PDF conversion. |
 | interface [IHtmlPdfServer&lt;TIn,TOut&gt;](./assemblies/HtmlPdfPlus/IHtmlPdfServer-2.md) | Fluent interface commands to perform HTML to PDF conversion. |
