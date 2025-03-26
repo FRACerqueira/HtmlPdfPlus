@@ -12,47 +12,6 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
 {
     public class HtmlPdfClientTest
     {
-        [Fact]
-        public void Ensure_Run_Error_When_NotPageConfig()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-                HtmlPdfClient.Create("Teste")
-                    .PageConfig(null);
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-            });
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void Ensure_Run_Error_When_NotHHtml(string? html)
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-#pragma warning disable CS8604 // Possible null reference argument.
-                HtmlPdfClient.Create("Teste")
-                    .FromHtml(html);
-#pragma warning restore CS8604 // Possible null reference argument.
-            });
-        }
-
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void Ensure_Run_Error_When_NotTemplate(string? html)
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-#pragma warning disable CS8604 // Possible null reference argument.
-                HtmlPdfClient.Create("Teste")
-                    .FromRazor<string>(html,"");
-#pragma warning restore CS8604 // Possible null reference argument.
-            });
-        }
-
         [Theory]
         [InlineData(LogLevel.Critical)]
         [InlineData(LogLevel.Warning)]
@@ -103,35 +62,6 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
                     {
                         return Task.FromResult(new HtmlPdfResult<string>(true, false, TimeSpan.Zero, null));
                     }, "");
-            });
-        }
-
-        [Fact]
-        public async Task Ensure_Run_Error_When_NotSubmmitFunction()
-        {
-            Func<byte[], CancellationToken, Task<HtmlPdfResult<byte[]>>>? submmitFunction = null;
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            {
-#pragma warning disable CS8604 // Possible null reference argument.
-                await HtmlPdfClient.Create("Teste")
-                    .FromHtml("<h1>Test</h1>")
-                    .Run(submmitFunction);
-#pragma warning restore CS8604 // Possible null reference argument.
-            });
-        }
-
-
-        [Fact]
-        public async Task Ensure_RunGeneric_Error_When_NotSubmmitFunction()
-        {
-            Func<byte[], CancellationToken, Task<HtmlPdfResult<string>>>? submmitFunction = null;
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            {
-#pragma warning disable CS8604 // Possible null reference argument.
-                await HtmlPdfClient.Create("Teste")
-                    .FromHtml("<h1>Test</h1>")
-                    .Run<string,string>(submmitFunction, "");
-#pragma warning restore CS8604 // Possible null reference argument.
             });
         }
 

@@ -5,20 +5,20 @@ EXPOSE 8081
 
 USER root
 
-# Install Google Chrome (133.0.6943.* - Same playwright 1.50.0) Stable and fonts
+# Install Google Chrome (133.0.6943.* - Same playwright 1.51.0) Stable and fonts
 # Note: this installs the necessary libs to make the browser work. 
 RUN apt-get update && apt-get install gnupg wget -y && \
     wget --quiet --output-document=- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /etc/apt/trusted.gpg.d/google-archive.gpg
-RUN wget -q https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_133.0.6943.126-1_amd64.deb
+RUN wget -q https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_134.0.6998.35-1_amd64.deb
 RUN apt-get -y update
-RUN apt-get install ./google-chrome-stable_133.0.6943.126-1_amd64.deb -y --no-install-recommends
+RUN apt-get install ./google-chrome-stable_134.0.6998.35-1_amd64.deb -y --no-install-recommends
 
 # Clean up
 RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/*  /tmp/* /var/tmp/* ./google-chrome-stable_133.0.6943.126-1_amd64.deb
+    rm -rf /var/lib/apt/lists/*  /tmp/* /var/tmp/* ./google-chrome-stable_134.0.6998.35-1_amd64.deb
 
 # This stage (pre-installed playwright with Google Chrome 133.0.6943.*) install the .net 9 runtime  and used to build the service project
-FROM mcr.microsoft.com/playwright/dotnet:v1.50.0 AS build  
+FROM mcr.microsoft.com/playwright/dotnet:v1.51.0 AS build  
 
 USER root
 

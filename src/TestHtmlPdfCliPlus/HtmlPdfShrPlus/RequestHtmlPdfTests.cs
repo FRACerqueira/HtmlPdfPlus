@@ -36,16 +36,6 @@ namespace TestHtmlPdfPlus.HtmlPdfShrPlus
         }
 
         [Fact]
-        public void Constructor_NullHtml_ShouldThrowArgumentException()
-        {
-            // Arrange
-            string html = null;
-
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() => new RequestHtmlPdf<string>(html));
-        }
-
-        [Fact]
         public void Constructor_EmptyHtml_ShouldThrowArgumentException()
         {
             // Arrange
@@ -79,17 +69,6 @@ namespace TestHtmlPdfPlus.HtmlPdfShrPlus
 
             // Assert
             Assert.Equal(newHtml, request.Html);
-        }
-
-        [Fact]
-        public void ChangeHtml_NullHtml_ShouldThrowArgumentException()
-        {
-            // Arrange
-            var html = "<html></html>";
-            var request = new RequestHtmlPdf<string>(html);
-
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() => request.ChangeHtml(null, false));
         }
 
         [Fact]

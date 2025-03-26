@@ -36,7 +36,7 @@ namespace HtmlPdfPlus
         /// <param name="logger"><see cref="ILogger"/> instance.</param>
         /// <param name="logLevel">Log level, valid levels are: None, Trace, Debug (default), Info. <see cref="LogLevel"/>.</param>
         /// <returns><see cref="IHtmlPdfClient"/> instance.</returns>
-        /// <exception cref="ArgumentException">Thrown when the loglevelis invalid.</exception>
+        /// <exception cref="ArgumentException">Thrown when the loglevel is invalid.</exception>
         /// 
         IHtmlPdfClient Logger(ILogger? logger, LogLevel logLevel = LogLevel.Debug);
 

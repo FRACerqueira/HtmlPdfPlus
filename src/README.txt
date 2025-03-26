@@ -20,7 +20,7 @@ HtmlPdfPlus is a powerful tool that can help you generate PDF files from HTML or
 This library was built using the Playwright (https://playwright.dev/dotnet/) (engine to automate Chromium, Firefox, and WebKit** with a single API). 
 Playwright is built to enable cross-browser web automation that is evergreen, capable, reliable, and fast.
 
-The current version (V.1.50.0) of **Playwright** supports **only the Chromium browser** for the PDF API.
+The current version (V.1.51.0) of **Playwright** supports **only the Chromium browser** for the PDF API.
 
 Features
 ========
@@ -45,6 +45,12 @@ Features
 
 What's new in the latest version 
 ================================
+
+- v1.0.0 (latest version)
+    - Updated Playwright to version 1.51.0
+    - Adjusted package reference for target framework
+    - Updated documentation
+    - GA version (jump to version 1.0.0)
 
 - v0.5.0-rc (latest version)
     - Simplified sending data to the server via http client (now aceept byte[] instead of stream)
@@ -305,7 +311,7 @@ To achieve this reduction, the biggest challenge was controlling the necessary d
 
 Basically, what we did was:
 - Use the base image from mcr.microsoft.com/dotnet/aspnet:9.0
-- Use the image from cr.microsoft.com/playwright/dotnet:v1.50.0 for build
+- Use the image from cr.microsoft.com/playwright/dotnet:v1.51.0 for build
   - Removing unnecessary browser and driver installations
   - For .NET 9, we removed the default installation (.NET 8)
     - We installed the .NET 9 SDK version for the build phase

@@ -32,30 +32,37 @@
 		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Compile Remove="Core\RequestHtmlPdf.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\HtmlPdfPlus.Shared\HtmlPdfPlus.Shared.csproj">
 			<ReferenceOutputAssembly>true</ReferenceOutputAssembly>
 			<IncludeAssets>HtmlPdfPlus.Shared.dll</IncludeAssets>
 		</ProjectReference>
 	</ItemGroup>
-	
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Playwright" Version="1.51.0" />
+	</ItemGroup>	
 	<ItemGroup>
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
 			<_Parameter1>TestHtmlPdfPlus</_Parameter1>
 		</AssemblyAttribute>
 	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="[8.0.1,10)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="[8.0.3,10)" />
-		<PackageReference Include="Microsoft.Playwright" Version="1.50.0" />
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
 		<PackageReference Include="NUglify" Version="1.21.13" />
-		<PackageReference Include="System.Text.Json" Version="[8.0.5,10)"  />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
-
+	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
+		<PackageReference Include="NUglify" Version="1.21.13" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.3" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
+		<PackageReference Include="NUglify" Version="1.21.13" />
+		<PackageReference Include="System.Text.Json" Version="9.0.3" />
+	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\README.txt">
 			<Pack>True</Pack>

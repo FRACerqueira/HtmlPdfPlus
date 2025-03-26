@@ -23,7 +23,7 @@ public IHtmlPdfClient Logger(ILogger? logger, LogLevel logLevel = LogLevel.Debug
 
 | exception | condition |
 | --- | --- |
-| ArgumentException | Thrown when the loglevelis invalid. |
+| ArgumentException | Thrown when the loglevel is invalid. |
 
 ### See Also
 

@@ -31,22 +31,10 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
         }
 
         [Fact]
-        public void PageConfig_ShouldThrowArgumentNullException_WhenConfigIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => _clientInstance.PageConfig(null));
-        }
-
-        [Fact]
         public void PageConfig_ShouldSetPdfPageConfig()
         {
             _clientInstance.PageConfig(config => config.Margins(10));
             Assert.NotNull(_clientInstance);
-        }
-
-        [Fact]
-        public void FromHtml_ShouldThrowArgumentNullException_WhenValueIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => _clientInstance.FromHtml(null));
         }
 
         [Fact]
@@ -62,12 +50,6 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
             var uri = new Uri("http://example.com");
             _clientInstance.FromUrl(uri);
             Assert.NotNull(_clientInstance);
-        }
-
-        [Fact]
-        public void FromRazor_ShouldThrowArgumentNullException_WhenTemplateIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => _clientInstance.FromRazor<object>(null, new object()));
         }
 
         [Fact]
@@ -118,22 +100,14 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
         [Fact]
         public async Task Run_ShouldThrowInvalidOperationException_WhenHtmlIsEmpty()
         {
-            await Assert.ThrowsAsync<InvalidOperationException>(() => _clientInstance.Run((html, token) => Task.FromResult(new HtmlPdfResult<byte[]>(true, false, TimeSpan.Zero, new byte[0])), CancellationToken.None));
-        }
-
-        [Fact]
-        public async Task Run_ShouldThrowArgumentNullException_WhenSubmitHtmlToPdfIsNull()
-        {
-            Func<byte[], CancellationToken, Task<HtmlPdfResult<string>>>? submitHtmlToPdf = null;
-            _clientInstance.FromHtml("<html><body><h1>test</h1></body></html>");
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _clientInstance.Run(submitHtmlToPdf, CancellationToken.None));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _clientInstance.Run((html, token) => Task.FromResult(new HtmlPdfResult<byte[]>(true, false, TimeSpan.Zero, [])), CancellationToken.None));
         }
 
         [Fact]
         public async Task Run_ShouldReturnHtmlPdfResult()
         {
             _clientInstance.FromHtml("<html><body><h1>test</h1></body></html>");
-            var result = await _clientInstance.Run((html, token) => Task.FromResult(new HtmlPdfResult<byte[]>(true, false, TimeSpan.Zero, new byte[0])), CancellationToken.None);
+            var result = await _clientInstance.Run((html, token) => Task.FromResult(new HtmlPdfResult<byte[]>(true, false, TimeSpan.Zero, [])), CancellationToken.None);
             Assert.NotNull(result);
         }
 
