@@ -12,7 +12,7 @@ The best tool to convert HTML to PDF in .NET with a modern engine
 Project Description
 ===================
 
-HtmlPdfPlus is a modern and lightweight library for **.Net9, .Net8 and NetStandard2.1** that allows you to convert HTML or RAZOR pages to PDF with high fidelity. 
+HtmlPdfPlus is a modern and lightweight library for **.Net10,.Net9 and .Net8** that allows you to convert HTML or RAZOR pages to PDF with high fidelity. 
 It is a scalable and flexible solution that can be used in client-server mode or only server. 
 It supports CSS and JavaScript, and it is easy to integrate with your application. 
 You can customize the PDF settings, such as page size and margins, and add headers and footers to your PDF files. 
@@ -20,7 +20,7 @@ HtmlPdfPlus is a powerful tool that can help you generate PDF files from HTML or
 This library was built using the Playwright (https://playwright.dev/dotnet/) (engine to automate Chromium, Firefox, and WebKit** with a single API). 
 Playwright is built to enable cross-browser web automation that is evergreen, capable, reliable, and fast.
 
-The current version (V.1.51.0) of **Playwright** supports **only the Chromium browser** for the PDF API.
+The current version (V.1.56.0) of **Playwright** supports **only the Chromium browser** for the PDF API.
 
 Features
 ========
@@ -45,8 +45,13 @@ Features
 
 What's new in the latest version 
 ================================
+- **v1.0.1 (latest version)**
+    - Updated Playwright to version 1.56.0
+    - Adjusted package reference for target framework (removed  NetStandard2.1)
+    - Updated documentation
+    - include target .NET 10.0
 
-- v1.0.0 (latest version)
+- v1.0.0
     - Updated Playwright to version 1.51.0
     - Adjusted package reference for target framework
     - Updated documentation

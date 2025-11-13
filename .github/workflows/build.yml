@@ -6,18 +6,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Setup dotnet
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: '9.0.x' # SDK Version to use.
+        dotnet-version: '10.0.x' # SDK Version to use.
 
     - name: Build project
       run: dotnet build HtmlPdfPlus.sln -c Release
 
     - name: Install Playwright browsers
-      run: pwsh src/TestHtmlPdfCliPlus/bin/Release/net9.0/playwright.ps1 install --with-deps chromium
+      run: pwsh src/TestHtmlPdfCliPlus/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
 
     - name: Run test cases
       run: dotnet test -c Release --no-build
