@@ -29,7 +29,7 @@
 - [FAQ](#faq)
 
 ## Project Description
-HtmlPdfPlus is a modern and lightweight library for **.Net9, .Net8 and NetStandard2.1** that allows you to convert HTML or RAZOR pages to PDF with high fidelity. 
+HtmlPdfPlus is a modern and lightweight library for **.Net10, .Net9 and .Net8** that allows you to convert HTML or RAZOR pages to PDF with high fidelity. 
 
 It is a scalable and flexible solution that can be used in client-server mode or only server. It supports CSS and JavaScript, and it is easy to integrate with your application. 
 
@@ -37,7 +37,7 @@ You can customize the PDF settings, such as page size and margins, and add heade
 
 This library was built using the [Playwright](https://playwright.dev/dotnet/) (engine to automate **Chromium, Firefox, and WebKit** with a single API). Playwright is built to enable cross-browser web automation that is evergreen, capable, reliable, and fast. 
 
-The current version (V.1.51.0) of **Playwright** supports **only the Chromium browser** for the PDF API.
+The current version (V.1.56.0) of **Playwright** supports **only the Chromium browser** for the PDF API.
 
 ## Features
 [**Top**](#table-of-contents)
@@ -61,8 +61,13 @@ The current version (V.1.51.0) of **Playwright** supports **only the Chromium br
 - Disable features to improve/ balance performance (minify, compress and log)
 
 ### What's new in the latest version 
+- **v1.0.1 (latest version)**
+    - Updated Playwright to version 1.56.0
+    - Adjusted package reference for target framework (removed  NetStandard2.1)
+    - Updated documentation
+    - include target .NET 10.0
 
-- **v1.0.0 (latest version)**
+- **v1.0.0
     - Updated Playwright to version 1.51.0
     - Adjusted package reference for target framework
     - Updated documentation
@@ -106,7 +111,7 @@ The current version (V.1.51.0) of **Playwright** supports **only the Chromium br
 ## Prerequisites
 [**Top**](#table-of-contents)
 
-- .NET 8 or .NET 9 SDK
+- .NET 8, .NET 9 or .NET 10 SDK
 - Visual Studio 2022 or later
 - Playwright (Installed and configured for your O.S)
 
@@ -377,11 +382,11 @@ This project suggests a containerization example that **reduces the final image 
 To achieve this reduction, the biggest challenge was controlling the necessary dependencies and keeping only the minimum for execution in a headless shell.
 
 Basically, what we did was:
-- Use the base image from mcr.microsoft.com/dotnet/aspnet:9.0
-- Use the image from cr.microsoft.com/playwright/dotnet:v1.51.0 for build
+- Use the base image from mcr.microsoft.com/dotnet/aspnet:10.0
+- Use the image from cr.microsoft.com/playwright/dotnet:v1.56.0 for build
   - Removing unnecessary browser and driver installations
-  - For .NET 9, we removed the default installation (.NET 8)
-    - We installed the .NET 9 SDK version for the build phase
+  - we removed the default installation (.NET x)
+    - We installed the .NET 10 SDK version for the build phase
 - Copy the required folder (pre-installed) to run Playwright
 - Install Google Chrome Stable , fonts and install the necessary libs to make the browser work.
 - Set environment variable for Playwright

@@ -101,7 +101,7 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
                 .Timeout(10)
                 .Run((eventdata, token) =>
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(1000);
                     return Task.FromResult(new HtmlPdfResult<byte[]>(true, false, TimeSpan.Zero, default));
                 });
             Assert.False(result.IsSuccess);
@@ -117,7 +117,7 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
                 .Timeout(10)
                 .Run<string,string>((eventdata, token) =>
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(1000);
                     return Task.FromResult(new HtmlPdfResult<string>(true,false, TimeSpan.Zero,""));
                 }, "");
             Assert.False(result.IsSuccess);
