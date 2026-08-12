@@ -19,14 +19,14 @@ namespace HtmlPdfPlus.Client.Core
     /// </summary>
     internal sealed class HtmlPdfClientInstance(string sourcealias, DisableOptionsHtmlToPdf disableOptions) : IHtmlPdfClient
     {
-        private ILogger? _logger = null;
+        private ILogger? _logger;
         private LogLevel _logLevel = LogLevel.Debug;
         private PdfPageConfig _pdfPageConfig = new();
         private string _html = string.Empty;
         private int _timeout = 30000;
-        private bool _htmlparse = false;
-        private string? _errorparse = null;
-        private Action<string>? _parseError = null;
+        private bool _htmlparse;
+        private string? _errorparse;
+        private Action<string>? _parseError;
 
         /// <inheritdoc />
         public IHtmlPdfClient PageConfig(Action<IPdfPageConfig> config)
@@ -205,11 +205,11 @@ namespace HtmlPdfPlus.Client.Core
             }
             catch (HttpRequestException ex)
             {
-                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
+                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
             }
             catch (TaskCanceledException ex)
             {
-                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
+                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
             }
         }
 
@@ -247,11 +247,11 @@ namespace HtmlPdfPlus.Client.Core
                     var completed = await Task.WhenAny(tasksubmit, Task.Delay(_timeout, linkcts.Token));
                     if (completed != tasksubmit)
                     {
-                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Canceled by Timeout({_timeout})"));
+                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new ErrorInfo(ErrorCode.Timeout, $"Canceled by Timeout({_timeout})", retryable: true));
                     }
                     else if (tasksubmit.IsFaulted)
                     {
-                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, tasksubmit.Exception?.InnerException);
+                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(tasksubmit.Exception?.InnerException ?? tasksubmit.Exception!));
                     }
                 }
                 catch (OperationCanceledException oex)
@@ -260,7 +260,7 @@ namespace HtmlPdfPlus.Client.Core
                 }
                 catch (Exception ex)
                 {
-                    result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
+                    result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
                 }
                 finally
                 {
@@ -332,12 +332,12 @@ namespace HtmlPdfPlus.Client.Core
             if (oex.CancellationToken.IsCancellationRequested)
             {
                 LogMessage($"Canceled by Timeout({_timeout})");
-                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Canceled by Timeout({_timeout})", oex));
+                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new ErrorInfo(ErrorCode.Timeout, $"Canceled by Timeout({_timeout})", retryable: true));
             }
             else
             {
                 LogMessage("Canceled by client");
-                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, oex);
+                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(oex));
             }
         }
 
@@ -383,7 +383,7 @@ namespace HtmlPdfPlus.Client.Core
             }
             else
             {
-                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new HttpRequestException($"{result.StatusCode} : {result.ReasonPhrase}"));
+                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(new HttpRequestException($"{result.StatusCode} : {result.ReasonPhrase}")));
             }
         }
     }

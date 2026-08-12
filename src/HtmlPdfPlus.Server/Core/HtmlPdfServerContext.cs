@@ -25,10 +25,10 @@ namespace HtmlPdfPlus.Server.Core
     internal sealed class HtmlPdfServerContext<TIn, TOut>(HtmlPdfServer<TIn, TOut> htmlPdfServer, TIn? inputparam, byte[]? requestClient) : IHtmlPdfServerContext<TIn, TOut>, IDisposable
     {
         private bool isDisposed;
-        private Func<string, TIn?, CancellationToken, Task<string>>? _inputparam = null;
-        private Func<byte[]?, TIn?, CancellationToken, Task<TOut>>? _outputparam = null;
+        private Func<string, TIn?, CancellationToken, Task<string>>? _inputparam;
+        private Func<byte[]?, TIn?, CancellationToken, Task<TOut>>? _outputparam;
         private string _html = string.Empty;
-        private int _timeout = 30000;
+        private int _timeout;
 
         /// <inheritdoc />
         public IHtmlPdfServerContext<TIn, TOut> BeforePDF(Func<string, TIn?, CancellationToken, Task<string>> inputparam)
@@ -136,7 +136,7 @@ namespace HtmlPdfPlus.Server.Core
             }
             catch (Exception ex)
             {
-                return new HtmlPdfResult<TOut>(false, false, sw.Elapsed, default, ex);
+                return new HtmlPdfResult<TOut>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
             }
             var isurl = Uri.IsWellFormedUriString(requestHtmlPdf.Html, UriKind.RelativeOrAbsolute);
             var disabledcompress = htmlPdfServer.PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress);
@@ -180,9 +180,9 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         // Reusable logging
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfServerContext({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfServerContext({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfServerContext({source}) : {message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfServerContext({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfServerContext({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfServerContext({Source}) : {Message}");
 
     }
 }

@@ -92,7 +92,7 @@ namespace HtmlPdfPlus.Server.Core
             }
             catch (Exception ex)
             {
-                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
+                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
             }
             var isurl = Uri.IsWellFormedUriString(requestHtmlPdf.Html, UriKind.RelativeOrAbsolute);
             return await RunServer(isurl,null,null,sw, requestHtmlPdf, PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress), token);
@@ -124,14 +124,14 @@ namespace HtmlPdfPlus.Server.Core
                     if (completed != taskinput)
                     {
                         LogMessage($"Reached Timeout({requestHtmlPdf.Timeout})");
-                        return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Reached Timeout(({requestHtmlPdf.Timeout})"));
+                        return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new ErrorInfo(ErrorCode.Timeout, $"Reached Timeout({requestHtmlPdf.Timeout})", retryable: true));
                     }
                     else
                     {
                         if (taskinput.IsFaulted)
                         {
                             LogMessage($"Error BeforePDF function after {sw.Elapsed} : {taskinput.Exception.InnerException}");
-                            return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, taskinput.Exception.InnerException);
+                            return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(taskinput.Exception.InnerException ?? taskinput.Exception));
                         }
                         else
                         {
@@ -144,18 +144,18 @@ namespace HtmlPdfPlus.Server.Core
                     if (cts.IsCancellationRequested)
                     {
                         LogMessage($"Reached Timeout({requestHtmlPdf.Timeout})");
-                        return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Reached Timeout(({requestHtmlPdf.Timeout})"));
+                        return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new ErrorInfo(ErrorCode.Timeout, $"Reached Timeout({requestHtmlPdf.Timeout})", retryable: true));
                     }
                     else
                     {
                         LogMessage($"Canceled by token server");
-                        return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
+                        return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
                     }
                 }
                 catch (Exception ex)
                 {
                     LogMessage($"Error BeforePDF function after {sw.Elapsed} : {ex}");
-                    return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
+                    return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
                 }
                 finally
                 {
@@ -181,19 +181,19 @@ namespace HtmlPdfPlus.Server.Core
                     bytespdf = await GeneratePDF(isurl, requestHtmlPdf, reamaindtime, executeToken.Token);
                     if (bytespdf is null)
                     {
-                        return new HtmlPdfResult<Tout>(false, true, sw.Elapsed, default, new InvalidOperationException("Not AvailableBuffer"));
+                        return new HtmlPdfResult<Tout>(false, true, sw.Elapsed, default, new ErrorInfo(ErrorCode.PoolExhausted, "Not AvailableBuffer", retryable: true));
                     }
                     if (bytespdf.Length == 0)
                     {
-                        return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Reached Timeout(({requestHtmlPdf.Timeout})"));
+                        return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new ErrorInfo(ErrorCode.Timeout, $"Reached Timeout({requestHtmlPdf.Timeout})", retryable: true));
                     }
                     LogMessage($"Executed the Generate PDF after {sw.Elapsed}");
                 }
                 catch (Exception ex)
                 {
-                    cts.Cancel(); // cancel pending task  
+                    cts.Cancel(); // cancel pending task
                     LogMessage($"Error Generate PDF from browser after {sw.Elapsed} : {ex}");
-                    return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
+                    return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
                 }
             }
 
@@ -235,14 +235,14 @@ namespace HtmlPdfPlus.Server.Core
                     if (completed != taskoutput)
                     {
                         LogMessage($"Reached Timeout({requestHtmlPdf.Timeout})");
-                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Reached Timeout(({requestHtmlPdf.Timeout})"));
+                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new ErrorInfo(ErrorCode.Timeout, $"Reached Timeout({requestHtmlPdf.Timeout})", retryable: true));
                     }
                     else
                     {
                         if (taskoutput.IsFaulted)
                         {
                             LogMessage($"Error AfterPDF function after {sw.Elapsed} : {taskoutput.Exception.InnerException}");
-                            result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, taskoutput.Exception.InnerException);
+                            result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(taskoutput.Exception.InnerException ?? taskoutput.Exception));
                         }
                         else
                         {
@@ -255,18 +255,18 @@ namespace HtmlPdfPlus.Server.Core
                     if (cts.IsCancellationRequested)
                     {
                         LogMessage($"Reached Timeout({requestHtmlPdf.Timeout})");
-                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Reached Timeout(({requestHtmlPdf.Timeout})"));
+                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new ErrorInfo(ErrorCode.Timeout, $"Reached Timeout({requestHtmlPdf.Timeout})", retryable: true));
                     }
                     else
                     {
                         LogMessage($"Canceled by token server");
-                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
+                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
                     }
                 }
                 catch (Exception ex)
                 {
                     LogMessage($"Error AfterPDF function after {sw.Elapsed} : {ex}");
-                    result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
+                    result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
                 }
                 finally
                 {
@@ -399,8 +399,8 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         // Reusable logging
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfSrvPlus({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfSrvPlus({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfSrvPlus({source}) : {message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
     }
 }
