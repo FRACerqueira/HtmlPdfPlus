@@ -288,6 +288,7 @@ namespace HtmlPdfPlus.Server.Core
         {
             IPage? page = null;
             byte[] resultpdf = [];
+            Task? taskpdf = null;
             try
             {
                 page = PdfSrvBuilder!.Acquire(token);
@@ -312,7 +313,7 @@ namespace HtmlPdfPlus.Server.Core
                         WaitUntil = WaitUntilState.DOMContentLoaded
                     });
                 }
-                var taskpdf = Task.Run(async () =>
+                taskpdf = Task.Run(async () =>
                 {
                     resultpdf = await page.PdfAsync(new PagePdfOptions
                     {
@@ -356,7 +357,20 @@ namespace HtmlPdfPlus.Server.Core
             {
                 if (page is not null)
                 {
-                    await PdfSrvBuilder!.RestoreAvailableBuffer(page!);
+                    if (taskpdf is not null && !taskpdf.IsCompleted)
+                    {
+                        // Playwright's PdfAsync takes no cancellation token, so the timeout
+                        // above could not abort it - it may still be running on this page.
+                        // Replenish the pool immediately with a fresh page, and only close
+                        // this one once that work actually settles, instead of closing a page
+                        // that is still in use underneath it.
+                        await PdfSrvBuilder!.ReplenishBufferAsync();
+                        PdfSrvBuilder!.CloseWhenSettled(page, taskpdf);
+                    }
+                    else
+                    {
+                        await PdfSrvBuilder!.RestoreAvailableBuffer(page);
+                    }
                 }
             }
             return resultpdf;
@@ -399,8 +413,8 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         // Reusable logging
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfSrvPlus({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfSrvPlus({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfSrvPlus({source}) : {message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
     }
 }

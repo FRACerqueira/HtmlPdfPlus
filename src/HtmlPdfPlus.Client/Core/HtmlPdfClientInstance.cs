@@ -19,14 +19,14 @@ namespace HtmlPdfPlus.Client.Core
     /// </summary>
     internal sealed class HtmlPdfClientInstance(string sourcealias, DisableOptionsHtmlToPdf disableOptions) : IHtmlPdfClient
     {
-        private ILogger? _logger = null;
+        private ILogger? _logger;
         private LogLevel _logLevel = LogLevel.Debug;
         private PdfPageConfig _pdfPageConfig = new();
         private string _html = string.Empty;
         private int _timeout = 30000;
-        private bool _htmlparse = false;
-        private string? _errorparse = null;
-        private Action<string>? _parseError = null;
+        private bool _htmlparse;
+        private string? _errorparse;
+        private Action<string>? _parseError;
 
         /// <inheritdoc />
         public IHtmlPdfClient PageConfig(Action<IPdfPageConfig> config)
