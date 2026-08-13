@@ -23,6 +23,7 @@ namespace HtmlPdfPlus.Client.Core
         private LogLevel _logLevel = LogLevel.Debug;
         private PdfPageConfig _pdfPageConfig = new();
         private string _html = string.Empty;
+        private RenderMode _mode = RenderMode.Html;
         private int _timeout = 30000;
         private bool _htmlparse = false;
         private string? _errorparse = null;
@@ -73,6 +74,7 @@ namespace HtmlPdfPlus.Client.Core
                 }
                 _html = minify.Code;
             }
+            _mode = RenderMode.Html;
             return this;
         }
 
@@ -80,6 +82,7 @@ namespace HtmlPdfPlus.Client.Core
         public IHtmlPdfClient FromUrl(Uri value)
         {
             _html = value.ToString();
+            _mode = RenderMode.Url;
             _errorparse = null;
             return this;
         }
@@ -106,6 +109,7 @@ namespace HtmlPdfPlus.Client.Core
                 }
                 _html = minify.Code;
             }
+            _mode = RenderMode.Html;
             return this;
         }
 
@@ -303,8 +307,8 @@ namespace HtmlPdfPlus.Client.Core
         private async Task<StringContent> CreateHttpContent<T>(T? customdata)
         {
             return disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress)
-                ? new StringContent(JsonSerializer.Serialize(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata).ToBytes()))
-                : new StringContent(JsonSerializer.Serialize(await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata).ToBytesCompress()));
+                ? new StringContent(JsonSerializer.Serialize(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata, _mode).ToBytes()))
+                : new StringContent(JsonSerializer.Serialize(await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata, _mode).ToBytesCompress()));
         }
 
         /// <summary>
@@ -316,8 +320,8 @@ namespace HtmlPdfPlus.Client.Core
         private async Task<byte[]> CreateRequestSend<T>(T? inputparam)
         {
             return disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress)
-                ? new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam).ToBytes()
-                : await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam).ToBytesCompress();
+                ? new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam, _mode).ToBytes()
+                : await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam, _mode).ToBytesCompress();
         }
 
         /// <summary>

@@ -33,6 +33,20 @@ namespace TestHtmlPdfPlus.HtmlPdfShrPlus
             Assert.Equal(config, request.Config);
             Assert.Equal(timeout, request.Timeout);
             Assert.Equal(inputParam, request.InputParam);
+            Assert.Equal(RenderMode.Html, request.Mode);
+        }
+
+        [Fact]
+        public void Constructor_ExplicitUrlMode_ShouldInitializeMode()
+        {
+            // Arrange
+            var url = "http://example.com";
+
+            // Act
+            var request = new RequestHtmlPdf<string>(url, mode: RenderMode.Url);
+
+            // Assert
+            Assert.Equal(RenderMode.Url, request.Mode);
         }
 
         [Fact]
@@ -145,6 +159,7 @@ namespace TestHtmlPdfPlus.HtmlPdfShrPlus
             Assert.Equal(request.Config, result.Config);
             Assert.Equal(request.Timeout, result.Timeout);
             Assert.Equal(request.InputParam, result.InputParam);
+            Assert.Equal(request.Mode, result.Mode);
         }
 
         [Fact]
@@ -164,6 +179,7 @@ namespace TestHtmlPdfPlus.HtmlPdfShrPlus
             Assert.Equal(request.Config, result.Config);
             Assert.Equal(request.Timeout, result.Timeout);
             Assert.Equal(request.InputParam, result.InputParam);
+            Assert.Equal(request.Mode, result.Mode);
         }
     }
 }
