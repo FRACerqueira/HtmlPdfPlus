@@ -19,14 +19,14 @@ namespace HtmlPdfPlus.Client.Core
     /// </summary>
     internal sealed class HtmlPdfClientInstance(string sourcealias, DisableOptionsHtmlToPdf disableOptions) : IHtmlPdfClient
     {
-        private ILogger? _logger = null;
+        private ILogger? _logger;
         private LogLevel _logLevel = LogLevel.Debug;
         private PdfPageConfig _pdfPageConfig = new();
         private string _html = string.Empty;
         private int _timeout = 30000;
-        private bool _htmlparse = false;
-        private string? _errorparse = null;
-        private Action<string>? _parseError = null;
+        private bool _htmlparse;
+        private string? _errorparse;
+        private Action<string>? _parseError;
 
         /// <inheritdoc />
         public IHtmlPdfClient PageConfig(Action<IPdfPageConfig> config)
@@ -244,14 +244,27 @@ namespace HtmlPdfPlus.Client.Core
                     cts.CancelAfter(_timeout);
                     var tasksubmit = Task.Run(async () => result = await submitHtmlToPdf(requestsend, linkcts.Token).ConfigureAwait(false), linkcts.Token);
 
-                    var completed = await Task.WhenAny(tasksubmit, Task.Delay(_timeout, linkcts.Token));
-                    if (completed != tasksubmit)
+                    // Independent wall-clock backstop: driven only by elapsed time and the
+                    // caller's own token, never by cts/linkcts. tasksubmit is ALSO driven by
+                    // linkcts, so racing it against a delay built from the same token made both
+                    // sides resolve off the same cancellation event - when tasksubmit "won" in
+                    // the Canceled state, IsFaulted (below) missed it and left `result` null.
+                    // This backstop still guarantees Run() returns within _timeout even when
+                    // submitHtmlToPdf never observes the CancellationToken it was given.
+                    var backstop = Task.Delay(_timeout, token);
+                    var completed = await Task.WhenAny(tasksubmit, backstop);
+                    if (completed == backstop)
                     {
-                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Canceled by Timeout({_timeout})"));
+                        result = token.IsCancellationRequested
+                            ? new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new OperationCanceledException("Canceled by client", token))
+                            : new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Canceled by Timeout({_timeout})"));
                     }
-                    else if (tasksubmit.IsFaulted)
+                    else
                     {
-                        result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, tasksubmit.Exception?.InnerException);
+                        // tasksubmit finished first: observe it so a fault or a cancellation
+                        // raised by the delegate itself surfaces as a real exception below,
+                        // instead of being inferred (and possibly missed) from Task state.
+                        await tasksubmit;
                     }
                 }
                 catch (OperationCanceledException oex)

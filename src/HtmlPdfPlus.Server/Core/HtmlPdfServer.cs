@@ -120,24 +120,23 @@ namespace HtmlPdfPlus.Server.Core
                             isurl || PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableMinifyHtml));
                     }, executeToken.Token);
 
-                    var completed = await Task.WhenAny(taskinput, Task.Delay(requestHtmlPdf.Timeout, executeToken.Token));
-                    if (completed != taskinput)
+                    // Backstop driven only by elapsed time and the caller's own token, never
+                    // by cts/executeToken - taskinput is ALSO driven by executeToken, so racing
+                    // it against a delay built from the same token let a Canceled taskinput
+                    // "win" silently: IsFaulted missed it, no branch returned, and execution
+                    // fell through to PDF generation as if BeforePDF had succeeded.
+                    var backstop = Task.Delay(requestHtmlPdf.Timeout, token);
+                    var completed = await Task.WhenAny(taskinput, backstop);
+                    if (completed == backstop)
                     {
                         LogMessage($"Reached Timeout({requestHtmlPdf.Timeout})");
                         return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Reached Timeout(({requestHtmlPdf.Timeout})"));
                     }
-                    else
-                    {
-                        if (taskinput.IsFaulted)
-                        {
-                            LogMessage($"Error BeforePDF function after {sw.Elapsed} : {taskinput.Exception.InnerException}");
-                            return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, taskinput.Exception.InnerException);
-                        }
-                        else
-                        {
-                            LogMessage($"Executed the BeforePDF function after {sw.Elapsed}");
-                        }
-                    }
+                    // Observe taskinput so a fault or a cancellation raised by the delegate
+                    // itself surfaces as a real exception below, instead of being inferred
+                    // (and possibly missed) from Task state.
+                    await taskinput;
+                    LogMessage($"Executed the BeforePDF function after {sw.Elapsed}");
                 }
                 catch (OperationCanceledException ex)
                 {
@@ -231,23 +230,23 @@ namespace HtmlPdfPlus.Server.Core
                         }
                     }, executeToken.Token);
 
-                    var completed = await Task.WhenAny(taskoutput, Task.Delay(requestHtmlPdf.Timeout, executeToken.Token));
-                    if (completed != taskoutput)
+                    // Same rationale as the BeforePDF backstop above: decoupled from
+                    // cts/executeToken so it can't race taskoutput off the same cancellation
+                    // event, while still guaranteeing a bounded wait.
+                    var backstop = Task.Delay(requestHtmlPdf.Timeout, token);
+                    var completed = await Task.WhenAny(taskoutput, backstop);
+                    if (completed == backstop)
                     {
                         LogMessage($"Reached Timeout({requestHtmlPdf.Timeout})");
                         result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Reached Timeout(({requestHtmlPdf.Timeout})"));
                     }
                     else
                     {
-                        if (taskoutput.IsFaulted)
-                        {
-                            LogMessage($"Error AfterPDF function after {sw.Elapsed} : {taskoutput.Exception.InnerException}");
-                            result = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, taskoutput.Exception.InnerException);
-                        }
-                        else
-                        {
-                            LogMessage($"Executed the AfterPDF function after {sw.Elapsed}");
-                        }
+                        // Observe taskoutput so a fault or a cancellation raised by the
+                        // delegate itself surfaces as a real exception below, instead of being
+                        // inferred (and possibly missed) from Task state.
+                        await taskoutput;
+                        LogMessage($"Executed the AfterPDF function after {sw.Elapsed}");
                     }
                 }
                 catch (OperationCanceledException ex)
@@ -399,8 +398,8 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         // Reusable logging
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfSrvPlus({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfSrvPlus({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfSrvPlus({source}) : {message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
     }
 }
