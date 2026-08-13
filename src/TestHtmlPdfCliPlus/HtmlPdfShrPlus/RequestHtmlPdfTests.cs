@@ -119,7 +119,7 @@ namespace TestHtmlPdfPlus.HtmlPdfShrPlus
             var html = "<html></html>";
             var request = new RequestHtmlPdf<string>(html);
             var bytes = request.ToBytes();
-            var expectedCompressedBytes = await GZipHelper.CompressAsync(bytes);
+            var expectedCompressedBytes = await GZipHelper.CompressAsync(bytes, TestContext.Current.CancellationToken);
 
             // Act
             var result = await request.ToBytesCompress();
@@ -153,7 +153,7 @@ namespace TestHtmlPdfPlus.HtmlPdfShrPlus
             // Arrange
             var html = "<html>   <body>   Test   </body>   </html>";
             var request = new RequestHtmlPdf<string>(html);
-            var bytes = await GZipHelper.CompressAsync(request.ToBytes());
+            var bytes = await GZipHelper.CompressAsync(request.ToBytes(), TestContext.Current.CancellationToken);
 
             // Act
             var result = RequestHtmlPdf<string>.FromBytesCompress(bytes);

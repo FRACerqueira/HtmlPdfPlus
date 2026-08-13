@@ -43,16 +43,16 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
-        /// Gets the required service of type <see cref="IHtmlPdfServer{Tin, Tout}"/> from the <see cref="IServiceProvider"/>.
+        /// Gets the required service of type <see cref="IHtmlPdfServer{TIn, TOut}"/> from the <see cref="IServiceProvider"/>.
         /// </summary>
-        /// <typeparam name="Tin">The type of the input parameter.</typeparam>
+        /// <typeparam name="TIn">The type of the input parameter.</typeparam>
         /// <typeparam name="TOut">The type of the output parameter.</typeparam>
         /// <param name="provider">The service provider.</param>
-        /// <returns>A service object of type <see cref="IHtmlPdfServer{Tin, Tout}"/>.</returns>
+        /// <returns>A service object of type <see cref="IHtmlPdfServer{TIn, TOut}"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the service provider is null.</exception>
-        public static IHtmlPdfServer<Tin, TOut> GetHtmlPdfService<Tin, TOut>(this IServiceProvider provider)
+        public static IHtmlPdfServer<TIn, TOut> GetHtmlPdfService<TIn, TOut>(this IServiceProvider provider)
         {
-            return provider?.GetRequiredService<IHtmlPdfServer<Tin, TOut>>()
+            return provider?.GetRequiredService<IHtmlPdfServer<TIn, TOut>>()
                 ?? throw new ArgumentNullException(nameof(provider));
         }
 
