@@ -49,7 +49,9 @@ namespace HtmlPdfPlus
         IHtmlPdfClient FromHtml(string html);
 
         /// <summary>
-        /// Register Page Url to be executed by the server.
+        /// Register Page Url to be executed by the server. Sent with an explicit
+        /// <see cref="RenderMode.Url"/>, subject to the server's configured URL allow-policy
+        /// before navigation.
         /// </summary>
         /// <param name="value">The url</param>
         /// <returns><see cref="IHtmlPdfClient"/> instance.</returns>

@@ -72,5 +72,17 @@ namespace HtmlPdfPlus
         /// <returns><see cref="IHtmlPdfSrvBuilder"/> instance.</returns>
         /// <exception cref="ArgumentException">Thrown when the log level or category name is invalid.</exception>
         IHtmlPdfSrvBuilder Logger(LogLevel logLevel, string categoryName = "HtmlPdfServer");
+
+        /// <summary>
+        /// Overrides the policy used to decide whether a <see cref="RenderMode.Url"/> request is
+        /// allowed to be navigated to. The default policy allows only http/https and denies
+        /// private, loopback and link-local address ranges - which also covers common cloud
+        /// metadata endpoints such as <c>169.254.169.254</c> - closing the SSRF vector inherent
+        /// to navigating to an arbitrary caller-supplied URL.
+        /// </summary>
+        /// <param name="policy">A predicate that receives the parsed request URL and returns <c>true</c> if navigation should be allowed.</param>
+        /// <returns><see cref="IHtmlPdfSrvBuilder"/> instance.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="policy"/> is null.</exception>
+        IHtmlPdfSrvBuilder UrlAllowPolicy(Func<Uri, bool> policy);
     }
 }

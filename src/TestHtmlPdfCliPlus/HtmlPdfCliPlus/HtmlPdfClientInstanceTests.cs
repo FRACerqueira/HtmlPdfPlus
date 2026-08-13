@@ -53,6 +53,36 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
         }
 
         [Fact]
+        public async Task FromUrl_ShouldSendExplicitUrlRenderMode()
+        {
+            _clientInstance.FromUrl(new Uri("http://example.com"));
+            byte[]? sent = null;
+            await _clientInstance.Run((requestbytes, token) =>
+            {
+                sent = requestbytes;
+                return Task.FromResult(new HtmlPdfResult<byte[]>(true, false, TimeSpan.Zero, []));
+            }, CancellationToken.None);
+
+            var request = RequestHtmlPdf<object>.FromBytesCompress(sent!);
+            Assert.Equal(RenderMode.Url, request.Mode);
+        }
+
+        [Fact]
+        public async Task FromHtml_ShouldSendHtmlRenderMode()
+        {
+            _clientInstance.FromHtml("<html><body><h1>test</h1></body></html>");
+            byte[]? sent = null;
+            await _clientInstance.Run((requestbytes, token) =>
+            {
+                sent = requestbytes;
+                return Task.FromResult(new HtmlPdfResult<byte[]>(true, false, TimeSpan.Zero, []));
+            }, CancellationToken.None);
+
+            var request = RequestHtmlPdf<object>.FromBytesCompress(sent!);
+            Assert.Equal(RenderMode.Html, request.Mode);
+        }
+
+        [Fact]
         public void FromRazor_ShouldSetHtml()
         {
             var lstprod = new List<Product>

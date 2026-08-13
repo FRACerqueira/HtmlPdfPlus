@@ -94,7 +94,7 @@ namespace HtmlPdfPlus.Server.Core
             {
                 return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
             }
-            var isurl = Uri.IsWellFormedUriString(requestHtmlPdf.Html, UriKind.RelativeOrAbsolute);
+            var isurl = requestHtmlPdf.Mode == RenderMode.Url;
             return await RunServer(isurl,null,null,sw, requestHtmlPdf, PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress), token);
         }
 
@@ -301,6 +301,14 @@ namespace HtmlPdfPlus.Server.Core
                 }
                 if (isurl)
                 {
+                    if (!Uri.TryCreate(request.Html, UriKind.Absolute, out var targeturi))
+                    {
+                        throw new InvalidOperationException($"RenderMode.Url requires an absolute URL: '{request.Html}'");
+                    }
+                    if (!PdfSrvBuilder!.IsUrlAllowed(targeturi))
+                    {
+                        throw new InvalidOperationException($"The URL was rejected by the configured URL policy: '{request.Html}'");
+                    }
                     await page.GotoAsync(request.Html, new PageGotoOptions
                     {
                         Timeout = remaindtime,

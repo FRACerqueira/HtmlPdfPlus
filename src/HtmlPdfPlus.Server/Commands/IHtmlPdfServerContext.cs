@@ -27,6 +27,8 @@ namespace HtmlPdfPlus
 
         /// <summary>
         /// Register Page Url to be executed by the server in the execution context. This command disables data compression e minify.
+        /// Registered with an explicit <see cref="RenderMode.Url"/>, subject to the server's
+        /// configured URL policy (see <see cref="IHtmlPdfSrvBuilder.UrlAllowPolicy(Func{Uri, bool})"/>) before navigation.
         /// </summary>
         /// <param name="value">The url</param>
         /// <param name="converttimeout">Timeout for conversion in milliseconds</param>

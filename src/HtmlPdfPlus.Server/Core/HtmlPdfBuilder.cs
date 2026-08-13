@@ -5,6 +5,8 @@
 // ***************************************************************************************
 
 using System.Collections.Concurrent;
+using System.Net;
+using System.Net.Sockets;
 using HtmlPdfPlus.Shared.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
@@ -26,6 +28,7 @@ namespace HtmlPdfPlus.Server.Core
         private PdfPageConfig _pageconfig = new();
         private bool isDisposed;
         private int _recovering;
+        private Func<Uri, bool> _urlAllowPolicy = DefaultUrlPolicy;
         private readonly ConcurrentQueue<IPage> _availableBuffer = new();
         private readonly SemaphoreSlim _bufferSignal = new(0);
 
@@ -149,6 +152,66 @@ namespace HtmlPdfPlus.Server.Core
             LevelLog = logLevel;
             LogCategoryName = categoryName;
             return this;
+        }
+
+        /// <inheritdoc />
+        public IHtmlPdfSrvBuilder UrlAllowPolicy(Func<Uri, bool> policy)
+        {
+            _urlAllowPolicy = policy ?? throw new ArgumentNullException(nameof(policy), "policy is null");
+            return this;
+        }
+
+        internal bool IsUrlAllowed(Uri uri) => _urlAllowPolicy(uri);
+
+        /// <summary>
+        /// Default <see cref="UrlAllowPolicy"/>: allows only http/https, and denies private,
+        /// loopback and link-local address ranges - which also covers cloud metadata endpoints
+        /// such as <c>169.254.169.254</c> - to close the most common SSRF vector for the
+        /// <see cref="RenderMode.Url"/> render path.
+        /// </summary>
+        /// <remarks>
+        /// This only inspects the URL when its host is already a literal IP address. A DNS
+        /// hostname that resolves to a private or link-local address at connect time (Chromium
+        /// does its own resolution) is not caught here - supply a DNS-aware policy via
+        /// <see cref="UrlAllowPolicy"/> if that class of rebinding attack is a concern.
+        /// </remarks>
+        internal static bool DefaultUrlPolicy(Uri uri)
+        {
+            if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+            {
+                return false;
+            }
+            if ((uri.HostNameType == UriHostNameType.IPv4 || uri.HostNameType == UriHostNameType.IPv6)
+                && IPAddress.TryParse(uri.Host, out var address) && IsPrivateOrLinkLocal(address))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private static bool IsPrivateOrLinkLocal(IPAddress address)
+        {
+            if (IPAddress.IsLoopback(address))
+            {
+                return true;
+            }
+            var bytes = address.GetAddressBytes();
+            if (address.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return bytes[0] == 10
+                    || (bytes[0] == 172 && bytes[1] is >= 16 and <= 31)
+                    || (bytes[0] == 192 && bytes[1] == 168)
+                    || (bytes[0] == 169 && bytes[1] == 254);
+            }
+            if (address.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                if (address.IsIPv6LinkLocal)
+                {
+                    return true;
+                }
+                return (bytes[0] & 0xFE) == 0xFC; // unique local fc00::/7
+            }
+            return false;
         }
 
         internal async Task<IHtmlPdfServer<object, byte[]>> BuildAsync(string sourcealias)

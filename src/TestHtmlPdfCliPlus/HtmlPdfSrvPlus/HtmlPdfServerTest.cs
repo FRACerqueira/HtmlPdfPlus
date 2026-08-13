@@ -121,6 +121,25 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         }
 
         [Fact]
+        public async Task Run_ResultFalse_WhenUrlRejectedByDefaultPolicy()
+        {
+            // Arrange
+            using var objbuilder = new HtmlPdfBuilder(null);
+            await objbuilder.BuildAsync("Server");
+            var requestHtmlPdf = await new RequestHtmlPdf<byte[]>("http://169.254.169.254/latest/meta-data/", "teste", new PdfPageConfig(), 5000, mode: RenderMode.Url).ToBytesCompress();
+
+            // Act
+            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, "Server")
+                .Run(requestHtmlPdf, CancellationToken.None);
+
+            // Assert: rejected fast by the policy, never attempted a real navigation.
+            Assert.False(result.IsSuccess);
+            Assert.NotNull(result.Error);
+            Assert.Equal(ErrorCode.InvalidRequest, result.Error!.Code);
+            Assert.True(result.ElapsedTime.TotalMilliseconds < 5000);
+        }
+
+        [Fact]
         public async Task Run_ResultTrue_WithBeforePDF_AND_AfterPDF()
         {
             // Arrange

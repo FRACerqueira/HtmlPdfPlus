@@ -205,6 +205,46 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             var page = await obj.AcquireAsync(cts.Token);
             Assert.NotNull(page);
         }
+
+        [Theory]
+        [InlineData("http://10.0.0.1", false)]
+        [InlineData("http://172.16.5.4", false)]
+        [InlineData("http://172.32.5.4", true)]
+        [InlineData("http://192.168.1.1", false)]
+        [InlineData("http://169.254.169.254", false)]
+        [InlineData("http://127.0.0.1", false)]
+        [InlineData("http://8.8.8.8", true)]
+        [InlineData("http://example.com", true)]
+        [InlineData("https://example.com", true)]
+        [InlineData("ftp://example.com", false)]
+        [InlineData("http://[::1]", false)]
+        [InlineData("http://[fe80::1]", false)]
+        [InlineData("http://[fc00::1]", false)]
+        [InlineData("http://[2001:4860:4860::8888]", true)]
+        public void Ensure_DefaultUrlPolicy_ClassifiesUrl(string url, bool expectedallowed)
+        {
+            Assert.Equal(expectedallowed, HtmlPdfBuilder.DefaultUrlPolicy(new Uri(url)));
+        }
+
+        [Fact]
+        public void Ensure_UrlAllowPolicy_ThrowsArgumentNullException_WhenPolicyIsNull()
+        {
+            IHtmlPdfSrvBuilder obj = new HtmlPdfBuilder();
+            Assert.Throws<ArgumentNullException>(() => obj.UrlAllowPolicy(null!));
+            ((IDisposable)obj).Dispose();
+        }
+
+        [Fact]
+        public void Ensure_UrlAllowPolicy_OverridesDefault()
+        {
+            using var obj = new HtmlPdfBuilder();
+            var deniedByDefault = new Uri("http://169.254.169.254");
+            Assert.False(obj.IsUrlAllowed(deniedByDefault));
+
+            obj.UrlAllowPolicy(_ => true);
+
+            Assert.True(obj.IsUrlAllowed(deniedByDefault));
+        }
     }
 #pragma warning restore CA1859 // Use concrete types when possible for improved performance
 #pragma warning restore IDE0079

@@ -28,8 +28,9 @@ namespace HtmlPdfPlus
         /// <param name="config">The Config PDF page. <see cref="PdfPageConfig"/></param>
         /// <param name="timeout">The timeout convert (default 30000ms) and value must be greater than zero</param>
         /// <param name="inputparam">The input parameter used in BeforePDF and AfterPDF for custom action at server</param>
+        /// <param name="mode">Explicit declaration of how <paramref name="html"/> must be interpreted. Default is <see cref="RenderMode.Html"/>.</param>
         /// <exception cref="ArgumentException">Thrown when html is null or empty, or timeout is less than or equal to zero</exception>
-        public RequestHtmlPdf(string html, string? alias = null, PdfPageConfig? config = null, int timeout = 30000, T? inputparam = default)
+        public RequestHtmlPdf(string html, string? alias = null, PdfPageConfig? config = null, int timeout = 30000, T? inputparam = default, RenderMode mode = RenderMode.Html)
         {
             if (string.IsNullOrWhiteSpace(html))
             {
@@ -46,6 +47,7 @@ namespace HtmlPdfPlus
             Config = config;
             Timeout = timeout;
             InputParam = inputparam;
+            Mode = mode;
         }
 
         /// <summary>
@@ -72,6 +74,11 @@ namespace HtmlPdfPlus
         /// Gets the input parameter used in BeforePDF and AfterPDF for custom action at server.
         /// </summary>
         public T? InputParam { get; }
+
+        /// <summary>
+        /// Gets the explicit declaration of how <see cref="Html"/> must be interpreted.
+        /// </summary>
+        public RenderMode Mode { get; }
 
         /// <summary>
         /// Changes the Html to render on browser.

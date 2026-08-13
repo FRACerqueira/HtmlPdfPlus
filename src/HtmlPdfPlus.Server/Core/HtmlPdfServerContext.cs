@@ -28,6 +28,7 @@ namespace HtmlPdfPlus.Server.Core
         private Func<string, TIn?, CancellationToken, Task<string>>? _inputparam;
         private Func<byte[]?, TIn?, CancellationToken, Task<TOut>>? _outputparam;
         private string _html = string.Empty;
+        private RenderMode _mode = RenderMode.Html;
         private int _timeout = 30000;
 
         /// <inheritdoc />
@@ -59,6 +60,7 @@ namespace HtmlPdfPlus.Server.Core
             {
                 _html = Uglify.Html(html).Code;
             }
+            _mode = RenderMode.Html;
             _timeout = converttimeout;
             return this;
         }
@@ -79,6 +81,7 @@ namespace HtmlPdfPlus.Server.Core
             {
                 _html = Uglify.Html(aux).Code;
             }
+            _mode = RenderMode.Html;
             _timeout = converttimeout;
             return this;
         }
@@ -87,6 +90,7 @@ namespace HtmlPdfPlus.Server.Core
         public IHtmlPdfServerContext<TIn, TOut> FromUrl(Uri value, int converttimeout = 30000)
         {
             _html = value.ToString();
+            _mode = RenderMode.Url;
             _timeout = converttimeout;
             return this;
         }
@@ -117,7 +121,7 @@ namespace HtmlPdfPlus.Server.Core
             }
             else
             {
-                requestHtmlPdf = new RequestHtmlPdf<TIn>(_html, htmlPdfServer.SourceAlias, htmlPdfServer.PdfSrvBuilder.Config, _timeout, inputparam);
+                requestHtmlPdf = new RequestHtmlPdf<TIn>(_html, htmlPdfServer.SourceAlias, htmlPdfServer.PdfSrvBuilder.Config, _timeout, inputparam, _mode);
             }
             try
             {
@@ -138,7 +142,7 @@ namespace HtmlPdfPlus.Server.Core
             {
                 return new HtmlPdfResult<TOut>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
             }
-            var isurl = Uri.IsWellFormedUriString(requestHtmlPdf.Html, UriKind.RelativeOrAbsolute);
+            var isurl = requestHtmlPdf.Mode == RenderMode.Url;
             var disabledcompress = htmlPdfServer.PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress);
             return await htmlPdfServer.RunServer(isurl, _inputparam, _outputparam, sw, requestHtmlPdf, disabledcompress, token);
         }
