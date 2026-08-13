@@ -33,7 +33,7 @@ namespace TestHtmlPdfPlus.Behavioral
                 {
                     await Task.Yield();
                     throw new OperationCanceledException(ct);
-                }, TestContext.Current.CancellationToken);
+                }, CancellationToken.None);
             });
 
             // Then: no exception escapes the Result pattern, and the failure is reported,
@@ -66,7 +66,7 @@ namespace TestHtmlPdfPlus.Behavioral
                         await Task.Yield();
                         throw new OperationCanceledException(ct);
                     })
-                    .Run(TestContext.Current.CancellationToken);
+                    .Run(CancellationToken.None);
             });
 
             // Then: no exception escapes the Result pattern, and the hook's cancellation is
