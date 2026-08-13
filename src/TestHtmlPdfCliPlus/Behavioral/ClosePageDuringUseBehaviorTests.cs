@@ -57,6 +57,11 @@ namespace TestHtmlPdfPlus.Behavioral
 
             // Then: pool capacity is restored right away.
             Assert.Equal(before, builder.BufferLength);
+
+            // And: the replenished page is actually acquirable, not just counted -
+            // ReplenishBufferAsync must release the acquire signal, not only enqueue.
+            var reacquired = await builder.AcquireAsync(CancellationToken.None);
+            Assert.NotNull(reacquired);
         }
     }
 }
