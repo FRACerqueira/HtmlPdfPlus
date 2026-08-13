@@ -134,6 +134,68 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             }
             Assert.Equal(5, obj.BufferLength);
         }
+
+        [Fact]
+        public async Task Ensure_Browser_AutoRecovers_When_Disconnected()
+        {
+            // Given: a built pool and a reference to the live browser instance.
+            using var obj = new HtmlPdfBuilder();
+            obj.PagesBuffer(2);
+            await obj.BuildAsync("Teste");
+            var deadBrowser = obj.CurrentBrowser;
+
+            // When: the Chromium process disconnects unexpectedly. CloseAsync raises the same
+            // Disconnected event Playwright fires on a real crash, so it is a faithful simulation.
+            await deadBrowser!.CloseAsync();
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            while (obj.CurrentBrowser is null || !obj.CurrentBrowser.IsConnected || obj.BufferLength < 2)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+                await Task.Delay(50, cts.Token);
+            }
+
+            // Then: recovery replaced the dead browser and refilled the pool with usable pages,
+            // without any manual restart of the builder.
+            Assert.NotSame(deadBrowser, obj.CurrentBrowser);
+            Assert.Equal(2, obj.BufferLength);
+            var page = obj.Acquire(cts.Token);
+            Assert.NotNull(page);
+        }
+
+        [Fact]
+        public async Task Ensure_Browser_AutoRecovers_From_Consecutive_Disconnects()
+        {
+            // Given: a builder that already recovered once from a crash.
+            using var obj = new HtmlPdfBuilder();
+            obj.PagesBuffer(2);
+            await obj.BuildAsync("Teste");
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+
+            await obj.CurrentBrowser!.CloseAsync();
+            while (obj.CurrentBrowser is null || !obj.CurrentBrowser.IsConnected || obj.BufferLength < 2)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+                await Task.Delay(50, cts.Token);
+            }
+            var recoveredOnce = obj.CurrentBrowser;
+
+            // When: the newly recovered browser also crashes. If the dead browser's handler
+            // were still subscribed, this would fire two overlapping recoveries.
+            await recoveredOnce.CloseAsync();
+
+            // Then: the builder recovers again, cleanly, to a third distinct browser instance.
+            while (obj.CurrentBrowser is null || !obj.CurrentBrowser.IsConnected || obj.BufferLength < 2)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+                await Task.Delay(50, cts.Token);
+            }
+            Assert.NotSame(recoveredOnce, obj.CurrentBrowser);
+            Assert.Equal(2, obj.BufferLength);
+            var page = obj.Acquire(cts.Token);
+            Assert.NotNull(page);
+        }
     }
 #pragma warning restore CA1859 // Use concrete types when possible for improved performance
 #pragma warning restore IDE0079
