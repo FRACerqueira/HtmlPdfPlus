@@ -21,20 +21,20 @@ namespace TestHtmlPdfPlus.Behavioral
             // Given: a real page, and work on it that has not finished yet.
             using var builder = new HtmlPdfBuilder(null);
             await builder.BuildAsync("test");
-            var page = builder.Acquire(TestContext.Current.CancellationToken)!;
+            var page = (await builder.AcquireAsync(CancellationToken.None))!;
             var pendingWork = new TaskCompletionSource();
 
             // When: CloseWhenSettled is asked to close the page once that work settles.
             builder.CloseWhenSettled(page, pendingWork.Task);
 
             // Then: while the work is still pending, the page must remain open and usable.
-            await Task.Delay(100, TestContext.Current.CancellationToken);
+            await Task.Delay(100, CancellationToken.None);
             var whileStillPending = await Record.ExceptionAsync(() => page.EvaluateAsync<int>("1+1"));
             Assert.Null(whileStillPending);
 
             // When: the pending work finally completes.
             pendingWork.SetResult();
-            await Task.Delay(200, TestContext.Current.CancellationToken);
+            await Task.Delay(200, CancellationToken.None);
 
             // Then: only now is the page actually closed.
             var afterSettled = await Record.ExceptionAsync(() => page.EvaluateAsync<int>("1+1"));
@@ -49,7 +49,7 @@ namespace TestHtmlPdfPlus.Behavioral
             builder.PagesBuffer(1);
             await builder.BuildAsync("test");
             var before = builder.BufferLength;
-            builder.Acquire(TestContext.Current.CancellationToken);
+            await builder.AcquireAsync(CancellationToken.None);
             Assert.Equal(before - 1, builder.BufferLength);
 
             // When: the pool is replenished without waiting for that page to close.

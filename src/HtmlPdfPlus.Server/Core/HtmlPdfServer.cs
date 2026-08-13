@@ -294,7 +294,7 @@ namespace HtmlPdfPlus.Server.Core
             Task? taskpdf = null;
             try
             {
-                page = PdfSrvBuilder!.Acquire(token);
+                page = await PdfSrvBuilder!.AcquireAsync(token).ConfigureAwait(false);
                 if (page == null)
                 {
                     return null;

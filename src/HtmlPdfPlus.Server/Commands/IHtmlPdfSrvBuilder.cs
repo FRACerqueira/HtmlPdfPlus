@@ -36,14 +36,6 @@ namespace HtmlPdfPlus
         IHtmlPdfSrvBuilder PagesBuffer(byte buffer = 5);
 
         /// <summary>
-        /// Number of idle milliseconds to retry acquiring an available page.
-        /// </summary>
-        /// <param name="value">Number of milliseconds. Default is 10. The value must be between 10 and 500.</param>
-        /// <returns><see cref="IHtmlPdfSrvBuilder"/> instance.</returns>
-        /// <exception cref="ArgumentException">Thrown when the value is out of range.</exception>
-        IHtmlPdfSrvBuilder AcquireWaitTime(int value = 10);
-
-        /// <summary>
         /// Options to disable internal features.
         /// </summary>
         /// <param name="options">Options to disable. <see cref="DisableOptionsHtmlToPdf"/>.</param>
