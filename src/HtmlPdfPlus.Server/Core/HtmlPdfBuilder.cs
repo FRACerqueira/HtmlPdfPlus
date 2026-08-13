@@ -19,7 +19,6 @@ namespace HtmlPdfPlus.Server.Core
     {
         private string[] _args = [];
         private byte _pagesbuffer = 5;
-        private int _acquireWaitTime = 10;
         private int _acquireTimeout = 5000;
         private string _sourcealias = string.Empty;
         private IPlaywright? _playwright;
@@ -27,6 +26,7 @@ namespace HtmlPdfPlus.Server.Core
         private PdfPageConfig _pageconfig = new();
         private bool isDisposed;
         private readonly ConcurrentQueue<IPage> _availableBuffer = new();
+        private readonly SemaphoreSlim _bufferSignal = new(0);
 
         /// <summary>
         /// Gets the options to disable internal features.
@@ -124,17 +124,6 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         /// <inheritdoc />
-        public IHtmlPdfSrvBuilder AcquireWaitTime(int value = 50)
-        {
-            if (value < 10 || value > 500)
-            {
-                throw new ArgumentException("The value amount must be between 10 and 500.");
-            }
-            _acquireWaitTime = value;
-            return this;
-        }
-
-        /// <inheritdoc />
         public IHtmlPdfSrvBuilder AcquireTimeout(int value = 5000)
         {
             if (value < 10)
@@ -186,6 +175,7 @@ namespace HtmlPdfPlus.Server.Core
                 for (int i = 0; i < _pagesbuffer; i++)
                 {
                     _availableBuffer.Enqueue(await _browser.NewPageAsync());
+                    _bufferSignal.Release();
                 }
                 LogMessage($"Build Chromium with buffer {_pagesbuffer}");
             }
@@ -207,6 +197,7 @@ namespace HtmlPdfPlus.Server.Core
             {
                 await page.CloseAsync().ConfigureAwait(false);
                 _availableBuffer.Enqueue(await _browser!.NewPageAsync().ConfigureAwait(false));
+                _bufferSignal.Release();
                 LogMessage($"RestoreAvailableBuffer to {BufferLength}");
             }
             catch (Exception ex)
@@ -216,22 +207,28 @@ namespace HtmlPdfPlus.Server.Core
             }
         }
 
-        internal IPage? Acquire(CancellationToken token)
+        /// <summary>
+        /// Waits asynchronously for a page to become available, instead of blocking the
+        /// calling thread in a synchronous polling loop. A page is only ever handed out
+        /// after it has actually been enqueued, so a successful wait is always followed by
+        /// a successful dequeue.
+        /// </summary>
+        internal async Task<IPage?> AcquireAsync(CancellationToken token)
         {
-            using var ctsTimeout = new CancellationTokenSource();
-            ctsTimeout.CancelAfter(_acquireTimeout);
+            using var ctsTimeout = new CancellationTokenSource(_acquireTimeout);
             using var acquireToken = CancellationTokenSource.CreateLinkedTokenSource(ctsTimeout.Token, token);
-            while (!acquireToken.IsCancellationRequested)
+            try
             {
-                if (_availableBuffer.TryDequeue(out var freePage))
-                {
-                    LogMessage($"AvailableBuffer {BufferLength}");
-                    return freePage;
-                }
-                acquireToken.Token.WaitHandle.WaitOne(_acquireWaitTime);
+                await _bufferSignal.WaitAsync(acquireToken.Token).ConfigureAwait(false);
             }
-            LogMessage($"Not AvailableBuffer");
-            return null;
+            catch (OperationCanceledException)
+            {
+                LogMessage($"Not AvailableBuffer");
+                return null;
+            }
+            _availableBuffer.TryDequeue(out var freePage);
+            LogMessage($"AvailableBuffer {BufferLength}");
+            return freePage;
         }
 
         /// <summary>

@@ -290,7 +290,7 @@ namespace HtmlPdfPlus.Server.Core
             byte[] resultpdf = [];
             try
             {
-                page = PdfSrvBuilder!.Acquire(token);
+                page = await PdfSrvBuilder!.AcquireAsync(token).ConfigureAwait(false);
                 if (page == null)
                 {
                     return null;
