@@ -53,5 +53,32 @@ namespace TestHtmlPdfPlus.HtmlPdfShrPlus
                 var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => GZipHelper.DecompressAsync(invalidInput, cancellationToken));
                 Assert.Equal("The input byte array is not a valid GZip stream.", exception.Message);
             }
+
+            [Fact]
+            public async Task DecompressAsync_WithinLimit_DecompressesData()
+            {
+                // Arrange
+                var input = Encoding.UTF8.GetBytes("Hello, World!");
+                var compressedData = await GZipHelper.CompressAsync(input, CancellationToken.None);
+
+                // Act
+                var decompressedData = await GZipHelper.DecompressAsync(compressedData, maxOutputBytes: input.Length, CancellationToken.None);
+
+                // Assert
+                Assert.Equal(input, decompressedData);
+            }
+
+            [Fact]
+            public async Task DecompressAsync_ExceedsLimit_ThrowsInvalidOperationException()
+            {
+                // Arrange: a payload that decompresses to well more than the configured cap.
+                var input = Encoding.UTF8.GetBytes(new string('a', 10_000));
+                var compressedData = await GZipHelper.CompressAsync(input, CancellationToken.None);
+
+                // Act & Assert
+                var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                    () => GZipHelper.DecompressAsync(compressedData, maxOutputBytes: 100, CancellationToken.None));
+                Assert.Contains("exceeds the configured limit", exception.Message);
+            }
         }
 }

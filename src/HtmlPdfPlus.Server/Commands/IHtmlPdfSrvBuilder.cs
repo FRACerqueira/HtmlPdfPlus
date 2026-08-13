@@ -84,5 +84,16 @@ namespace HtmlPdfPlus
         /// <returns><see cref="IHtmlPdfSrvBuilder"/> instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="policy"/> is null.</exception>
         IHtmlPdfSrvBuilder UrlAllowPolicy(Func<Uri, bool> policy);
+
+        /// <summary>
+        /// Maximum size, in bytes, that a compressed request payload is allowed to decompress
+        /// to. A request whose decompressed content would exceed this is rejected outright
+        /// instead of being decompressed in full, closing a memory-exhaustion ("zip bomb")
+        /// vector where a small compressed payload expands to a very large one.
+        /// </summary>
+        /// <param name="value">Maximum decompressed size in bytes. Default is 50 MB (52428800). The value must be greater than zero.</param>
+        /// <returns><see cref="IHtmlPdfSrvBuilder"/> instance.</returns>
+        /// <exception cref="ArgumentException">Thrown when the value is invalid.</exception>
+        IHtmlPdfSrvBuilder MaxDecompressedRequestSize(long value = 52_428_800);
     }
 }

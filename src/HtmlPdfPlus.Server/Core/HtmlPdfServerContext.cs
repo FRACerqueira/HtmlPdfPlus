@@ -100,31 +100,32 @@ namespace HtmlPdfPlus.Server.Core
         {
             var sw = Stopwatch.StartNew();
             RequestHtmlPdf<TIn> requestHtmlPdf;
-            string data;
-            if (requestClient is not null)
+            try
             {
-                if (requestClient.Length == 0)
+                string data;
+                if (requestClient is not null)
                 {
-                    throw new ArgumentException("request client is empty");
-                }
-                if (htmlPdfServer.PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
-                {
-                    data = Encoding.UTF8.GetString(requestClient);
+                    if (requestClient.Length == 0)
+                    {
+                        throw new ArgumentException("request client is empty");
+                    }
+                    if (htmlPdfServer.PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
+                    {
+                        data = Encoding.UTF8.GetString(requestClient);
+                    }
+                    else
+                    {
+                        data = Encoding.UTF8.GetString(await GZipHelper.DecompressAsync(requestClient, htmlPdfServer.PdfSrvBuilder.MaxDecompressedRequestSizeLimit, token));
+                        LogMessage($"Decompress Request after {sw.Elapsed}");
+                    }
+                    requestHtmlPdf = JsonSerializer.Deserialize<RequestHtmlPdf<TIn>>(data, GZipHelper.JsonOptions)!;
+                    requestHtmlPdf.Config ??= htmlPdfServer.PdfSrvBuilder.Config;
                 }
                 else
                 {
-                    data = Encoding.UTF8.GetString(await GZipHelper.DecompressAsync(requestClient, token));
-                    LogMessage($"Decompress Request after {sw.Elapsed}");
+                    requestHtmlPdf = new RequestHtmlPdf<TIn>(_html, htmlPdfServer.SourceAlias, htmlPdfServer.PdfSrvBuilder.Config, _timeout, inputparam, _mode);
                 }
-                requestHtmlPdf = JsonSerializer.Deserialize<RequestHtmlPdf<TIn>>(data, GZipHelper.JsonOptions)!;
-                requestHtmlPdf.Config ??= htmlPdfServer.PdfSrvBuilder.Config;
-            }
-            else
-            {
-                requestHtmlPdf = new RequestHtmlPdf<TIn>(_html, htmlPdfServer.SourceAlias, htmlPdfServer.PdfSrvBuilder.Config, _timeout, inputparam, _mode);
-            }
-            try
-            {
+
                 if (requestHtmlPdf.Timeout < 1)
                 {
                     throw new ArgumentException("Timeout must be greater than zero");

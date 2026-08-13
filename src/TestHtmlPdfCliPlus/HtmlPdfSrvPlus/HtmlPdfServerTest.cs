@@ -140,6 +140,46 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         }
 
         [Fact]
+        public async Task Run_ResultFalse_WhenDecompressedRequestExceedsConfiguredLimit()
+        {
+            // Arrange: a tiny cap that any real request payload will exceed once decompressed.
+            using var objbuilder = new HtmlPdfBuilder(null);
+            objbuilder.MaxDecompressedRequestSize(10);
+            var requestHtmlPdf = await new RequestHtmlPdf<byte[]>("<h1>Test</h1>", "teste", new PdfPageConfig(), 5000).ToBytesCompress();
+
+            // Act
+            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, "Server")
+                .Run(requestHtmlPdf, CancellationToken.None);
+
+            // Assert: rejected before the request is even parsed, no browser involved.
+            Assert.False(result.IsSuccess);
+            Assert.NotNull(result.Error);
+            Assert.Equal(ErrorCode.InvalidRequest, result.Error!.Code);
+            Assert.Contains("exceeds the configured limit", result.Error!.Message);
+        }
+
+        [Fact]
+        public async Task ScopeRequest_ResultFalse_WhenDecompressedRequestExceedsConfiguredLimit()
+        {
+            // Arrange: same limit, exercised through HtmlPdfServerContext.Run instead of
+            // HtmlPdfServer.Run - the other entry point that decompresses a client payload.
+            using var objbuilder = new HtmlPdfBuilder(null);
+            objbuilder.MaxDecompressedRequestSize(10);
+            var requestHtmlPdf = await new RequestHtmlPdf<object>("<h1>Test</h1>", "teste", new PdfPageConfig(), 5000).ToBytesCompress();
+
+            // Act
+            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, "Server")
+                .ScopeRequest(requestHtmlPdf)
+                .Run(CancellationToken.None);
+
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.NotNull(result.Error);
+            Assert.Equal(ErrorCode.InvalidRequest, result.Error!.Code);
+            Assert.Contains("exceeds the configured limit", result.Error!.Message);
+        }
+
+        [Fact]
         public async Task Run_ResultTrue_WithBeforePDF_AND_AfterPDF()
         {
             // Arrange
