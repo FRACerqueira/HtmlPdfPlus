@@ -198,10 +198,16 @@ namespace HtmlPdfPlus.Client.Core
             var sw = Stopwatch.StartNew();
             HttpContent content = await CreateHttpContent(customdata);
             content.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Application.Json);
+            // .Timeout() only travels inside the request body for the server to honor; without
+            // a local deadline here, this call relied entirely on HttpClient.Timeout (100s by
+            // default) or the caller's own token, so a slow/unresponsive server ignored the
+            // timeout configured via the fluent API.
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
+            cts.CancelAfter(_timeout);
             try
             {
-                var result = await httpclient.PostAsync(endpoint, content, token);
-                return await HandleHttpResponse<Tout>(result, sw, token);
+                var result = await httpclient.PostAsync(endpoint, content, cts.Token);
+                return await HandleHttpResponse<Tout>(result, sw, cts.Token);
             }
             catch (HttpRequestException ex)
             {
@@ -209,6 +215,10 @@ namespace HtmlPdfPlus.Client.Core
             }
             catch (TaskCanceledException ex)
             {
+                if (cts.IsCancellationRequested && !token.IsCancellationRequested)
+                {
+                    return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new TimeoutException($"Canceled by Timeout({_timeout})", ex));
+                }
                 return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ex);
             }
         }
