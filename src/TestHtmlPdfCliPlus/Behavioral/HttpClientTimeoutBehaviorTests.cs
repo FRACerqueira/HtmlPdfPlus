@@ -35,7 +35,7 @@ namespace TestHtmlPdfPlus.Behavioral
             var result = await HtmlPdfClient.Create("behavioral-httpclient-timeout")
                 .FromHtml("<html><body>hi</body></html>")
                 .Timeout(configuredTimeout)
-                .Run(httpClient, "http://localhost/GeneratePdf", TestContext.Current.CancellationToken);
+                .Run(httpClient, "http://localhost/GeneratePdf", CancellationToken.None);
 
             sw.Stop();
 
