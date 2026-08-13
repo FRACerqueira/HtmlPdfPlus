@@ -95,16 +95,15 @@ namespace HtmlPdfPlus.Server.Core
                 return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
             }
             var isurl = requestHtmlPdf.Mode == RenderMode.Url;
-            return await RunServer(isurl,null,null,sw, requestHtmlPdf, PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress), token);
+            return await RunServer(isurl,null,null,sw, requestHtmlPdf, token);
         }
 
         internal async Task<HtmlPdfResult<Tout>> RunServer(
             bool isurl,
             Func<string, Tin?, CancellationToken, Task<string>>? inputparam,
             Func<byte[]?, Tin?, CancellationToken, Task<Tout>>? outputparam,
-            Stopwatch sw, 
+            Stopwatch sw,
             RequestHtmlPdf<Tin> requestHtmlPdf,
-            bool disableCompress, 
             CancellationToken token = default)
         {
             if (inputparam is not null)
@@ -213,23 +212,11 @@ namespace HtmlPdfPlus.Server.Core
                 {
                     var taskoutput = Task.Run(async () =>
                     {
+                        // A byte[] output is the PDF itself and is never app-level compressed -
+                        // it travels over the wire as the raw response body (see RunServer's
+                        // no-AfterPDF path below for the same rationale).
                         var aux = await outputparam(bytespdf, requestHtmlPdf.InputParam, executeToken.Token);
-                        if (typeof(Tout) == typeof(byte[]))
-                        {
-                            if (!disableCompress)
-                            {
-                                result = new HtmlPdfResult<Tout>(true, false, sw.Elapsed, aux, null);
-                            }
-                            else
-                            {
-                                var compresspdf = await GZipHelper.CompressAsync((byte[])(object)aux!,token);
-                                result = new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout)(object)compresspdf, null);
-                            }
-                        }
-                        else
-                        {
-                            result = new HtmlPdfResult<Tout>(true, false, sw.Elapsed, aux, null);
-                        }
+                        result = new HtmlPdfResult<Tout>(true, false, sw.Elapsed, aux, null);
                     }, executeToken.Token);
 
                     // Same rationale as the BeforePDF backstop above: decoupled from
@@ -278,11 +265,8 @@ namespace HtmlPdfPlus.Server.Core
                 LogMessage($"End Convert Html to PDF from Server with AfterPDF function at {DateTime.Now} after {sw.Elapsed}");
                 return result!;
             }
-            //output is byte[]
-            if (!disableCompress)
-            {
-                bytespdf = await GZipHelper.CompressAsync(bytespdf, token);
-            }
+            //output is byte[] - the PDF itself, served as raw bytes, never app-level compressed
+            //(transport compression, if any, is standard Content-Encoding, not GZipHelper here).
             LogMessage($"End Convert Html to PDF from Server at {DateTime.Now} after {sw.Elapsed}");
             return new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout)(object)bytespdf, null);
         }

@@ -144,8 +144,7 @@ namespace HtmlPdfPlus.Server.Core
                 return new HtmlPdfResult<TOut>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
             }
             var isurl = requestHtmlPdf.Mode == RenderMode.Url;
-            var disabledcompress = htmlPdfServer.PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress);
-            return await htmlPdfServer.RunServer(isurl, _inputparam, _outputparam, sw, requestHtmlPdf, disabledcompress, token);
+            return await htmlPdfServer.RunServer(isurl, _inputparam, _outputparam, sw, requestHtmlPdf, token);
         }
 
         /// <summary>

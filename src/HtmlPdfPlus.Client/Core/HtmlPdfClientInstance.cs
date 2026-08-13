@@ -378,42 +378,40 @@ namespace HtmlPdfPlus.Client.Core
         /// <param name="sw">The stopwatch.</param>
         /// <param name="token">The cancellation token.</param>
         /// <returns>The result of the HTML to PDF conversion.</returns>
-        private async Task<HtmlPdfResult<Tout>> HandleHttpResponse<Tout>(HttpResponseMessage result, Stopwatch sw, CancellationToken token)
+        private static async Task<HtmlPdfResult<Tout>> HandleHttpResponse<Tout>(HttpResponseMessage result, Stopwatch sw, CancellationToken token)
         {
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
-#if NETSTANDARD2_1
-                using var resultconvert = await result.Content.ReadAsStreamAsync();
-#endif
-#if NET8_0_OR_GREATER
-                using var resultconvert = await result.Content.ReadAsStreamAsync(token);
-#endif
+                // A byte[] output is the generated PDF itself: the body IS the PDF, served
+                // directly (e.g. application/pdf) instead of wrapped in a JSON envelope with the
+                // bytes re-encoded as base64 - which only ever added size, since PDFs are already
+                // a largely-compressed binary format. Transport-level compression, if any, is the
+                // host's Content-Encoding, decoded automatically by HttpClient - not an
+                // application-level gzip step here.
                 if (typeof(Tout) == typeof(byte[]))
                 {
-                    if (disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
-                    {
-                        return (await JsonSerializer.DeserializeAsync<HtmlPdfResult<Tout>>(resultconvert, GZipHelper.JsonOptions, token))!;
-                    }
-                    else
-                    {
-                        var auxresult = await JsonSerializer.DeserializeAsync<HtmlPdfResult<Tout>>(resultconvert, GZipHelper.JsonOptions, token)!;
-                        if (auxresult!.OutputData is null)
-                        {
-                            return auxresult;
-                        }
-                        var output = await GZipHelper.DecompressAsync((byte[])(object)auxresult.OutputData,token);
-                        return new HtmlPdfResult<Tout>(auxresult.IsSuccess, auxresult.BufferDrained, auxresult.ElapsedTime, (Tout)(object)output, auxresult.Error);
-                    }
+                    var bytes = await result.Content.ReadAsByteArrayAsync(token);
+                    return new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout)(object)bytes, null);
                 }
-                else
-                {
-                    return JsonSerializer.Deserialize<HtmlPdfResult<Tout>>(resultconvert, GZipHelper.JsonOptions)!;
-                }
+                using var resultconvert = await result.Content.ReadAsStreamAsync(token);
+                return (await JsonSerializer.DeserializeAsync<HtmlPdfResult<Tout>>(resultconvert, GZipHelper.JsonOptions, token))!;
             }
-            else
+            // A non-2xx status line carries the failure, not an embedded IsSuccess flag: the body
+            // is expected to be the structured ErrorInfo contract. Fall back to a generic error
+            // built from the status line if the body doesn't match it (e.g. an upstream proxy
+            // error, or a host that hasn't adopted the contract).
+            ErrorInfo? error = null;
+            try
             {
-                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(new HttpRequestException($"{result.StatusCode} : {result.ReasonPhrase}")));
+                using var errorStream = await result.Content.ReadAsStreamAsync(token);
+                error = await JsonSerializer.DeserializeAsync<ErrorInfo>(errorStream, GZipHelper.JsonOptions, token);
             }
+            catch (JsonException)
+            {
+                // Body wasn't a valid ErrorInfo - fall through to the generic error below.
+            }
+            error ??= ErrorInfo.FromException(new HttpRequestException($"{result.StatusCode} : {result.ReasonPhrase}"));
+            return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, error);
         }
     }
 }

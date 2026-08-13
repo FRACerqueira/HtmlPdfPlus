@@ -30,8 +30,19 @@ app.UseHttpsRedirection();
 
 app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] byte[] requestclienthtmltopdf, CancellationToken token) =>
 {
-    return await PDFserver
-        .Run(requestclienthtmltopdf, token);
-}).Produces<HtmlPdfResult<byte[]>>(200);
+    var result = await PDFserver.Run(requestclienthtmltopdf, token);
+    if (result.IsSuccess)
+    {
+        // Serve the PDF directly - no JSON envelope, no base64. Transport compression, if
+        // enabled on this host, is standard Content-Encoding, not an application-level scheme.
+        return Results.File(result.OutputData!, "application/pdf");
+    }
+    return Results.Json(result.Error, statusCode: result.Error!.Code.ToHttpStatusCode());
+})
+.Produces(200, typeof(byte[]), "application/pdf")
+.Produces<ErrorInfo>(StatusCodes.Status400BadRequest)
+.Produces<ErrorInfo>(StatusCodes.Status500InternalServerError)
+.Produces<ErrorInfo>(StatusCodes.Status503ServiceUnavailable)
+.Produces<ErrorInfo>(StatusCodes.Status504GatewayTimeout);
 
 app.Run();
