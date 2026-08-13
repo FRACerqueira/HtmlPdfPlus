@@ -25,6 +25,7 @@ namespace HtmlPdfPlus.Server.Core
         private IBrowser? _browser;
         private PdfPageConfig _pageconfig = new();
         private bool isDisposed;
+        private int _recovering;
         private readonly ConcurrentQueue<IPage> _availableBuffer = new();
         private readonly SemaphoreSlim _bufferSignal = new(0);
 
@@ -170,12 +171,11 @@ namespace HtmlPdfPlus.Server.Core
                 {
                     _args = ["--run-all-compositor-stages-before-draw", "--disable-dev-shm-usage", "-disable-setuid-sandbox", "--no-sandbox"];
                 }
-                _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true, Args = _args }).ConfigureAwait(false);
+                await LaunchBrowserAsync().ConfigureAwait(false);
                 LogMessage($"Build Chromium with args { string.Join("", _args) }");
                 for (int i = 0; i < _pagesbuffer; i++)
                 {
-                    _availableBuffer.Enqueue(await _browser.NewPageAsync());
-                    _bufferSignal.Release();
+                    await ReplenishBufferAsync().ConfigureAwait(false);
                 }
                 LogMessage($"Build Chromium with buffer {_pagesbuffer}");
             }
@@ -187,9 +187,79 @@ namespace HtmlPdfPlus.Server.Core
             return new HtmlPdfServer<Tin, Tout>(this, sourcealias);
         }
 
+        private async Task LaunchBrowserAsync()
+        {
+            _browser = await _playwright!.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true, Args = _args }).ConfigureAwait(false);
+            _browser.Disconnected += OnBrowserDisconnected;
+        }
+
+        /// <summary>
+        /// Invoked whenever the Chromium process disconnects, whether from an intentional
+        /// <see cref="Dispose"/> or from the process crashing on its own. Only the latter
+        /// should trigger a relaunch, so a disposed builder is left alone.
+        /// </summary>
+        private void OnBrowserDisconnected(object? sender, IBrowser browser)
+        {
+            // Detach from the dead instance regardless of cause, so a browser that no longer
+            // exists can never trigger another recovery attempt further down the line.
+            browser.Disconnected -= OnBrowserDisconnected;
+            if (isDisposed)
+            {
+                return;
+            }
+            LogMessage("Browser disconnected unexpectedly - attempting automatic recovery");
+            _ = RecoverBrowserAsync();
+        }
+
+        /// <summary>
+        /// Relaunches Chromium and refills the page pool after an unexpected disconnect,
+        /// turning what used to require a manual restart into self-healing. Reentrant calls
+        /// (multiple pages can fault around the same crash) are collapsed into a single attempt.
+        /// </summary>
+        private async Task RecoverBrowserAsync()
+        {
+            if (Interlocked.CompareExchange(ref _recovering, 1, 0) != 0)
+            {
+                return;
+            }
+            try
+            {
+                // Drain the acquire signal in lockstep with the queue, so a crash that
+                // happens while pages are sitting idle in the pool doesn't leave the
+                // semaphore over-counted relative to what's actually discarded below.
+                while (_bufferSignal.Wait(0))
+                {
+                }
+                while (_availableBuffer.TryDequeue(out _))
+                {
+                    // discard pages that belonged to the dead browser process
+                }
+                await LaunchBrowserAsync().ConfigureAwait(false);
+                for (int i = 0; i < _pagesbuffer; i++)
+                {
+                    await ReplenishBufferAsync().ConfigureAwait(false);
+                }
+                LogMessage($"Browser recovered with buffer {_pagesbuffer}");
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"Browser recovery failed: {ex}");
+            }
+            finally
+            {
+                Volatile.Write(ref _recovering, 0);
+            }
+        }
+
         internal PdfPageConfig Config => _pageconfig;
 
         internal int BufferLength => _availableBuffer.Count;
+
+        /// <summary>
+        /// Exposes the current browser instance for diagnostics and tests that need to
+        /// observe recovery (e.g. simulating a crash and waiting for a new, connected browser).
+        /// </summary>
+        internal IBrowser? CurrentBrowser => _browser;
 
         internal async Task RestoreAvailableBuffer(IPage page)
         {
