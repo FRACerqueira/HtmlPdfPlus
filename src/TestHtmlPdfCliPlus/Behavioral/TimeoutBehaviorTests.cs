@@ -75,7 +75,8 @@ namespace TestHtmlPdfPlus.Behavioral
             Assert.Null(ex);
             Assert.NotNull(result);
             Assert.False(result!.IsSuccess);
-            Assert.IsType<OperationCanceledException>(result!.Error);
+            Assert.NotNull(result.Error);
+            Assert.Equal(ErrorCode.Canceled, result.Error!.Code);
         }
     }
 }

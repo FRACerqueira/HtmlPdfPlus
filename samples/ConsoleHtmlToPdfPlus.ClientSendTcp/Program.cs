@@ -128,7 +128,7 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
             }
             catch (Exception ex)
             {
-                return new HtmlPdfResult<byte[]>(false, false, TimeSpan.Zero, [], ex);
+                return new HtmlPdfResult<byte[]>(false, false, TimeSpan.Zero, [], ErrorInfo.FromException(ex));
             }
             finally
             {

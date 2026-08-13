@@ -86,7 +86,9 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
                 .ScopeRequest(requestHtmlPdf)
                 .BeforePDF((_, _, _) => throw new InvalidTimeZoneException("Test"))
                 .Run(CancellationToken.None);
-            Assert.IsType<InvalidTimeZoneException>(result.Error);
+            Assert.NotNull(result.Error);
+            Assert.Equal(ErrorCode.Internal, result.Error!.Code);
+            Assert.Equal("Test", result.Error.Message);
             Assert.False(result.IsSuccess);
             Assert.True(result.ElapsedTime.TotalMilliseconds > 0);
             Assert.Null(result.OutputData);
