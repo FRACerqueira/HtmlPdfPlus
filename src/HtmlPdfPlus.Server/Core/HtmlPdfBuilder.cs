@@ -206,14 +206,46 @@ namespace HtmlPdfPlus.Server.Core
             try
             {
                 await page.CloseAsync().ConfigureAwait(false);
-                _availableBuffer.Enqueue(await _browser!.NewPageAsync().ConfigureAwait(false));
-                LogMessage($"RestoreAvailableBuffer to {BufferLength}");
+                await ReplenishBufferAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 LogMessage($"RestoreAvailableBuffer Error: {ex}");
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Adds one freshly created page to the pool, independent of any specific page being
+        /// closed. Used to restore pool capacity immediately when the page being replaced
+        /// cannot be closed yet because it is still in use (see <see cref="CloseWhenSettled"/>).
+        /// </summary>
+        internal async Task ReplenishBufferAsync()
+        {
+            _availableBuffer.Enqueue(await _browser!.NewPageAsync().ConfigureAwait(false));
+            LogMessage($"RestoreAvailableBuffer to {BufferLength}");
+        }
+
+        /// <summary>
+        /// Closes <paramref name="page"/> only after <paramref name="pendingWork"/> settles,
+        /// instead of closing it while that work may still be running on it. Playwright's
+        /// <c>PdfAsync</c> takes no cancellation token, so a caller-side timeout cannot abort it -
+        /// the page must not be reused or closed until it actually finishes.
+        /// </summary>
+        internal void CloseWhenSettled(IPage page, Task pendingWork)
+        {
+            _ = pendingWork.ContinueWith(async _ =>
+            {
+                try
+                {
+                    await page.CloseAsync().ConfigureAwait(false);
+                    LogMessage("Deferred close of a page completed after its timeout elapsed");
+                }
+                catch (Exception ex)
+                {
+                    LogMessage($"Deferred page close error: {ex}");
+                }
+            }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
 
         internal IPage? Acquire(CancellationToken token)
@@ -272,8 +304,8 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         // Reusable logging
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfBuilder({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfBuilder({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfBuilder({source}) : {message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfBuilder({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfBuilder({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfBuilder({Source}) : {Message}");
     }
 }
