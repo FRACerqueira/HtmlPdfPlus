@@ -134,6 +134,31 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             }
             Assert.Equal(5, obj.BufferLength);
         }
+
+        [Fact]
+        public void Ensure_MaxDecompressedRequestSize_DefaultValue()
+        {
+            using var obj = new HtmlPdfBuilder();
+            Assert.Equal(52_428_800, obj.MaxDecompressedRequestSizeLimit);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void Ensure_MaxDecompressedRequestSize_ThrowsArgumentException_WhenValueIsInvalid(long value)
+        {
+            IHtmlPdfSrvBuilder obj = new HtmlPdfBuilder();
+            Assert.Throws<ArgumentException>(() => obj.MaxDecompressedRequestSize(value));
+            ((IDisposable)obj).Dispose();
+        }
+
+        [Fact]
+        public void Ensure_MaxDecompressedRequestSize_SetsValue()
+        {
+            using var obj = new HtmlPdfBuilder();
+            obj.MaxDecompressedRequestSize(1024);
+            Assert.Equal(1024, obj.MaxDecompressedRequestSizeLimit);
+        }
     }
 #pragma warning restore CA1859 // Use concrete types when possible for improved performance
 #pragma warning restore IDE0079

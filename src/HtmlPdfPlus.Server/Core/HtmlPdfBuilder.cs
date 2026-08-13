@@ -26,6 +26,7 @@ namespace HtmlPdfPlus.Server.Core
         private IBrowser? _browser;
         private PdfPageConfig _pageconfig = new();
         private bool isDisposed;
+        private long _maxDecompressedRequestSize = 52_428_800;
         private readonly ConcurrentQueue<IPage> _availableBuffer = new();
 
         /// <summary>
@@ -160,6 +161,19 @@ namespace HtmlPdfPlus.Server.Core
             LogCategoryName = categoryName;
             return this;
         }
+
+        /// <inheritdoc />
+        public IHtmlPdfSrvBuilder MaxDecompressedRequestSize(long value = 52_428_800)
+        {
+            if (value < 1)
+            {
+                throw new ArgumentException("The value must be greater than zero.");
+            }
+            _maxDecompressedRequestSize = value;
+            return this;
+        }
+
+        internal long MaxDecompressedRequestSizeLimit => _maxDecompressedRequestSize;
 
         internal async Task<IHtmlPdfServer<object, byte[]>> BuildAsync(string sourcealias)
         {

@@ -71,7 +71,7 @@ namespace HtmlPdfPlus.Server.Core
                 }
                 else
                 {
-                    data = Encoding.UTF8.GetString(await GZipHelper.DecompressAsync(requestclient,token));
+                    data = Encoding.UTF8.GetString(await GZipHelper.DecompressAsync(requestclient, PdfSrvBuilder.MaxDecompressedRequestSizeLimit, token));
                     LogMessage($"Decompress Request after {sw.Elapsed}");
                 }
                 requestHtmlPdf = JsonSerializer.Deserialize<RequestHtmlPdf<Tin>>(data, GZipHelper.JsonOptions)!;
