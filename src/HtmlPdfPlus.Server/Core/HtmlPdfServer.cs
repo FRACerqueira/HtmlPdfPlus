@@ -45,6 +45,17 @@ namespace HtmlPdfPlus.Server.Core
 #pragma warning restore IDE0290 // Use primary constructor
 
 
+        /// <summary>
+        /// Reports whether this instance's browser/pool can currently accept and process requests.
+        /// </summary>
+        internal HtmlPdfHealthStatus GetHealthStatus()
+        {
+            return new HtmlPdfHealthStatus(
+                PdfSrvBuilder.CurrentBrowser?.IsConnected ?? false,
+                PdfSrvBuilder.IsRecovering,
+                PdfSrvBuilder.BufferLength);
+        }
+
         /// <inheritdoc />
         public IHtmlPdfServerContext<Tin, Tout> ScopeData(Tin? inputparam)
         {

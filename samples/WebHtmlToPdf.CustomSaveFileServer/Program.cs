@@ -50,4 +50,9 @@ app.MapHtmlPdfEndpoints<DataSavePDF, string>(
         return Task.FromResult(inputparam.Filename);
     });
 
+// The non-generic MapHtmlPdfHealthEndpoints() targets IHtmlPdfServer<object, byte[]> only -
+// this host registered <DataSavePDF, string> above, so the matching generic overload is
+// required here too.
+app.MapHtmlPdfHealthEndpoints<DataSavePDF, string>();
+
 app.Run();

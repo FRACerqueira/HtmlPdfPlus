@@ -29,4 +29,8 @@ app.UseHttpsRedirection();
 // straight from the library, so the OpenAPI document generated above actually describes it.
 app.MapHtmlPdfEndpoints("/GeneratePdf");
 
+// Lets an orchestrator (Kubernetes, etc.) observe renderer health from outside instead of
+// inferring it from request timeouts.
+app.MapHtmlPdfHealthEndpoints();
+
 app.Run();
