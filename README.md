@@ -415,8 +415,11 @@ Each sample is scoped to one clear lesson. For more examples, please refer to th
 	- [TcpServerHtmlToPdf.GenericServer](./samples/TcpServerHtmlToPdf.GenericServer) - the matching TCP listener, unpacking a request and writing the result back over the same connection
 - **Cross-language** - consuming the server from outside .NET
 	- [JavaClientSendHttp](./samples/JavaClientSendHttp) - a single dependency-free `.java` file (JDK's own `HttpClient` + `GZIPOutputStream`, no build tool) showing the exact wire format any non-.NET client must produce: JSON → gzip → POST as `application/octet-stream` - see the file header for the `javac`/`java` commands and which server profile to run
+- **Production readiness** - the v2 roadmap features, each with a deliberately tiny page pool (`PagesBuffer(1)`) so the behavior being demonstrated is easy to reproduce on any machine instead of depending on real render timing
+	- [RetryAfterBackpressure](./samples/ConsoleHtmlToPdfPlus.RetryAfterBackpressure) - firing concurrent requests, detecting `ErrorCode.PoolExhausted`, and backing off using `ErrorInfo.RetryAfterSeconds` before retrying
+	- [MetricsObserver](./samples/ConsoleHtmlToPdfPlus.MetricsObserver) - attaching a `MeterListener` (no OTel/exporter package needed) to observe the instruments a healthy run produces (`htmlpdfplus.pool.available_pages`, `.request.duration`, `.errors`, `.pool.acquire_wait`), including how a validation failure increments `htmlpdfplus.errors` without touching `htmlpdfplus.request.duration` - `htmlpdfplus.browser.restarts` only appears after an unexpected disconnect, so it stays silent here
 
-> `/healthz` and `/readyz` are mapped by the two web server samples above (via `MapHtmlPdfHealthEndpoints()`), but no sample calls them from a client or shows what a real orchestrator would do with the response. The `Retry-After` backpressure signal on `ErrorCode.PoolExhausted` and the `System.Diagnostics.Metrics` instruments (`htmlpdfplus.*`) have no sample coverage at all yet. See [Documentation](#documentation) for how each of those works until dedicated samples exist.
+> `/healthz` and `/readyz` are mapped by the two web server samples above (via `MapHtmlPdfHealthEndpoints()`), but no sample calls them from a client or shows what a real orchestrator would do with the response. See [Documentation](#documentation) for how they work until a dedicated sample exists.
 
 ## Documentation
 [**Top**](#table-of-contents)
