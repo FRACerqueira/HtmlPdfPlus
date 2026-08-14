@@ -3,10 +3,10 @@
 ### **Lightweight and scalable HTML to PDF converter in .NET.** 
 
 ![GitHub license](https://img.shields.io/github/license/fracerqueira/HtmlPdfPlus)
-## The best tool to convert HTML to PDF in .NET with a modern engine
-
 [![Build](https://github.com/FRACerqueira/HtmlPdfPlus/workflows/Build/badge.svg)](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/build.yml)
 [![Publish](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/publish.yml/badge.svg)](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/publish.yml)
+
+## The best tool to convert HTML to PDF in .NET with a modern engine
 
 - Client : [![NuGet Client](https://img.shields.io/nuget/v/HtmlPdfPlus.Client.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Client/) [![NuGet Client](https://img.shields.io/nuget/dt/HtmlPdfPlus.Client.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Client/)
 - Server : [![NuGet Server](https://img.shields.io/nuget/v/HtmlPdfPlus.Server.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Server/) [![NuGet Server](https://img.shields.io/nuget/dt/HtmlPdfPlus.Server.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Server/)
