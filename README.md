@@ -228,26 +228,19 @@ else
 using HtmlPdfPlus;
 
 ...
-var builder = WebApplication.CreateBuilder(args);  
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddOpenApi();
 builder.Services.AddHtmlPdfService((cfg) =>
 {
     cfg.Logger(LogLevel.Debug, "MyPDFServer");
 });
+var app = builder.Build();
+app.MapOpenApi();
 ...
 
-app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] byte[] requestclienthtmltopdf, CancellationToken token) =>
-{
-    var result = await PDFserver.Run(requestclienthtmltopdf, token);
-    if (result.IsSuccess)
-    {
-        // The PDF is served directly - no JSON envelope, no base64.
-        return Results.File(result.OutputData!, "application/pdf");
-    }
-    return Results.Json(result.Error, statusCode: result.Error!.Code.ToHttpStatusCode());
-})
-.Produces(200, typeof(byte[]), "application/pdf")
-.Produces<ErrorInfo>(StatusCodes.Status400BadRequest)
-.Produces<ErrorInfo>(StatusCodes.Status500InternalServerError);
+// The request/response contract (raw PDF on success, structured ErrorInfo on failure) comes
+// straight from the library, so the OpenAPI document generated above actually describes it.
+app.MapHtmlPdfEndpoints("/GeneratePdf");
 
 ```
 
