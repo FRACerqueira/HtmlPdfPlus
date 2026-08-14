@@ -468,7 +468,7 @@ Each sample is scoped to one clear lesson. For more examples, please refer to th
 
 The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface. 
 
-The documentation is available in the [Docs directory](./src/docs/docindex.md).
+The documentation is available in the [Docs directory](./docs/api/docindex.md).
 
 ## Code of Conduct
 [**Top**](#table-of-contents)

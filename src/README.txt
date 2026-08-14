@@ -282,7 +282,7 @@ Documentation
 =============
 
 The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface. 
-The documentation is available in the Docs directory : https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/src/docs/docindex.md
+The documentation is available in the Docs directory : https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/api/docindex.md
 
 
 
