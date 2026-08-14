@@ -4,10 +4,12 @@
 // https://github.com/FRACerqueira/HtmlPdfPlus
 // ***************************************************************************************
 
+using System.Globalization;
 using HtmlPdfPlus;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Microsoft.AspNetCore.Routing
@@ -104,13 +106,32 @@ namespace Microsoft.AspNetCore.Routing
         {
             if (!result.IsSuccess)
             {
-                return Results.Json(result.Error, statusCode: result.Error!.Code.ToHttpStatusCode());
+                return new ErrorResult(result.Error!);
             }
             if (typeof(TOut) == typeof(byte[]))
             {
                 return Results.File((byte[])(object)result.OutputData!, "application/pdf");
             }
             return Results.Json(result);
+        }
+
+        /// <summary>
+        /// Writes <see cref="ErrorInfo"/> as the JSON body with the status mapped from its
+        /// <see cref="ErrorCode"/>, and - when <see cref="ErrorInfo.RetryAfterSeconds"/> is set -
+        /// the standard <c>Retry-After</c> header, so a backpressure signal like
+        /// <see cref="ErrorCode.PoolExhausted"/> is actionable by any HTTP client, not just one
+        /// that parses the JSON body.
+        /// </summary>
+        private sealed class ErrorResult(ErrorInfo error) : IResult
+        {
+            public Task ExecuteAsync(HttpContext httpContext)
+            {
+                if (error.RetryAfterSeconds is int seconds)
+                {
+                    httpContext.Response.Headers[HeaderNames.RetryAfter] = seconds.ToString(CultureInfo.InvariantCulture);
+                }
+                return Results.Json(error, statusCode: error.Code.ToHttpStatusCode()).ExecuteAsync(httpContext);
+            }
         }
     }
 }

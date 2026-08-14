@@ -181,7 +181,11 @@ namespace HtmlPdfPlus.Server.Core
                     bytespdf = await GeneratePDF(isurl, requestHtmlPdf, reamaindtime, executeToken.Token);
                     if (bytespdf is null)
                     {
-                        return new HtmlPdfResult<Tout>(false, true, sw.Elapsed, default, new ErrorInfo(ErrorCode.PoolExhausted, "Not AvailableBuffer", retryable: true));
+                        // The pool didn't free a page within AcquireTimeoutMs - suggest waiting
+                        // roughly that long again, since a shorter retry would likely race into
+                        // the same exhaustion.
+                        var retryAfterSeconds = Math.Max(1, (int)Math.Ceiling(PdfSrvBuilder!.AcquireTimeoutMs / 1000.0));
+                        return new HtmlPdfResult<Tout>(false, true, sw.Elapsed, default, new ErrorInfo(ErrorCode.PoolExhausted, "Not AvailableBuffer", retryable: true, retryAfterSeconds));
                     }
                     if (bytespdf.Length == 0)
                     {
