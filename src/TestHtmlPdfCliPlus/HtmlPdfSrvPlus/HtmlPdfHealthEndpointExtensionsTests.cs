@@ -75,17 +75,24 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         {
             // Given: a real browser/pool that has just disconnected. CloseAsync raises the same
             // Disconnected event Playwright fires on a real crash (same simulation used
-            // elsewhere in this suite), and relaunching Chromium takes far longer than
-            // dispatching the in-memory GET below, so the request reliably lands before
-            // auto-recovery finishes.
+            // elsewhere in this suite). The Disconnected event and IBrowser.IsConnected flip
+            // together, but the event delivery itself races CloseAsync's returned task across
+            // platforms (the notification travels through Playwright's driver process), so we
+            // await the event directly instead of assuming CloseAsync's completion means the
+            // health endpoint already sees the disconnect.
             using var builder = new HtmlPdfBuilder(null);
             builder.PagesBuffer(1);
             var server = await builder.BuildAsync("Server");
             using var host = await CreateTestHost(server);
             using var client = host.GetTestClient();
 
+            var browser = builder.CurrentBrowser!;
+            var disconnected = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            browser.Disconnected += (_, _) => disconnected.TrySetResult();
+
             // When
-            await builder.CurrentBrowser!.CloseAsync();
+            await browser.CloseAsync();
+            await disconnected.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
             using var readyResponse = await client.GetAsync("/readyz", TestContext.Current.CancellationToken);
 
             // Then: readiness reflects the disconnect immediately - an orchestrator polling
