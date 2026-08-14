@@ -123,6 +123,78 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         }
 
         [Fact]
+        public async Task Run_ResultFalse_WhenOverallDeadlineElapsesWhileWaitingForPool_ReportsTimeoutNotPoolExhausted()
+        {
+            // Arrange: pool with its single page checked out, and a request-level Timeout far
+            // shorter than the pool's default AcquireTimeoutMs (5000ms, left unconfigured here)
+            // - the overall deadline governs the outcome, not the pool's own acquire window,
+            // so this must not be misreported as PoolExhausted.
+            using var objbuilder = new HtmlPdfBuilder(null);
+            objbuilder.PagesBuffer(1);
+            await objbuilder.BuildAsync("Server");
+            var heldPage = await objbuilder.AcquireAsync(CancellationToken.None);
+            Assert.NotNull(heldPage);
+
+            var requestHtmlPdf = await new RequestHtmlPdf<byte[]>("<h1>Test</h1>", "teste", new PdfPageConfig(), 200).ToBytesCompress();
+
+            // Act
+            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, "Server")
+                .Run(requestHtmlPdf, CancellationToken.None);
+
+            // Assert: the overall deadline (200ms) elapsed while waiting for a page that
+            // never freed up - classified as Timeout, distinct from a genuine pool-exhaustion
+            // event where the pool's own configured window is what elapses first.
+            Assert.False(result.IsSuccess);
+            Assert.NotNull(result.Error);
+            Assert.Equal(ErrorCode.Timeout, result.Error!.Code);
+            Assert.True(result.ElapsedTime.TotalMilliseconds < 5000);
+        }
+
+        [Fact]
+        public async Task Run_ResultFalse_WhenDeadlineAlreadyExpiredInTransit_ReturnsImmediateTimeoutWithoutAttemptingRender()
+        {
+            // Arrange: SentAtUtc says the request left the client 2s ago, but Timeout only
+            // allows 500ms total - transit alone already exhausted the budget. The pool is
+            // never even built, so any interaction with it would throw - proving the server
+            // fails fast on the already-expired deadline instead of attempting to render.
+            using var objbuilder = new HtmlPdfBuilder(null);
+            var sentAtUtc = DateTimeOffset.UtcNow.AddSeconds(-2);
+            var requestHtmlPdf = await new RequestHtmlPdf<object>("<h1>Test</h1>", "teste", new PdfPageConfig(), 500, sentAtUtc: sentAtUtc).ToBytesCompress();
+
+            // Act
+            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, "Server")
+                .Run(requestHtmlPdf, CancellationToken.None);
+
+            // Assert
+            Assert.False(result.IsSuccess);
+            Assert.NotNull(result.Error);
+            Assert.Equal(ErrorCode.Timeout, result.Error!.Code);
+            Assert.True(result.ElapsedTime.TotalMilliseconds < 500);
+        }
+
+        [Fact]
+        public async Task Run_ResultTrue_WhenSentAtUtcImplausiblyOld_TreatsItAsClockSkewAndIgnoresIt()
+        {
+            // Arrange: SentAtUtc claims the request is 30s old - far beyond MaxPlausibleTransitMs
+            // (5000ms) - so this must be treated as clock skew between client and server rather
+            // than a genuinely near-exhausted deadline, or a skewed server clock would fail
+            // every request outright regardless of actual elapsed time.
+            using var objbuilder = new HtmlPdfBuilder(null);
+            await objbuilder.BuildAsync("Server");
+            var sentAtUtc = DateTimeOffset.UtcNow.AddSeconds(-30);
+            var requestHtmlPdf = await new RequestHtmlPdf<byte[]>("<h1>Test</h1>", "teste", new PdfPageConfig(), 5000, sentAtUtc: sentAtUtc).ToBytesCompress();
+
+            // Act
+            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, "Server")
+                .Run(requestHtmlPdf, CancellationToken.None);
+
+            // Assert: succeeds normally - the implausible transit was ignored instead of being
+            // treated as an already-exhausted deadline.
+            Assert.True(result.IsSuccess);
+            Assert.Null(result.Error);
+        }
+
+        [Fact]
         public async Task Run_ResultTrue_BasicPDF()
         {
             // Arrange

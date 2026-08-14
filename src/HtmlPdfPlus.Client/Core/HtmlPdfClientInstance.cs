@@ -331,9 +331,13 @@ namespace HtmlPdfPlus.Client.Core
         /// <returns>The HTTP <see cref="ByteArrayContent"/>.</returns>
         private async Task<StringContent> CreateHttpContent<T>(T? customdata)
         {
+            // Stamped as close to the actual send as possible, so a receiving server can
+            // subtract real transit time from Timeout instead of restarting the deadline
+            // fresh on arrival (see RequestHtmlPdf.SentAtUtc).
+            var sentAtUtc = DateTimeOffset.UtcNow;
             return disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress)
-                ? new StringContent(JsonSerializer.Serialize(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata, _mode).ToBytes()))
-                : new StringContent(JsonSerializer.Serialize(await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata, _mode).ToBytesCompress()));
+                ? new StringContent(JsonSerializer.Serialize(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata, _mode, sentAtUtc).ToBytes()))
+                : new StringContent(JsonSerializer.Serialize(await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata, _mode, sentAtUtc).ToBytesCompress()));
         }
 
         /// <summary>
@@ -344,9 +348,13 @@ namespace HtmlPdfPlus.Client.Core
         /// <returns>The request send in byte[].</returns>
         private async Task<byte[]> CreateRequestSend<T>(T? inputparam)
         {
+            // Stamped as close to the actual send as possible, so a receiving server can
+            // subtract real transit time from Timeout instead of restarting the deadline
+            // fresh on arrival (see RequestHtmlPdf.SentAtUtc).
+            var sentAtUtc = DateTimeOffset.UtcNow;
             return disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress)
-                ? new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam, _mode).ToBytes()
-                : await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam, _mode).ToBytesCompress();
+                ? new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam, _mode, sentAtUtc).ToBytes()
+                : await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam, _mode, sentAtUtc).ToBytesCompress();
         }
 
         /// <summary>

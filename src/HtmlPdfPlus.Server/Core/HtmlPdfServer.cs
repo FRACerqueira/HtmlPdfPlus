@@ -23,6 +23,10 @@ namespace HtmlPdfPlus.Server.Core
     {
         private bool isDisposed;
 
+        // Beyond this, an apparent RequestHtmlPdf.SentAtUtc-derived transit is treated as
+        // clock skew between client and server rather than genuine network/queueing time.
+        private const int MaxPlausibleTransitMs = 5000;
+
         internal readonly HtmlPdfBuilder PdfSrvBuilder;
         internal readonly string SourceAlias;
 
@@ -106,10 +110,40 @@ namespace HtmlPdfPlus.Server.Core
             RequestHtmlPdf<Tin> requestHtmlPdf,
             CancellationToken token = default)
         {
+            // requestHtmlPdf.Timeout is relative to when the client sent the request, not to
+            // when this method starts running - subtract time already spent in transit
+            // (network, queueing) so the deadline is honored end-to-end instead of being
+            // restarted fresh on arrival. SentAtUtc is null for in-process requests, which have
+            // no transport hop to account for.
+            var effectiveTimeout = requestHtmlPdf.Timeout;
+            if (requestHtmlPdf.SentAtUtc is DateTimeOffset sentAtUtc)
+            {
+                var transitMs = (DateTimeOffset.UtcNow - sentAtUtc).TotalMilliseconds;
+                if (transitMs > MaxPlausibleTransitMs)
+                {
+                    // An implausibly large "transit" is far more likely to be clock skew
+                    // between client and server than a genuine multi-second network hop -
+                    // trusting it would let a skewed clock fail every request outright. Ignore
+                    // SentAtUtc for this request instead of treating skew as an exhausted
+                    // deadline; a negative transit (server clock behind client) is likewise
+                    // clamped to zero rather than extending the budget.
+                    LogMessage($"Ignoring SentAtUtc: implausible transit ({transitMs:F0}ms) - possible clock skew between client and server");
+                }
+                else
+                {
+                    effectiveTimeout = (int)Math.Max(0, requestHtmlPdf.Timeout - Math.Max(0, transitMs));
+                    if (effectiveTimeout == 0)
+                    {
+                        LogMessage($"Reached Timeout({requestHtmlPdf.Timeout}) - {transitMs:F0}ms already spent in transit before processing began");
+                        return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new ErrorInfo(ErrorCode.Timeout, $"Reached Timeout({requestHtmlPdf.Timeout})", retryable: true));
+                    }
+                }
+            }
+
             if (inputparam is not null)
             {
                 using var cts = new CancellationTokenSource();
-                cts.CancelAfter(requestHtmlPdf.Timeout);
+                cts.CancelAfter(effectiveTimeout);
                 using var executeToken = CancellationTokenSource.CreateLinkedTokenSource(token, cts.Token);
                 try
                 {
@@ -124,7 +158,7 @@ namespace HtmlPdfPlus.Server.Core
                     // it against a delay built from the same token let a Canceled taskinput
                     // "win" silently: IsFaulted missed it, no branch returned, and execution
                     // fell through to PDF generation as if BeforePDF had succeeded.
-                    var backstop = Task.Delay(requestHtmlPdf.Timeout, token);
+                    var backstop = Task.Delay(effectiveTimeout, token);
                     var completed = await Task.WhenAny(taskinput, backstop);
                     if (completed == backstop)
                     {
@@ -163,7 +197,7 @@ namespace HtmlPdfPlus.Server.Core
                 }
             }
 
-            var reamaindtime = requestHtmlPdf.Timeout - sw.ElapsedMilliseconds;
+            var reamaindtime = effectiveTimeout - sw.ElapsedMilliseconds;
             if (reamaindtime < 0)
             {
                 reamaindtime = 0;
@@ -193,6 +227,21 @@ namespace HtmlPdfPlus.Server.Core
                     }
                     LogMessage($"Executed the Generate PDF after {sw.Elapsed}");
                 }
+                catch (OperationCanceledException ex)
+                {
+                    // Reached here only when AcquireAsync's own AcquireTimeoutMs was NOT what
+                    // fired (that case returns null above, reported as PoolExhausted) - so this
+                    // is the overall deadline or an external cancellation, same as BeforePDF/AfterPDF.
+                    var reachedOverallTimeout = cts.IsCancellationRequested;
+                    cts.Cancel(); // cancel pending task
+                    if (reachedOverallTimeout)
+                    {
+                        LogMessage($"Reached Timeout({requestHtmlPdf.Timeout})");
+                        return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, new ErrorInfo(ErrorCode.Timeout, $"Reached Timeout({requestHtmlPdf.Timeout})", retryable: true));
+                    }
+                    LogMessage($"Canceled by token server");
+                    return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
+                }
                 catch (Exception ex)
                 {
                     cts.Cancel(); // cancel pending task
@@ -203,7 +252,7 @@ namespace HtmlPdfPlus.Server.Core
 
             if (outputparam is not null)
             {
-                reamaindtime = requestHtmlPdf.Timeout - sw.ElapsedMilliseconds;
+                reamaindtime = effectiveTimeout - sw.ElapsedMilliseconds;
                 if (reamaindtime < 0)
                 {
                     reamaindtime = 0;
@@ -226,7 +275,7 @@ namespace HtmlPdfPlus.Server.Core
                     // Same rationale as the BeforePDF backstop above: decoupled from
                     // cts/executeToken so it can't race taskoutput off the same cancellation
                     // event, while still guaranteeing a bounded wait.
-                    var backstop = Task.Delay(requestHtmlPdf.Timeout, token);
+                    var backstop = Task.Delay(effectiveTimeout, token);
                     var completed = await Task.WhenAny(taskoutput, backstop);
                     if (completed == backstop)
                     {
@@ -348,10 +397,12 @@ namespace HtmlPdfPlus.Server.Core
                     }
                 }
             }
-            catch (OperationCanceledException)
-            {
-                resultpdf = [];
-            }
+            // No catch (OperationCanceledException) here: AcquireAsync only lets one through
+            // when it was NOT its own AcquireTimeoutMs that fired (see its callsite comment),
+            // i.e. the caller's overall deadline or an external cancellation - that must reach
+            // RunServer's own try/catch around this call so it can be classified as Timeout vs
+            // Canceled the same way BeforePDF/AfterPDF already are, instead of being collapsed
+            // into an empty result (which RunServer would otherwise always report as Timeout).
             finally
             {
                 if (page is not null)
