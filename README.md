@@ -71,15 +71,17 @@ Current version: **2.0.0**. Full version history has moved to [CHANGELOG.md](./C
 ## Prerequisites
 [**Top**](#table-of-contents)
 
-- .NET 8, .NET 9 or .NET 10 SDK
-- Visual Studio 2026 or later
-- Playwright (Installed and configured for your O.S)
+- .NET 8, .NET 9 or .NET 10 (SDK to build from source or develop against the library; the runtime alone is enough to just run an app that already references the NuGet packages)
+- Visual Studio 2026 or later - optional, only if that's your editor of choice; any .NET-capable IDE/CLI works
+- **Playwright browser binaries** - only required on whatever machine actually **runs `HtmlPdfPlus.Server`** (your dev machine while testing the server, a VM, a container). `HtmlPdfPlus.Client` never launches a browser and does not need this at all. See [Installation Steps for Playwright](#installation-steps-for-playwright-windows) below, or the [Docker guide](docs/guide/docker.md) if you're deploying in a container instead.
 
 
 ## Installing
 [**Top**](#table-of-contents)
 
 ### Installation Steps for Playwright (Windows)
+
+_Only needed on a machine that runs `HtmlPdfPlus.Server` outside a container - skip this if you're only building against `HtmlPdfPlus.Client`, or deploying with Docker (see the [Docker guide](docs/guide/docker.md), which bundles the browser inside the image instead)._
 
 ```
 dotnet tool update --global PowerShell
