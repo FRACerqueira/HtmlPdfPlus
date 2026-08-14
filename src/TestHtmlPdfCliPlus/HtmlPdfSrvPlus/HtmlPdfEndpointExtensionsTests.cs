@@ -5,6 +5,7 @@
 // ***************************************************************************************
 
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using HtmlPdfPlus;
 using Microsoft.AspNetCore.Builder;
@@ -29,16 +30,21 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             // Given: a fake server that reports a successful byte[] conversion.
             var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
             var result = new HtmlPdfResult<byte[]>(true, false, TimeSpan.Zero, pdfBytes, null);
-            using var host = await CreateTestHost<object, byte[]>(new FakeHtmlPdfServer<object, byte[]>(result));
+            var fake = new FakeHtmlPdfServer<object, byte[]>(result);
+            using var host = await CreateTestHost<object, byte[]>(fake);
 
             // When: the mapped endpoint is invoked.
             using var client = host.GetTestClient();
-            using var response = await client.PostAsJsonAsync("/GeneratePdf", new byte[] { 1, 2, 3 }, TestContext.Current.CancellationToken);
+            using var response = await client.PostAsync("/GeneratePdf", RawOctetContent([1, 2, 3]), TestContext.Current.CancellationToken);
 
             // Then: the body is the raw PDF bytes, served as application/pdf - no JSON envelope.
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal("application/pdf", response.Content.Headers.ContentType?.MediaType);
             Assert.Equal(pdfBytes, await response.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken));
+
+            // And: the request bytes survived the Stream-based binding intact - a 200 alone would
+            // only prove routing accepted the content type, not that the body actually arrived.
+            Assert.Equal(new byte[] { 1, 2, 3 }, fake.ReceivedRequestClient);
         }
 
         [Fact]
@@ -51,7 +57,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 
             // When: the mapped endpoint is invoked.
             using var client = host.GetTestClient();
-            using var response = await client.PostAsJsonAsync("/GeneratePdf", new byte[] { 1, 2, 3 }, TestContext.Current.CancellationToken);
+            using var response = await client.PostAsync("/GeneratePdf", RawOctetContent([1, 2, 3]), TestContext.Current.CancellationToken);
 
             // Then: the status line itself carries the failure (InvalidRequest -> 400), and the
             // body is the exact structured ErrorInfo, not an embedded IsSuccess:false on a 200.
@@ -72,7 +78,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 
             // When: the mapped endpoint is invoked.
             using var client = host.GetTestClient();
-            using var response = await client.PostAsJsonAsync("/GeneratePdf", new byte[] { 1, 2, 3 }, TestContext.Current.CancellationToken);
+            using var response = await client.PostAsync("/GeneratePdf", RawOctetContent([1, 2, 3]), TestContext.Current.CancellationToken);
 
             // Then: the standard Retry-After header carries the hint, so any HTTP client - not
             // just one that parses the JSON body - can act on the backpressure signal.
@@ -91,7 +97,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 
             // When: the mapped endpoint is invoked.
             using var client = host.GetTestClient();
-            using var response = await client.PostAsJsonAsync("/GeneratePdf", new byte[] { 1, 2, 3 }, TestContext.Current.CancellationToken);
+            using var response = await client.PostAsync("/GeneratePdf", RawOctetContent([1, 2, 3]), TestContext.Current.CancellationToken);
 
             // Then: the response is JSON carrying the full HtmlPdfResult<string>, as before D5.
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -99,6 +105,36 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             Assert.NotNull(body);
             Assert.True(body!.IsSuccess);
             Assert.Equal("file.pdf", body.OutputData);
+        }
+
+        [Fact]
+        public async Task Given_ApplicationJsonContentType_When_EndpointIsCalled_Then_RequestIsAcceptedNotRejectedWith415()
+        {
+            // Given: a fake server, and a request sent as plain application/json - the shape a
+            // caller using DisableOptionsHtmlToPdf.DisableCompress (or a manual/curl request)
+            // produces, since the handler reads the raw stream regardless of content type.
+            var pdfBytes = new byte[] { 0x25, 0x50, 0x44, 0x46 };
+            var result = new HtmlPdfResult<byte[]>(true, false, TimeSpan.Zero, pdfBytes, null);
+            var fake = new FakeHtmlPdfServer<object, byte[]>(result);
+            using var host = await CreateTestHost<object, byte[]>(fake);
+
+            // When: the mapped endpoint is invoked with an application/json body.
+            using var client = host.GetTestClient();
+            var content = new ByteArrayContent([1, 2, 3]);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            using var response = await client.PostAsync("/GeneratePdf", content, TestContext.Current.CancellationToken);
+
+            // Then: the request is accepted (not 415 Unsupported Media Type), and the body
+            // actually reached the handler - a 200 alone can't tell "delivered" from "empty".
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(new byte[] { 1, 2, 3 }, fake.ReceivedRequestClient);
+        }
+
+        private static ByteArrayContent RawOctetContent(byte[] body)
+        {
+            var content = new ByteArrayContent(body);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            return content;
         }
 
         private static async Task<IHost> CreateTestHost<TIn, TOut>(IHtmlPdfServer<TIn, TOut> fake)
@@ -125,9 +161,15 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 
         private sealed class FakeHtmlPdfServer<TIn, TOut>(HtmlPdfResult<TOut> result) : IHtmlPdfServer<TIn, TOut>
         {
+            public byte[]? ReceivedRequestClient { get; private set; }
+
             public IHtmlPdfServerContext<TIn, TOut> ScopeData(TIn? inputparam = default) => throw new NotSupportedException();
 
-            public IHtmlPdfServerContext<TIn, TOut> ScopeRequest(byte[] requestClient) => new FakeContext(result);
+            public IHtmlPdfServerContext<TIn, TOut> ScopeRequest(byte[] requestClient)
+            {
+                ReceivedRequestClient = requestClient;
+                return new FakeContext(result);
+            }
 
             public Task<HtmlPdfResult<TOut>> Run(byte[] requestClient, CancellationToken token = default) => Task.FromResult(result);
 

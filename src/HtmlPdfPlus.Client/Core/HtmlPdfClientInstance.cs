@@ -201,7 +201,6 @@ namespace HtmlPdfPlus.Client.Core
             }
             var sw = Stopwatch.StartNew();
             HttpContent content = await CreateHttpContent(customdata);
-            content.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Application.Json);
             // .Timeout() only travels inside the request body for the server to honor; without
             // a local deadline here, this call relied entirely on HttpClient.Timeout (100s by
             // default) or the caller's own token, so a slow/unresponsive server ignored the
@@ -324,20 +323,31 @@ namespace HtmlPdfPlus.Client.Core
         }
 
         /// <summary>
-        /// Creates the HTTP content for the request.
+        /// Creates the HTTP content for the request: the request bytes (gzip-compressed JSON, or
+        /// plain JSON when compression is disabled) sent directly as the body - no base64/JSON-
+        /// string wrapping on top, so the OpenAPI schema generated from
+        /// <c>MapHtmlPdfEndpoints</c> can honestly describe it and a non-.NET client only has to
+        /// POST bytes. The content type reflects what the bytes actually are - <c>application/
+        /// json</c> when <see cref="DisableOptionsHtmlToPdf.DisableCompress"/> is set (the body is
+        /// genuinely readable JSON), <c>application/octet-stream</c> otherwise (gzip) - matching
+        /// the pair <c>MapHtmlPdfEndpoints</c> declares via <c>Accepts</c>.
         /// </summary>
         /// <typeparam name="T">The type of the custom data.</typeparam>
         /// <param name="customdata">The custom data.</param>
         /// <returns>The HTTP <see cref="ByteArrayContent"/>.</returns>
-        private async Task<StringContent> CreateHttpContent<T>(T? customdata)
+        private async Task<ByteArrayContent> CreateHttpContent<T>(T? customdata)
         {
             // Stamped as close to the actual send as possible, so a receiving server can
             // subtract real transit time from Timeout instead of restarting the deadline
             // fresh on arrival (see RequestHtmlPdf.SentAtUtc).
             var sentAtUtc = DateTimeOffset.UtcNow;
-            return disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress)
-                ? new StringContent(JsonSerializer.Serialize(new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata, _mode, sentAtUtc).ToBytes()))
-                : new StringContent(JsonSerializer.Serialize(await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata, _mode, sentAtUtc).ToBytesCompress()));
+            var disableCompress = disableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress);
+            var bytes = disableCompress
+                ? new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata, _mode, sentAtUtc).ToBytes()
+                : await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, customdata, _mode, sentAtUtc).ToBytesCompress();
+            var content = new ByteArrayContent(bytes);
+            content.Headers.ContentType = new MediaTypeHeaderValue(disableCompress ? MediaTypeNames.Application.Json : MediaTypeNames.Application.Octet);
+            return content;
         }
 
         /// <summary>

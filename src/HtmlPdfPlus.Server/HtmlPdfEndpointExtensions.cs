@@ -72,9 +72,16 @@ namespace Microsoft.AspNetCore.Routing
             Func<string, TIn?, CancellationToken, Task<string>>? beforePdf = null,
             Func<byte[]?, TIn?, CancellationToken, Task<TOut>>? afterPdf = null)
         {
-            var route = endpoints.MapPost(pattern, async ([FromServices] IHtmlPdfServer<TIn, TOut> pdfServer, [FromBody] byte[] requestClient, CancellationToken token) =>
+            // Bound as a raw Stream (not [FromBody] byte[]) so the request body is exactly the
+            // client's bytes - gzip-compressed JSON, or plain JSON when compression is disabled -
+            // with no base64/JSON-string wrapping layered on top purely because byte[] model
+            // binding defaults to that. See HtmlPdfClientInstance.CreateHttpContent for the
+            // matching client-side change.
+            var route = endpoints.MapPost(pattern, async ([FromServices] IHtmlPdfServer<TIn, TOut> pdfServer, Stream body, CancellationToken token) =>
             {
-                var context = pdfServer.ScopeRequest(requestClient);
+                using var ms = new MemoryStream();
+                await body.CopyToAsync(ms, token).ConfigureAwait(false);
+                var context = pdfServer.ScopeRequest(ms.ToArray());
                 if (beforePdf is not null)
                 {
                     context = context.BeforePDF(beforePdf);
@@ -87,6 +94,11 @@ namespace Microsoft.AspNetCore.Routing
                 return ToHttpResult(result);
             });
 
+            // Both labels are accepted since the handler only reads the raw stream regardless of
+            // Content-Type - "octet-stream" for the default gzip body, "json" for the readable,
+            // uncompressed body a caller gets from DisableOptionsHtmlToPdf.DisableCompress (or from
+            // a curl/manual request for debugging).
+            route.Accepts<byte[]>("application/octet-stream", "application/json");
             if (typeof(TOut) == typeof(byte[]))
             {
                 route.Produces<byte[]>(StatusCodes.Status200OK, "application/pdf");
