@@ -414,7 +414,7 @@ Each sample is scoped to one clear lesson. For more examples, please refer to th
 	- [ClientSendTcp](./samples/ConsoleHtmlToPdfPlus.ClientSendTcp) - the client's `Run(Func<byte[],...>)` overload driving a raw TCP round-trip via [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp)
 	- [TcpServerHtmlToPdf.GenericServer](./samples/TcpServerHtmlToPdf.GenericServer) - the matching TCP listener, unpacking a request and writing the result back over the same connection
 - **Cross-language** - consuming the server from outside .NET
-	- [JavaClientSendHttp](./samples/JavaClientSendHttp) - a single dependency-free `.java` file (JDK's own `HttpClient` + `GZIPOutputStream`, no build tool) showing the exact wire format any non-.NET client must produce: JSON → gzip → POST as `application/octet-stream`
+	- [JavaClientSendHttp](./samples/JavaClientSendHttp) - a single dependency-free `.java` file (JDK's own `HttpClient` + `GZIPOutputStream`, no build tool) showing the exact wire format any non-.NET client must produce: JSON → gzip → POST as `application/octet-stream` - see the file header for the `javac`/`java` commands and which server profile to run
 
 > `/healthz` and `/readyz` are mapped by the two web server samples above (via `MapHtmlPdfHealthEndpoints()`), but no sample calls them from a client or shows what a real orchestrator would do with the response. The `Retry-After` backpressure signal on `ErrorCode.PoolExhausted` and the `System.Diagnostics.Metrics` instruments (`htmlpdfplus.*`) have no sample coverage at all yet. See [Documentation](#documentation) for how each of those works until dedicated samples exist.
 
