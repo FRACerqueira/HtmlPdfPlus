@@ -49,7 +49,9 @@ namespace HtmlPdfPlus
         IHtmlPdfClient FromHtml(string html);
 
         /// <summary>
-        /// Register Page Url to be executed by the server.
+        /// Register Page Url to be executed by the server. Sent with an explicit
+        /// <see cref="RenderMode.Url"/>, subject to the server's configured URL allow-policy
+        /// before navigation.
         /// </summary>
         /// <param name="value">The url</param>
         /// <returns><see cref="IHtmlPdfClient"/> instance.</returns>
@@ -58,12 +60,12 @@ namespace HtmlPdfPlus
         /// <summary>
         /// Execute the Razor HTML template with the data and register the HTML.
         /// </summary>
-        /// <param name="template">Razor template source.</param>
+        /// <param name="templatetext">Razor template source.</param>
         /// <param name="model">Data to apply to the template.</param>
         /// <typeparam name="T">Type of data model.</typeparam>
         /// <returns><see cref="IHtmlPdfClient"/> instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the template or model is null.</exception>
-        IHtmlPdfClient FromRazor<T>(string template, T model);
+        IHtmlPdfClient FromRazor<T>(string templatetext, T model);
 
         /// <summary>
         /// Execute parse validation of the HTML before sending it to the server.
@@ -108,42 +110,42 @@ namespace HtmlPdfPlus
         /// <summary>
         /// Submit the HTML to convert to PDF in custom output via the SubmitHtmlToPdf function.
         /// </summary>
-        /// <typeparam name="Tin">Type of input data.</typeparam>
-        /// <typeparam name="Tout">Type of output data.</typeparam>
+        /// <typeparam name="TIn">Type of input data.</typeparam>
+        /// <typeparam name="TOut">Type of output data.</typeparam>
         /// <param name="submitHtmlToPdf">Handler to function submit to server.
         /// <para>A function that takes a request client parameter and a <see cref="CancellationToken"/>, and </para>
-        /// <para>returns a <see cref="HtmlPdfResult{Tout}"/> representing the asynchronous operation of converting HTML to PDF.</para>
+        /// <para>returns a <see cref="HtmlPdfResult{TOut}"/> representing the asynchronous operation of converting HTML to PDF.</para>
         /// </param>
         /// <param name="customData">Input data, for customizing HTML before converting to PDF on the server.</param>
         /// <param name="token"><see cref="CancellationToken"/> token.</param>
-        /// <returns>Returns <see cref="HtmlPdfResult{Tout}"/> representing the asynchronous operation of converting HTML to PDF.</returns>
+        /// <returns>Returns <see cref="HtmlPdfResult{TOut}"/> representing the asynchronous operation of converting HTML to PDF.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the empty Html source.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the submitHtmlToPdf function or customData is null.</exception>
-        Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(Func<byte[], CancellationToken, Task<HtmlPdfResult<Tout>>> submitHtmlToPdf, Tin? customData, CancellationToken token = default);
+        Task<HtmlPdfResult<TOut>> Run<TIn, TOut>(Func<byte[], CancellationToken, Task<HtmlPdfResult<TOut>>> submitHtmlToPdf, TIn? customData, CancellationToken token = default);
 
         /// <summary>
         /// Submit the HTML to convert to PDF in custom output via POST <see cref="HttpClient"/>.
         /// </summary>
-        /// <typeparam name="Tin">Type of input data.</typeparam>
-        /// <typeparam name="Tout">Type of output data.</typeparam>
+        /// <typeparam name="TIn    ">Type of input data.</typeparam>
+        /// <typeparam name="TOut">Type of output data.</typeparam>
         /// <param name="httpClient">Instance of <see cref="HttpClient"/>.</param>
         /// <param name="customData">Input data, for customizing HTML before converting to PDF on the server.</param>
         /// <param name="token"><see cref="CancellationToken"/> token.</param>
-        /// <returns>Returns <see cref="HtmlPdfResult{Tout}"/> representing the asynchronous operation of converting HTML to PDF.</returns>
+        /// <returns>Returns <see cref="HtmlPdfResult{TOut}"/> representing the asynchronous operation of converting HTML to PDF.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the empty Html source.</exception>
-        Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(HttpClient httpClient, Tin? customData, CancellationToken token = default);
+        Task<HtmlPdfResult<TOut>> Run<TIn, TOut>(HttpClient httpClient, TIn? customData, CancellationToken token = default);
 
         /// <summary>
         /// Submit the HTML to convert to PDF in custom output via POST <see cref="HttpClient"/>.
         /// </summary>
-        /// <typeparam name="Tin">Type of input data.</typeparam>
-        /// <typeparam name="Tout">Type of output data.</typeparam>
+        /// <typeparam name="TIn">Type of input data.</typeparam>
+        /// <typeparam name="TOut">Type of output data.</typeparam>
         /// <param name="httpClient">Instance of <see cref="HttpClient"/>.</param>
         /// <param name="endpoint">The endpoint for the HTTP client.</param>
         /// <param name="customData">Input data, for customizing HTML before converting to PDF on the server.</param>
         /// <param name="token"><see cref="CancellationToken"/> token.</param>
-        /// <returns>Returns <see cref="HtmlPdfResult{Tout}"/> representing the asynchronous operation of converting HTML to PDF.</returns>
+        /// <returns>Returns <see cref="HtmlPdfResult{TOut}"/> representing the asynchronous operation of converting HTML to PDF.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the empty Html source.</exception>
-        Task<HtmlPdfResult<Tout>> Run<Tin, Tout>(HttpClient httpClient, string endpoint, Tin? customData, CancellationToken token = default);
+        Task<HtmlPdfResult<TOut>> Run<TIn, TOut>(HttpClient httpClient, string endpoint, TIn? customData, CancellationToken token = default);
     }
 }

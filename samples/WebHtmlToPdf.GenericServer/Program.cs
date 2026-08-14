@@ -4,9 +4,6 @@
 // https://github.com/FRACerqueira/HtmlPdfPlus
 // ***************************************************************************************
 
-using HtmlPdfPlus;
-using Microsoft.AspNetCore.Mvc;
-
 var builder = WebApplication.CreateBuilder(args);
     
 builder.Services.AddOpenApi();
@@ -28,10 +25,12 @@ app.MapOpenApi();
 
 app.UseHttpsRedirection();
 
-app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] byte[] requestclienthtmltopdf, CancellationToken token) =>
-{
-    return await PDFserver
-        .Run(requestclienthtmltopdf, token);
-}).Produces<HtmlPdfResult<byte[]>>(200);
+// The request/response contract (raw PDF on success, structured ErrorInfo on failure) comes
+// straight from the library, so the OpenAPI document generated above actually describes it.
+app.MapHtmlPdfEndpoints("/GeneratePdf");
+
+// Lets an orchestrator (Kubernetes, etc.) observe renderer health from outside instead of
+// inferring it from request timeouts.
+app.MapHtmlPdfHealthEndpoints();
 
 app.Run();

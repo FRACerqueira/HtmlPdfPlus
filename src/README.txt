@@ -20,7 +20,7 @@ HtmlPdfPlus is a powerful tool that can help you generate PDF files from HTML or
 This library was built using the Playwright (https://playwright.dev/dotnet/) (engine to automate Chromium, Firefox, and WebKit** with a single API). 
 Playwright is built to enable cross-browser web automation that is evergreen, capable, reliable, and fast.
 
-The current version (V.1.56.0) of **Playwright** supports **only the Chromium browser** for the PDF API.
+As of the Playwright version this library currently targets, its PDF generation API supports **only the Chromium browser**.
 
 Features
 ========
@@ -36,73 +36,33 @@ Features
 - Communicate with the server using REST API (with compressed request) or user custom protocol
 - Minify HTML and CSS
 - Client-side HTML parser with custom error action (optional)
-- Compress send data over network
-- Compress result PDF using GZip over network (Only type bytes array output)
+- Requests are sent as gzip-compressed raw bytes by default, no base64/JSON-string wrapping
+- A successful byte[] response is served as the raw PDF body, not wrapped in JSON
 - Extension on server side to customize the conversion process (before and after conversion)
     - BeforePDF : Normalize HTML, Replace tokens, etc
     - AfterPDF : Save file, Send to cloud, etc
-- Disable features to improve/ balance performance (minify, compress and log)
+- Disable features to improve/balance performance (minify, compress and log)
+- Backpressure signaled via ErrorCode.PoolExhausted + a real Retry-After, automatic browser recovery, liveness/readiness endpoints, and System.Diagnostics.Metrics instrumentation
 
-What's new in the latest version 
-================================
-- **v1.0.1 (latest version)**
-    - Updated Playwright to version 1.56.0
-    - Adjusted package reference for target framework (removed  NetStandard2.1)
-    - Updated documentation
-    - include target .NET 10.0
-
-- v1.0.0
-    - Updated Playwright to version 1.51.0
-    - Adjusted package reference for target framework
-    - Updated documentation
-    - GA version (jump to version 1.0.0)
-
-- v0.5.0-rc (latest version)
-    - Simplified sending data to the server via http client (now aceept byte[] instead of stream)
-    - Removed ReadToBytesAsync stream extension method
-    - Exposing the RequestHtmlPdf<T> class for scenarios of handling sending parameters
-    - Updated documentation
-    - Preparation for GA version
-
-- v0.4.0-rc
-    - Relaxation of Package Reference for .net8 to .net9
-    - Renamed the 'Source' command to 'Scope'
-    - Renamed the 'Request' command to 'ScopeRequest'
-    - Changed parameter in funcion SubmitHtmlToPdf to byte[] instead of string
-    - Changed parameter for command Run to byte[] instead of string
-    - Changed parameter for command ScopeRequest to byte[] instead of string
-    - Removed DecompressBytes() method to class HtmlPdfResult
-    - Added DecompressOutputData() method to class HtmlPdfResult for custom scenarios
-    - Improvements in the compression/decompression process to use asynchronous methods
-    - Small code reviews
-
-- v0.3.0-beta
-
-    - Added FromUrl(Uri value) command to client-side mode
-    - Fixed bug in server mode for multi thread safe when there is parameter customization and/or no client mode sending.
-        - Moved the BeforePDF(Func<string, TIn?, CancellationToken, Task<string>> inputParam) command to the execution context.
-        - Moved the AfterPDF(Func<byte[]?, TIn?, CancellationToken, Task<TOut>> outputParam) command to the execution context.
-        - Added command Source(TIn? inputparam = default) to transfer input parameter for server execution context and custom actions and html source.
-        - Added Request(string request Client) command to pass the request client data to the server execution context for custom actions and HTML source.
-        - Simplified execution commands for server side with execution context with fluid interface comands :
-            -  Removed static class RequestHtmlPdf
-            -  Added command FromHtml(string html, int converttimeout = 30000, bool minify = true)
-            -  Added command FromUrl(Uri value, int converttimeout = 30000)
-            -  Added command FromRazor\<T\>(string template, T model, int converttimeout = 30000, bool minify = true)
-         
-- v0.2.0-beta
-
-    - Initial version
+What's new
+==========
+Current version: 2.0.0. Full version history: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/CHANGELOG.md
 
 Prerequisites
 =============
 
-- .NET 8 or .NET 9 SDK
-- Visual Studio 2022 or later
-- Playwright (Installed and configured for your O.S)
+- .NET 8, .NET 9 or .NET 10 (SDK to build/develop; runtime alone is enough just to run an app that
+  already references the NuGet packages)
+- Visual Studio 2026 or later - optional, only if that's your editor of choice
+- Playwright browser binaries - only required on whatever machine actually runs HtmlPdfPlus.Server
+  (dev machine, VM, or container). HtmlPdfPlus.Client never launches a browser and does not need this.
 
 Installation Steps for Playwright (Windows)
 ===========================================
+
+Only needed on a machine that runs HtmlPdfPlus.Server outside a container - skip this if you're only
+building against HtmlPdfPlus.Client, or deploying with Docker (the browser is bundled inside the image
+instead, see: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/docker.md).
 
 dotnet tool update --global PowerShell
 dotnet tool install --global Microsoft.Playwright.CLI
@@ -177,11 +137,7 @@ builder.Services.AddHtmlPdfService((cfg) =>
 });
 ...
 
-app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] byte[] requestclienthtmltopdf, CancellationToken token) =>
-{
-    return await PDFserver
-        .Run(requestclienthtmltopdf, token);
-}).Produces<HtmlPdfResult<byte[]>>(200);
+app.MapHtmlPdfEndpoints();
 
 
 1.2) Using client-server mode Via any protocol
@@ -271,7 +227,7 @@ Host.CreateDefaultBuilder(args)
     {
         services.AddHtmlPdfService((cfg) =>
         {
-               .Logger(LogLevel.Debug, "MyPDFServer")
+            cfg.Logger(LogLevel.Debug, "MyPDFServer")
                .DefaultConfig((page) =>
                {
                    page.DisplayHeaderFooter(true)
@@ -303,37 +259,53 @@ else
 Samples
 =======
 
-For more examples, please refer to the Samples directory : https://github.com/FRACerqueira/HtmlPdfPlus/tree/docs/samples
+For more examples, please refer to the Samples directory : https://github.com/FRACerqueira/HtmlPdfPlus/tree/main/samples
 
 Docker Usage
 ============
 
-The use of Playwright works very well for local testing on Windows machines following the standard installation instructions.
-For containerization scenarios, image sizes are a challenge that deserves more dedicated attention.
-This project suggests a containerization example that reduces the final image size by approximately **70%** !.
+The working Dockerfile keeps only the one Playwright browser variant the code actually launches (chromium_headless_shell),
+cutting the image from 763MB to 370MB. Full details, measured numbers, and the version-coupling caveat between the
+Docker build-stage tag and the Microsoft.Playwright NuGet package: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/docker.md
 
-To achieve this reduction, the biggest challenge was controlling the necessary dependencies and keeping only the minimum for execution in a headless shell.
+Architecture
+============
 
-Basically, what we did was:
-- Use the base image from mcr.microsoft.com/dotnet/aspnet:9.0
-- Use the image from cr.microsoft.com/playwright/dotnet:v1.51.0 for build
-  - Removing unnecessary browser and driver installations
-  - For .NET 9, we removed the default installation (.NET 8)
-    - We installed the .NET 9 SDK version for the build phase
-- Copy the required folder (pre-installed) to run Playwright
-- Install Google Chrome Stable , fonts and install the necessary libs to make the browser work.
-- Set environment variable for Playwright
-- Enable running the service as a non-root user
+Package layout (Client/Server/Shared), the ScopeData() vs ScopeRequest(bytes) distinction, the page pool and browser
+lifecycle, and where configuration lives: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/architecture.md
 
-I believe this work can still be improved! 
+How-To
+======
 
-For reference on this approach, see the DockFile at: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/Dockerfile
+Task-oriented recipes - rendering content, transports, customization, error handling:
+https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/howto/README.md
 
-Documentation
+Resilience and Observability
+=============================
+
+Backpressure/Retry-After, automatic browser recovery, liveness/readiness endpoints, and metrics:
+https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/resilience.md
+
+API Reference
 =============
 
-The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface. 
-The documentation is available in the Docs directory : https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/src/docs/docindex.md
+The library has a main namespace `HtmlPdfPlus` for client and server, and all methods use a fluent interface. The full
+generated reference for every public type is in the Docs directory : https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/api/docindex.md
+
+Architecture Decision Records (ADR)
+====================================
+
+HtmlPdfPlus documents its significant architectural and design decisions as Architecture Decision Records (ADR),
+following the AdrPlus convention (https://github.com/FRACerqueira/AdrPlus). Each record captures the context, the
+decision, the alternatives considered, and the consequences - so the reasoning behind the library's design stays
+traceable over time.
+
+See the ADR index for the full list of decisions: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/adr/indexadrs.md
+
+FAQ
+===
+
+Common questions, answered briefly: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/faq.md
 
 
 

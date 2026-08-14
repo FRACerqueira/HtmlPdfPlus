@@ -25,9 +25,10 @@ namespace HtmlPdfPlus.Server.Core
     internal sealed class HtmlPdfServerContext<TIn, TOut>(HtmlPdfServer<TIn, TOut> htmlPdfServer, TIn? inputparam, byte[]? requestClient) : IHtmlPdfServerContext<TIn, TOut>, IDisposable
     {
         private bool isDisposed;
-        private Func<string, TIn?, CancellationToken, Task<string>>? _inputparam = null;
-        private Func<byte[]?, TIn?, CancellationToken, Task<TOut>>? _outputparam = null;
+        private Func<string, TIn?, CancellationToken, Task<string>>? _inputparam;
+        private Func<byte[]?, TIn?, CancellationToken, Task<TOut>>? _outputparam;
         private string _html = string.Empty;
+        private RenderMode _mode = RenderMode.Html;
         private int _timeout = 30000;
 
         /// <inheritdoc />
@@ -59,6 +60,7 @@ namespace HtmlPdfPlus.Server.Core
             {
                 _html = Uglify.Html(html).Code;
             }
+            _mode = RenderMode.Html;
             _timeout = converttimeout;
             return this;
         }
@@ -79,6 +81,7 @@ namespace HtmlPdfPlus.Server.Core
             {
                 _html = Uglify.Html(aux).Code;
             }
+            _mode = RenderMode.Html;
             _timeout = converttimeout;
             return this;
         }
@@ -87,6 +90,7 @@ namespace HtmlPdfPlus.Server.Core
         public IHtmlPdfServerContext<TIn, TOut> FromUrl(Uri value, int converttimeout = 30000)
         {
             _html = value.ToString();
+            _mode = RenderMode.Url;
             _timeout = converttimeout;
             return this;
         }
@@ -96,31 +100,32 @@ namespace HtmlPdfPlus.Server.Core
         {
             var sw = Stopwatch.StartNew();
             RequestHtmlPdf<TIn> requestHtmlPdf;
-            string data;
-            if (requestClient is not null)
+            try
             {
-                if (requestClient.Length == 0)
+                string data;
+                if (requestClient is not null)
                 {
-                    throw new ArgumentException("request client is empty");
-                }
-                if (htmlPdfServer.PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
-                {
-                    data = Encoding.UTF8.GetString(requestClient);
+                    if (requestClient.Length == 0)
+                    {
+                        throw new ArgumentException("request client is empty");
+                    }
+                    if (htmlPdfServer.PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress))
+                    {
+                        data = Encoding.UTF8.GetString(requestClient);
+                    }
+                    else
+                    {
+                        data = Encoding.UTF8.GetString(await GZipHelper.DecompressAsync(requestClient, htmlPdfServer.PdfSrvBuilder.MaxDecompressedRequestSizeLimit, token));
+                        LogMessage($"Decompress Request after {sw.Elapsed}");
+                    }
+                    requestHtmlPdf = JsonSerializer.Deserialize<RequestHtmlPdf<TIn>>(data, GZipHelper.JsonOptions)!;
+                    requestHtmlPdf.Config ??= htmlPdfServer.PdfSrvBuilder.Config;
                 }
                 else
                 {
-                    data = Encoding.UTF8.GetString(await GZipHelper.DecompressAsync(requestClient, token));
-                    LogMessage($"Decompress Request after {sw.Elapsed}");
+                    requestHtmlPdf = new RequestHtmlPdf<TIn>(_html, htmlPdfServer.SourceAlias, htmlPdfServer.PdfSrvBuilder.Config, _timeout, inputparam, _mode);
                 }
-                requestHtmlPdf = JsonSerializer.Deserialize<RequestHtmlPdf<TIn>>(data, GZipHelper.JsonOptions)!;
-                requestHtmlPdf.Config ??= htmlPdfServer.PdfSrvBuilder.Config;
-            }
-            else
-            {
-                requestHtmlPdf = new RequestHtmlPdf<TIn>(_html, htmlPdfServer.SourceAlias, htmlPdfServer.PdfSrvBuilder.Config, _timeout, inputparam);
-            }
-            try
-            {
+
                 if (requestHtmlPdf.Timeout < 1)
                 {
                     throw new ArgumentException("Timeout must be greater than zero");
@@ -136,11 +141,19 @@ namespace HtmlPdfPlus.Server.Core
             }
             catch (Exception ex)
             {
-                return new HtmlPdfResult<TOut>(false, false, sw.Elapsed, default, ex);
+                // Unlike RequestDuration (meaningless for a request that was never actually
+                // attempted), a validation failure is still a real failure a host's error-rate
+                // alerting needs to see - recording only errors that survive to RunServer would
+                // make this counter go silent under a flood of malformed requests.
+                var validationFailure = new HtmlPdfResult<TOut>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
+                htmlPdfServer.RecordErrorIfAny(validationFailure);
+                return validationFailure;
             }
-            var isurl = Uri.IsWellFormedUriString(requestHtmlPdf.Html, UriKind.RelativeOrAbsolute);
-            var disabledcompress = htmlPdfServer.PdfSrvBuilder.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableCompress);
-            return await htmlPdfServer.RunServer(isurl, _inputparam, _outputparam, sw, requestHtmlPdf, disabledcompress, token);
+            var isurl = requestHtmlPdf.Mode == RenderMode.Url;
+            var result = await htmlPdfServer.RunServer(isurl, _inputparam, _outputparam, sw, requestHtmlPdf, token);
+            htmlPdfServer.RecordRequestDuration(result);
+            htmlPdfServer.RecordErrorIfAny(result);
+            return result;
         }
 
         /// <summary>
@@ -180,9 +193,9 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         // Reusable logging
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfServerContext({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfServerContext({source}) : {message}");
-        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfServerContext({source}) : {message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfServerContext({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfServerContext({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfServerContext({Source}) : {Message}");
 
     }
 }

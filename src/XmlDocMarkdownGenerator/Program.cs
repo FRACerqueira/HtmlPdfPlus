@@ -7,22 +7,22 @@ namespace XmlDocMarkdownGenerator
         //perform XmlDoc Markdown Generator
         static int Main()
         {
-            if (Directory.Exists(@"..\..\..\..\docs\assemblies"))
+            if (Directory.Exists(@"..\..\..\..\..\docs\api\assemblies"))
             {
-                Directory.Delete(@"..\..\..\..\docs\assemblies", true);
+                Directory.Delete(@"..\..\..\..\..\docs\api\assemblies", true);
             }
 
-            var args = new string[] { "HtmlPdfPlus.Client", @"..\..\..\..\docs\assemblies" };
+            var args = new string[] { "HtmlPdfPlus.Client", @"..\..\..\..\..\docs\api\assemblies" };
             XmlDocMarkdownApp.Run(args);
 
-            args = ["HtmlPdfPlus.Server", @"..\..\..\..\docs\assemblies"];
+            args = ["HtmlPdfPlus.Server", @"..\..\..\..\..\docs\api\assemblies"];
             XmlDocMarkdownApp.Run(args);
 
-            args = ["HtmlPdfPlus.Shared", @"..\..\..\..\docs\assemblies"];
+            args = ["HtmlPdfPlus.Shared", @"..\..\..\..\..\docs\api\assemblies"];
             XmlDocMarkdownApp.Run(args);
 
             //create custom header and footer for namespaces
-            var files = Directory.GetFiles(@"..\..\..\..\docs\assemblies", "*.md");
+            var files = Directory.GetFiles(@"..\..\..\..\..\docs\api\assemblies", "*.md");
             foreach (var item in files)
             {
                 var content = File.ReadAllLines(item).ToList();
@@ -56,7 +56,7 @@ namespace XmlDocMarkdownGenerator
                 File.WriteAllLines(item, content);
             }
 
-            var folders = Directory.GetDirectories(@"..\..\..\..\docs\assemblies");
+            var folders = Directory.GetDirectories(@"..\..\..\..\..\docs\api\assemblies");
             foreach (var item in folders)
             {
                 var itemsfolder = Directory.GetDirectories(item);

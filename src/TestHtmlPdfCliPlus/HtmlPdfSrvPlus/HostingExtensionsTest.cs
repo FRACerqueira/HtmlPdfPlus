@@ -59,8 +59,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             // Act
             services.AddHtmlPdfService((cfg) => 
             {
-                cfg.AcquireWaitTime(100)
-                   .PagesBuffer(1)
+                cfg.PagesBuffer(1)
                    .Logger(Microsoft.Extensions.Logging.LogLevel.Trace, "teste")
                    .InitArguments("--disable-dev-shm-usage;-no-first-run");
             }, "testAlias");

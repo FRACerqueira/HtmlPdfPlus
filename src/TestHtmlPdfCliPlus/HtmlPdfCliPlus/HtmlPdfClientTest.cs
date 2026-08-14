@@ -48,7 +48,7 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
                     .Run((funcparam, token) =>
                     {
                         return Task.FromResult(new HtmlPdfResult<byte[]>(true,false,TimeSpan.Zero, null));
-                    });
+                    }, CancellationToken.None);
             });
         }
 
@@ -61,7 +61,7 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
                     .Run<string,string>((funcparam, token) =>
                     {
                         return Task.FromResult(new HtmlPdfResult<string>(true, false, TimeSpan.Zero, null));
-                    }, "");
+                    }, "", CancellationToken.None);
             });
         }
 
@@ -73,10 +73,10 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
                 .Run((eventdata,token) => 
                 {
                     throw new ApplicationException();
-                });
+                }, CancellationToken.None);
             Assert.False(result.IsSuccess);
             Assert.NotNull(result.Error);
-            Assert.IsType<ApplicationException>(result.Error);
+            Assert.Equal(ErrorCode.Internal, result.Error!.Code);
         }
 
         [Fact]
@@ -87,10 +87,10 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
                 .Run<string,string>((eventdata, token) =>
                 {
                     throw new ApplicationException();
-                },"");
+                },"", CancellationToken.None);
             Assert.False(result.IsSuccess);
             Assert.NotNull(result.Error);
-            Assert.IsType<ApplicationException>(result.Error);
+            Assert.Equal(ErrorCode.Internal, result.Error!.Code);
         }
 
         [Fact]
@@ -103,10 +103,10 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
                 {
                     Thread.Sleep(1000);
                     return Task.FromResult(new HtmlPdfResult<byte[]>(true, false, TimeSpan.Zero, default));
-                });
+                }, CancellationToken.None);
             Assert.False(result.IsSuccess);
             Assert.NotNull(result.Error);
-            Assert.IsType<TimeoutException>(result.Error);
+            Assert.Equal(ErrorCode.Timeout, result.Error!.Code);
         }
 
         [Fact]
@@ -119,10 +119,10 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
                 {
                     Thread.Sleep(1000);
                     return Task.FromResult(new HtmlPdfResult<string>(true,false, TimeSpan.Zero,""));
-                }, "");
+                }, "", CancellationToken.None);
             Assert.False(result.IsSuccess);
             Assert.NotNull(result.Error);
-            Assert.IsType<TimeoutException>(result.Error);
+            Assert.Equal(ErrorCode.Timeout, result.Error!.Code);
         }
 
         [Fact]

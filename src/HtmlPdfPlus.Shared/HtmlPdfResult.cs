@@ -22,10 +22,10 @@ namespace HtmlPdfPlus
         /// <param name="bufferDrained">If the time limit for acquiring a page has been reached</param>
         /// <param name="elapsedTime">Time taken to convert html to PDF</param>
         /// <param name="outputData">Output custom data or PDF in byte[]</param>
-        /// <param name="error">The exception during conversion. <see cref="Exception"/></param>
+        /// <param name="error">The structured description of the failure, if any. <see cref="ErrorInfo"/></param>
         [JsonConstructor]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0290:Use primary constructor", Justification = "by design")]
-        public HtmlPdfResult(bool isSuccess, bool bufferDrained, TimeSpan elapsedTime, T? outputData, Exception? error = null)
+        public HtmlPdfResult(bool isSuccess, bool bufferDrained, TimeSpan elapsedTime, T? outputData, ErrorInfo? error = null)
         {
             IsSuccess = isSuccess;
             BufferDrained = bufferDrained;
@@ -35,9 +35,9 @@ namespace HtmlPdfPlus
         }
 
         /// <summary>
-        /// The exception during conversion. <see cref="Exception"/>
+        /// The structured description of the failure, if any. <see cref="ErrorInfo"/>
         /// </summary>
-        public Exception? Error { get; }
+        public ErrorInfo? Error { get; }
 
         /// <summary>
         /// If the conversion was successful

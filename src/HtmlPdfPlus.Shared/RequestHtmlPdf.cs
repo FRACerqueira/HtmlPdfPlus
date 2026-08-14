@@ -28,8 +28,15 @@ namespace HtmlPdfPlus
         /// <param name="config">The Config PDF page. <see cref="PdfPageConfig"/></param>
         /// <param name="timeout">The timeout convert (default 30000ms) and value must be greater than zero</param>
         /// <param name="inputparam">The input parameter used in BeforePDF and AfterPDF for custom action at server</param>
+        /// <param name="mode">Explicit declaration of how <paramref name="html"/> must be interpreted. Default is <see cref="RenderMode.Html"/>.</param>
+        /// <param name="sentAtUtc">
+        /// The UTC instant the request left the client, or <c>null</c> when there is no transport
+        /// hop to account for (e.g. an in-process server-side request). Lets a receiving server
+        /// subtract time already spent in transit from <paramref name="timeout"/> instead of
+        /// restarting the deadline fresh on arrival.
+        /// </param>
         /// <exception cref="ArgumentException">Thrown when html is null or empty, or timeout is less than or equal to zero</exception>
-        public RequestHtmlPdf(string html, string? alias = null, PdfPageConfig? config = null, int timeout = 30000, T? inputparam = default)
+        public RequestHtmlPdf(string html, string? alias = null, PdfPageConfig? config = null, int timeout = 30000, T? inputparam = default, RenderMode mode = RenderMode.Html, DateTimeOffset? sentAtUtc = null)
         {
             if (string.IsNullOrWhiteSpace(html))
             {
@@ -46,6 +53,8 @@ namespace HtmlPdfPlus
             Config = config;
             Timeout = timeout;
             InputParam = inputparam;
+            Mode = mode;
+            SentAtUtc = sentAtUtc;
         }
 
         /// <summary>
@@ -72,6 +81,17 @@ namespace HtmlPdfPlus
         /// Gets the input parameter used in BeforePDF and AfterPDF for custom action at server.
         /// </summary>
         public T? InputParam { get; }
+
+        /// <summary>
+        /// Gets the explicit declaration of how <see cref="Html"/> must be interpreted.
+        /// </summary>
+        public RenderMode Mode { get; }
+
+        /// <summary>
+        /// Gets the UTC instant the request left the client, or <c>null</c> when there is no
+        /// transport hop to account for.
+        /// </summary>
+        public DateTimeOffset? SentAtUtc { get; }
 
         /// <summary>
         /// Changes the Html to render on browser.

@@ -36,14 +36,6 @@ namespace HtmlPdfPlus
         IHtmlPdfSrvBuilder PagesBuffer(byte buffer = 5);
 
         /// <summary>
-        /// Number of idle milliseconds to retry acquiring an available page.
-        /// </summary>
-        /// <param name="value">Number of milliseconds. Default is 10. The value must be between 10 and 500.</param>
-        /// <returns><see cref="IHtmlPdfSrvBuilder"/> instance.</returns>
-        /// <exception cref="ArgumentException">Thrown when the value is out of range.</exception>
-        IHtmlPdfSrvBuilder AcquireWaitTime(int value = 10);
-
-        /// <summary>
         /// Options to disable internal features.
         /// </summary>
         /// <param name="options">Options to disable. <see cref="DisableOptionsHtmlToPdf"/>.</param>
@@ -80,5 +72,28 @@ namespace HtmlPdfPlus
         /// <returns><see cref="IHtmlPdfSrvBuilder"/> instance.</returns>
         /// <exception cref="ArgumentException">Thrown when the log level or category name is invalid.</exception>
         IHtmlPdfSrvBuilder Logger(LogLevel logLevel, string categoryName = "HtmlPdfServer");
+
+        /// <summary>
+        /// Overrides the policy used to decide whether a <see cref="RenderMode.Url"/> request is
+        /// allowed to be navigated to. The default policy allows only http/https and denies
+        /// private, loopback and link-local address ranges - which also covers common cloud
+        /// metadata endpoints such as <c>169.254.169.254</c> - closing the SSRF vector inherent
+        /// to navigating to an arbitrary caller-supplied URL.
+        /// </summary>
+        /// <param name="policy">A predicate that receives the parsed request URL and returns <c>true</c> if navigation should be allowed.</param>
+        /// <returns><see cref="IHtmlPdfSrvBuilder"/> instance.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="policy"/> is null.</exception>
+        IHtmlPdfSrvBuilder UrlAllowPolicy(Func<Uri, bool> policy);
+
+        /// <summary>
+        /// Maximum size, in bytes, that a compressed request payload is allowed to decompress
+        /// to. A request whose decompressed content would exceed this is rejected outright
+        /// instead of being decompressed in full, closing a memory-exhaustion ("zip bomb")
+        /// vector where a small compressed payload expands to a very large one.
+        /// </summary>
+        /// <param name="value">Maximum decompressed size in bytes. Default is 50 MB (52428800). The value must be greater than zero.</param>
+        /// <returns><see cref="IHtmlPdfSrvBuilder"/> instance.</returns>
+        /// <exception cref="ArgumentException">Thrown when the value is invalid.</exception>
+        IHtmlPdfSrvBuilder MaxDecompressedRequestSize(long value = 52_428_800);
     }
 }

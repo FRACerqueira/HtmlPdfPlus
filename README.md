@@ -3,10 +3,12 @@
 ### **Lightweight and scalable HTML to PDF converter in .NET.** 
 
 ![GitHub license](https://img.shields.io/github/license/fracerqueira/HtmlPdfPlus)
-## The best tool to convert HTML to PDF in .NET with a modern engine
-
 [![Build](https://github.com/FRACerqueira/HtmlPdfPlus/workflows/Build/badge.svg)](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/build.yml)
 [![Publish](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/publish.yml/badge.svg)](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/publish.yml)
+[![.NET](https://img.shields.io/badge/.NET-8%20%7C%209%20%7C%2010-512BD4)](https://dotnet.microsoft.com/)
+
+
+## The best tool to convert HTML to PDF in .NET with a modern engine
 
 - Client : [![NuGet Client](https://img.shields.io/nuget/v/HtmlPdfPlus.Client.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Client/) [![NuGet Client](https://img.shields.io/nuget/dt/HtmlPdfPlus.Client.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Client/)
 - Server : [![NuGet Server](https://img.shields.io/nuget/v/HtmlPdfPlus.Server.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Server/) [![NuGet Server](https://img.shields.io/nuget/dt/HtmlPdfPlus.Server.svg)](https://www.nuget.org/packages/HtmlPdfPlus.Server/)
@@ -21,6 +23,10 @@
 - [Usage](#usage)
 - [Docker Usage](#docker-usage)
 - [Examples](#examples)
+- [Architecture](#architecture)
+- [How-To](#how-to)
+- [API Reference](#api-reference)
+- [Architecture Decision Records (ADR)](#architecture-decision-records-adr)
 - [Documentation](#documentation)
 - [Code of Conduct](#code-of-conduct)
 - [Contributing](#contributing)
@@ -37,7 +43,7 @@ You can customize the PDF settings, such as page size and margins, and add heade
 
 This library was built using the [Playwright](https://playwright.dev/dotnet/) (engine to automate **Chromium, Firefox, and WebKit** with a single API). Playwright is built to enable cross-browser web automation that is evergreen, capable, reliable, and fast. 
 
-The current version (V.1.56.0) of **Playwright** supports **only the Chromium browser** for the PDF API.
+As of the Playwright version this library currently targets (see the `Microsoft.Playwright` reference in [`HtmlPdfPlus.Server.csproj`](./src/HtmlPdfPlus.Server/HtmlPdfPlus.Server.csproj)), its PDF generation API supports **only the Chromium browser**.
 
 ## Features
 [**Top**](#table-of-contents)
@@ -53,73 +59,31 @@ The current version (V.1.56.0) of **Playwright** supports **only the Chromium br
 - Communicate with the server using REST API (with compressed request) or user custom protocol
 - Minify HTML and CSS
 - Client-side HTML parser with custom error action (optional)
-- Compress send data over network
-- Compress result PDF using GZip over network (Only type bytes array output)
+- Requests are sent as gzip-compressed raw bytes by default, no base64/JSON-string wrapping (see [ADR-003](docs/adr/ADR003V01R01-serve-and-accept-raw-bytes-instead-of-base64-json-wrapping.md))
+- A successful `byte[]` response is served as the raw PDF body, not wrapped in JSON
 - Extension on server side to customize the conversion process (before and after conversion)
     - BeforePDF : Normalize HTML, Replace tokens, etc
     - AfterPDF : Save file, Send to cloud, etc
-- Disable features to improve/ balance performance (minify, compress and log)
+- Disable features to improve/balance performance (minify, compress and log)
+- Backpressure signaled via `ErrorCode.PoolExhausted` + a real `Retry-After`, automatic browser recovery, liveness/readiness endpoints, and `System.Diagnostics.Metrics` instrumentation - see the [resilience guide](docs/guide/resilience.md)
 
-### What's new in the latest version 
-- **v1.0.1 (latest version)**
-    - Updated Playwright to version 1.56.0
-    - Adjusted package reference for target framework (removed  NetStandard2.1)
-    - Updated documentation
-    - include target .NET 10.0
-
-- **v1.0.0
-    - Updated Playwright to version 1.51.0
-    - Adjusted package reference for target framework
-    - Updated documentation
-    - GA version (jump to version 1.0.0)
-
-- **v0.5.0-rc**
-    - Simplified sending data to the server via http client (now aceept byte[] instead of stream)
-    - Removed ReadToBytesAsync stream extension method
-    - Exposing the RequestHtmlPdf\<T\> class for scenarios of handling sending parameters
-    - Updated documentation
-    - Preparation for GA version
-
-- **v0.4.0-rc**
-    - Relaxation of Package Reference for .net8 to .net9
-    - Renamed the 'Source' command to 'Scope'
-    - Renamed the 'Request' command to 'ScopeRequest'
-    - Changed parameter in funcion SubmitHtmlToPdf to byte[] instead of string
-    - Changed parameter for command Run to byte[] instead of string
-    - Changed parameter for command ScopeRequest to byte[] instead of string
-    - Removed DecompressBytes() method to class HtmlPdfResult
-    - Added DecompressOutputData() method to class HtmlPdfResult for custom scenarios
-    - Improvements in the compression/decompression process to use asynchronous methods
-    - Small code reviews
- 
-- **v0.3.0-beta**
-    - Added FromUrl(Uri value) command to client-side mode
-    - Fixed bug in server mode for multi thread safe when there is parameter customization and/or no client mode sending.
-        - Moved the BeforePDF(Func<string, TIn?, CancellationToken, Task<string>> inputParam) command to the execution context.
-        - Moved the AfterPDF(Func<byte[]?, TIn?, CancellationToken, Task<TOut>> outputParam) command to the execution context.
-        - Added command Source(TIn? inputparam = default) to transfer input parameter for server execution context and custom actions and html source.
-        - Added Request(string request Client) command to pass the request client data to the server execution context for custom actions and HTML source.
-        - Simplified execution commands for server side with execution context with fluid interface comands :
-            -  Removed static class RequestHtmlPdf
-            -  Added command FromHtml(string html, int converttimeout = 30000, bool minify = true)
-            -  Added command FromUrl(Uri value, int converttimeout = 30000)
-            -  Added command FromRazor\<T\>(string template, T model, int converttimeout = 30000, bool minify = true)
-
-- **v0.2.0-beta**
-    - Initial version
+### What's new
+Current version: **2.0.0**. Full version history has moved to [CHANGELOG.md](./CHANGELOG.md).
 
 ## Prerequisites
 [**Top**](#table-of-contents)
 
-- .NET 8, .NET 9 or .NET 10 SDK
-- Visual Studio 2022 or later
-- Playwright (Installed and configured for your O.S)
+- .NET 8, .NET 9 or .NET 10 (SDK to build from source or develop against the library; the runtime alone is enough to just run an app that already references the NuGet packages)
+- Visual Studio 2026 or later - optional, only if that's your editor of choice; any .NET-capable IDE/CLI works
+- **Playwright browser binaries** - only required on whatever machine actually **runs `HtmlPdfPlus.Server`** (your dev machine while testing the server, a VM, a container). `HtmlPdfPlus.Client` never launches a browser and does not need this at all. See [Installation Steps for Playwright](#installation-steps-for-playwright-windows) below, or the [Docker guide](docs/guide/docker.md) if you're deploying in a container instead.
 
 
 ## Installing
 [**Top**](#table-of-contents)
 
 ### Installation Steps for Playwright (Windows)
+
+_Only needed on a machine that runs `HtmlPdfPlus.Server` outside a container - skip this if you're only building against `HtmlPdfPlus.Client`, or deploying with Docker (see the [Docker guide](docs/guide/docker.md), which bundles the browser inside the image instead)._
 
 ```
 dotnet tool update --global PowerShell
@@ -173,7 +137,41 @@ It is possible to generate a PDF in two ways:
 
 #### 1.1) Via http
 
-![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/swimlanes.io.Http.png)
+```mermaid
+sequenceDiagram
+    participant AppClient as App Client
+    participant HtmlPdfClient
+    participant AppServer as App Server
+    participant HtmlPdfServer
+
+    HtmlPdfServer->>AppServer: AddHtmlPdfService
+    AppServer-->>AppServer: Warmup HtmlPdfService
+
+    Note over AppClient,HtmlPdfClient: Minify, Compress and Logging can be disabled (via DisableOptionsHtmlToPdf)
+
+    AppClient->>HtmlPdfClient: FromHtml
+    HtmlPdfClient-->>HtmlPdfClient: Minify HTML
+    AppClient->>HtmlPdfClient: FromRazor
+    HtmlPdfClient-->>HtmlPdfClient: Execute Razor engine, minify HTML
+    AppClient->>HtmlPdfClient: FromUrl
+    AppClient->>HtmlPdfClient: PageConfig / Timeout
+    AppClient->>HtmlPdfClient: Run (optional input param)
+    HtmlPdfClient-->>HtmlPdfClient: Build RequestHtmlPdf, gzip it
+    HtmlPdfClient->>AppServer: HTTP POST (gzip bytes or plain JSON as the raw body)
+
+    AppServer->>HtmlPdfServer: BeforePDF hook (optional)
+    AppServer->>HtmlPdfServer: AfterPDF hook (optional)
+    AppServer->>HtmlPdfServer: Run
+    HtmlPdfServer-->>HtmlPdfServer: Decompress to RequestHtmlPdf
+    HtmlPdfServer-->>HtmlPdfServer: Exec BeforePDF(input param)
+    HtmlPdfServer-->>HtmlPdfServer: Generate PDF
+    HtmlPdfServer-->>HtmlPdfServer: Exec AfterPDF(input param, transform output)
+    HtmlPdfServer->>AppServer: HtmlPdfResult
+
+    Note over AppServer,HtmlPdfClient: byte[] success returns the raw PDF body (application/pdf), any other outcome returns ErrorInfo/HtmlPdfResult as JSON
+    AppServer->>HtmlPdfClient: HTTP response
+    HtmlPdfClient->>AppClient: HtmlPdfResult
+```
 
 #### basic usage client side
 
@@ -228,25 +226,60 @@ else
 using HtmlPdfPlus;
 
 ...
-var builder = WebApplication.CreateBuilder(args);  
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddOpenApi();
 builder.Services.AddHtmlPdfService((cfg) =>
 {
     cfg.Logger(LogLevel.Debug, "MyPDFServer");
 });
+var app = builder.Build();
+app.MapOpenApi();
 ...
 
-app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] byte[] requestclienthtmltopdf, CancellationToken token) =>
-{
-    return await PDFserver
-        .Run(requestclienthtmltopdf, token);
-}).Produces<HtmlPdfResult<byte[]>>(200);
+// The request/response contract (raw PDF on success, structured ErrorInfo on failure) comes
+// straight from the library, so the OpenAPI document generated above actually describes it.
+app.MapHtmlPdfEndpoints("/GeneratePdf");
 
 ```
 
 
 #### 1.2) Via any process
 
-![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/swimlanes.io.AnyProcess.png)
+```mermaid
+sequenceDiagram
+    participant AppClient as App Client
+    participant HtmlPdfClient
+    participant Submit as Func.Submit (custom transport)
+    participant AppServer as App Server
+    participant HtmlPdfServer
+
+    HtmlPdfServer->>AppServer: AddHtmlPdfService
+    AppServer-->>AppServer: Warmup HtmlPdfService
+
+    Note over AppClient,HtmlPdfClient: Minify, Compress and Logging can be disabled (via DisableOptionsHtmlToPdf)
+
+    AppClient->>HtmlPdfClient: FromHtml / FromRazor / FromUrl
+    HtmlPdfClient-->>HtmlPdfClient: Minify HTML (and execute Razor engine, if FromRazor)
+    AppClient->>HtmlPdfClient: PageConfig / Timeout
+    AppClient->>HtmlPdfClient: Run(Submit, optional input param)
+    HtmlPdfClient-->>HtmlPdfClient: Build RequestHtmlPdf, gzip it
+    HtmlPdfClient->>Submit: Execute Submit(bytes)
+    Submit->>AppServer: caller-defined transport (TCP, queue, gRPC, ...)
+
+    AppServer->>HtmlPdfServer: BeforePDF hook (optional)
+    AppServer->>HtmlPdfServer: AfterPDF hook (optional)
+    AppServer->>HtmlPdfServer: Run
+    HtmlPdfServer-->>HtmlPdfServer: Decompress to RequestHtmlPdf
+    HtmlPdfServer-->>HtmlPdfServer: Exec BeforePDF(input param)
+    HtmlPdfServer-->>HtmlPdfServer: Generate PDF
+    HtmlPdfServer-->>HtmlPdfServer: Exec AfterPDF(input param, transform output)
+    HtmlPdfServer->>AppServer: HtmlPdfResult<TOut>
+    AppServer->>Submit: caller-defined transport response
+    Submit-->>HtmlPdfClient: HtmlPdfResult<TOut>
+    HtmlPdfClient->>AppClient: HtmlPdfResult<TOut>
+```
+
+Unlike the HTTP path above, the wire format between `Submit` and `App Server` is entirely up to the caller's own `Submit` delegate - the library only hands it request bytes and expects an `HtmlPdfResult<TOut>` back, so there is no built-in compress/decompress step to describe on the response side (see [ClientSendTcp](./samples/ConsoleHtmlToPdfPlus.ClientSendTcp) for a working example over raw TCP).
 
 #### basic usage client side
 
@@ -327,7 +360,27 @@ var result = await PDFserver
 
 ### 2) Using ony-server
 
-![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/swimlanes.io.OnlyServer.png)
+```mermaid
+sequenceDiagram
+    participant AppServer as App Server
+    participant HtmlPdfServer
+
+    HtmlPdfServer->>AppServer: AddHtmlPdfService
+    AppServer-->>AppServer: Warmup HtmlPdfService
+
+    Note over AppServer,HtmlPdfServer: Minify and Logging can be disabled (via DisableFeatures on the builder) - there is no network hop here, so there is nothing to compress/decompress
+
+    AppServer->>HtmlPdfServer: FromHtml / FromRazor / FromUrl
+    HtmlPdfServer-->>HtmlPdfServer: Minify HTML (and execute Razor engine, if FromRazor)
+    AppServer->>HtmlPdfServer: Input param / Timeout / PageConfig (all optional)
+    AppServer->>HtmlPdfServer: BeforePDF / AfterPDF hooks (optional)
+    AppServer->>HtmlPdfServer: Run
+
+    HtmlPdfServer-->>HtmlPdfServer: Exec BeforePDF(input param)
+    HtmlPdfServer-->>HtmlPdfServer: Generate PDF
+    HtmlPdfServer-->>HtmlPdfServer: Exec AfterPDF(input param, transform output)
+    HtmlPdfServer->>AppServer: HtmlPdfResult
+```
 
 #### basic usage
 ```csharp
@@ -339,7 +392,7 @@ Host.CreateDefaultBuilder(args)
     {
         services.AddHtmlPdfService((cfg) =>
         {
-               .Logger(LogLevel.Debug, "MyPDFServer")
+            cfg.Logger(LogLevel.Debug, "MyPDFServer")
                .DefaultConfig((page) =>
                {
                    page.DisplayHeaderFooter(true)
@@ -369,76 +422,62 @@ else
 }
 ```
 
-# Docker Usage
+## Docker Usage
 [**Top**](#table-of-contents)
 
-The use of Playwright works very well for local testing on Windows machines following the standard installation instructions.
-
-For containerization scenarios, image sizes are a challenge that deserves more dedicated attention.
-
-This project suggests a containerization example that **reduces the final image size by approximately 70% !.** 
-
-
-To achieve this reduction, the biggest challenge was controlling the necessary dependencies and keeping only the minimum for execution in a headless shell.
-
-Basically, what we did was:
-- Use the base image from mcr.microsoft.com/dotnet/aspnet:10.0
-- Use the image from cr.microsoft.com/playwright/dotnet:v1.56.0 for build
-  - Removing unnecessary browser and driver installations
-  - we removed the default installation (.NET x)
-    - We installed the .NET 10 SDK version for the build phase
-- Copy the required folder (pre-installed) to run Playwright
-- Install Google Chrome Stable , fonts and install the necessary libs to make the browser work.
-- Set environment variable for Playwright
-- Enable running the service as a non-root user
-
-I believe this work can still be improved! **For reference on this approach, see the [DockFile](./Dockerfile)**.
-
+The use of Playwright works very well for local testing on Windows machines following the standard installation instructions. For containerization scenarios, image size is worth a closer look: the working [Dockerfile](./Dockerfile) keeps only the one browser variant the code actually launches, cutting the image from 763MB to **370MB**. See the [Docker guide](docs/guide/docker.md) for the full before/after numbers, what changed, and why.
 
 ## Examples
 [**Top**](#table-of-contents)
 
-For more examples, please refer to the [Samples directory](./samples) :
+Each sample is scoped to one clear lesson. For more examples, please refer to the [Samples directory](./samples):
 
-- Server Only
-	- [Console HtmlToPdfPlus OnlyAtServer V1](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/v1)
-        - Performs replacement token substitution in the HTML source before performing the conversion 
-        - Performs writing to file after performing conversion
-        - Return output data with filename
-	- [Console HtmlToPdfPlus OnlyAtServer V2](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/v2)
-        - Performs generate pdf in bytes array
-        - Performs writing to file
-- Client-Server
-	- [Console HtmlToPdfPlus Client by Http](./samples/ConsoleHtmlToPdfPlus.ClientSendHttp)
-        - Performs sending data to the server via http client
-        - Performs writing to file
-	- [Server HtmlToPdfPlus Generic](./samples/WebHtmlToPdf.GenericServer)
-        - Performs generate pdf in bytes array
-        - Send data to client via http
-- Client-Server Custom
-	- [Console HtmlToPdfPlus Client Custom by Http](./samples/ConsoleHtmlToPdfPlus.ClientCustomSendHttp)
-        - Performs a generic suggestion for writing a file to a cloud like gcp/azure   
-        - Performs sending data to the server via http client
-	- [Server HtmlToPdfPlus Custom Save File](./samples/WebHtmlToPdf.CustomSaveFileServer)
-        - Performs replacement token substitution in the HTML source before performing the conversion 
-        - Performs a generic suggestion writing to file after performing conversion
-        - Send data (name of file or full path file) to client via http
-- Client-Server TCP
-	- [Console HtmlToPdfPlus Client Tcp](./samples/ConsoleHtmlToPdfPlus.ClientSendTcp)
-        - Performs sending data to the server via tcp client (using [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp) package)
-        - Performs receiver data from the server via tcp client
-        - Performs writing to file
-    - [Server Console HtmlToPdfPlus Tcp](./samples/TcpServerHtmlToPdf.GenericServer)
-        - Listening port on tcp server (using [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp) package)
-        - Performs generate pdf in bytes array
-        - Send data to client via tcp server
- 
+- **Server Only** - no client, no network, HTML/URL converted in the same process
+	- [OnlyAtServer/CustomHooks](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/CustomHooks) - `BeforePDF`/`AfterPDF` hooks (token substitution, custom file output) and typed `TIn`/`TOut`
+	- [OnlyAtServer/QuickStart](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/QuickStart) - the minimal default setup: `byte[]` output, both `FromHtml` and `FromUrl` render modes, no hooks
+- **Client-Server (HTTP)** - client and server as separate processes over `HttpClient`
+	- [ClientSendHttp](./samples/ConsoleHtmlToPdfPlus.ClientSendHttp) - one client walking through all three content sources (`FromHtml`, `FromRazor` with a typed model, `FromUrl`) against the same generic server
+	- [WebHtmlToPdf.GenericServer](./samples/WebHtmlToPdf.GenericServer) - the server side: `MapHtmlPdfEndpoints()`, `AddOpenApi()`, and the health endpoints, in as few lines as the library allows
+- **Client-Server Custom** - customizing what the server returns instead of raw PDF bytes
+	- [ClientCustomSendHttp](./samples/ConsoleHtmlToPdfPlus.ClientCustomSendHttp) - typed input/output (`DataSavePDF`) standing in for "save the PDF to cloud storage, return its path"
+	- [WebHtmlToPdf.CustomSaveFileServer](./samples/WebHtmlToPdf.CustomSaveFileServer) - the matching server: token substitution via `BeforePDF`, then `AfterPDF` turning the PDF bytes into a saved-file result
+- **Client-Server TCP** - swapping the transport for a non-HTTP one (⚠ demonstrates shipping flexibility only, not production-ready)
+	- [ClientSendTcp](./samples/ConsoleHtmlToPdfPlus.ClientSendTcp) - the client's `Run(Func<byte[],...>)` overload driving a raw TCP round-trip via [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp)
+	- [TcpServerHtmlToPdf.GenericServer](./samples/TcpServerHtmlToPdf.GenericServer) - the matching TCP listener, unpacking a request and writing the result back over the same connection
+- **Cross-language** - consuming the server from outside .NET
+	- [JavaClientSendHttp](./samples/JavaClientSendHttp) - a single dependency-free `.java` file (JDK's own `HttpClient` + `GZIPOutputStream`, no build tool) showing the exact wire format any non-.NET client must produce: JSON → gzip → POST as `application/octet-stream` - see the file header for the `javac`/`java` commands and which server profile to run
+- **Production readiness** - the resilience/observability features covered in the [resilience guide](docs/guide/resilience.md), each with a deliberately tiny page pool (`PagesBuffer(1)`) so the behavior being demonstrated is easy to reproduce on any machine instead of depending on real render timing
+	- [RetryAfterBackpressure](./samples/ConsoleHtmlToPdfPlus.RetryAfterBackpressure) - firing concurrent requests, detecting `ErrorCode.PoolExhausted`, and backing off using `ErrorInfo.RetryAfterSeconds` before retrying
+	- [MetricsObserver](./samples/ConsoleHtmlToPdfPlus.MetricsObserver) - attaching a `MeterListener` (no OTel/exporter package needed) to observe the instruments a healthy run produces (`htmlpdfplus.pool.available_pages`, `.request.duration`, `.errors`, `.pool.acquire_wait`), including how a validation failure increments `htmlpdfplus.errors` without touching `htmlpdfplus.request.duration` - `htmlpdfplus.browser.restarts` only appears after an unexpected disconnect, so it stays silent here
+
+> `/healthz` and `/readyz` are mapped by the two web server samples above (via `MapHtmlPdfHealthEndpoints()`), but no sample calls them from a client or shows what a real orchestrator would do with the response. See the [resilience guide](docs/guide/resilience.md) for how they work until a dedicated sample exists.
+
+## Architecture
+[**Top**](#table-of-contents)
+
+Package layout (`Client`/`Server`/`Shared`), the one distinction that decides whether a request gets compressed (`ScopeData()` vs `ScopeRequest(bytes)`), the page pool and browser lifecycle, and where each piece of configuration is supposed to live: see the [Architecture guide](docs/guide/architecture.md).
+
+## How-To
+[**Top**](#table-of-contents)
+
+Task-oriented recipes, one page per use case - rendering content, running client and server as separate processes, customizing the pipeline, handling failures: see the [How-To index](docs/guide/howto/README.md).
+
+## API Reference
+[**Top**](#table-of-contents)
+
+The library has a main namespace `HtmlPdfPlus` for client and server, and all methods use a fluent interface. The full generated reference for every public type is in the [Docs directory](./docs/api/docindex.md).
+
+## Architecture Decision Records (ADR)
+[**Top**](#table-of-contents)
+
+HtmlPdfPlus documents its significant architectural and design decisions as Architecture Decision Records (ADR), following the [adrplus](https://github.com/FRACerqueira/AdrPlus) convention. Each record captures the context, the decision, the alternatives considered, and the consequences - so the reasoning behind the library's design stays traceable over time.
+
+👉 See the [ADR index](docs/adr/indexadrs.md) for the full list of decisions.
+
 ## Documentation
 [**Top**](#table-of-contents)
 
-The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface. 
-
-The documentation is available in the [Docs directory](./src/docs/docindex.md).
+Deeper operational guides live under [docs/guide](docs/guide/index.md): [resilience and observability](docs/guide/resilience.md), [Docker](docs/guide/docker.md). Version history is in [CHANGELOG.md](./CHANGELOG.md).
 
 ## Code of Conduct
 [**Top**](#table-of-contents)
@@ -472,22 +511,4 @@ This project is licensed under the MIT License - see the [License](LICENSE.md) f
 ## FAQ
 [**Top**](#table-of-contents)
 
-**Q: What browsers are supported for PDF generation?**
-
-A: Currently, only the Chromium browser is supported for the PDF API.
-
-**Q: What init args for speed and reduce resource usage ?**
-
-A: Currently, HtmlPdfPlus.Server starts with "--run-all-compositor-stages-before-draw --disable-dev-shm-usage -disable-setuid-sandbox --no-sandbox" when no argument value is passed.
-
-**Q: Can I customize the PDF settings?**
-
-A: Yes, you can customize settings such as page size, margins, headers, and footers.
-
-**Q: Is there support for asynchronous operations?**
-
-A: Yes, the API supports asynchronous operations.
-
-**Q: How can I contribute to the project?**
-
-A: Please refer to the [Contributing](CONTRIBUTING.md) section for details on how to contribute.
+Common questions, answered briefly: see the [FAQ page](docs/guide/faq.md).
