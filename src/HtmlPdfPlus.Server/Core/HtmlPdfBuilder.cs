@@ -5,6 +5,7 @@
 // ***************************************************************************************
 
 using System.Collections.Concurrent;
+using System.Diagnostics.Metrics;
 using System.Net;
 using System.Net.Sockets;
 using HtmlPdfPlus.Shared.Core;
@@ -32,6 +33,12 @@ namespace HtmlPdfPlus.Server.Core
         private long _maxDecompressedRequestSize = 52_428_800;
         private readonly ConcurrentQueue<IPage> _availableBuffer = new();
         private readonly SemaphoreSlim _bufferSignal = new(0);
+
+        // A Meter of its own (rather than the shared static one in HtmlPdfMetrics) so the
+        // ObservableGauge below - whose callback closes over `this` - can be unregistered by
+        // disposing just this instance's Meter, without disposing the process-wide Counter/
+        // Histogram every other HtmlPdfBuilder instance also reports through.
+        private readonly Meter _instanceMeter = new(HtmlPdfMetrics.MeterName);
 
         /// <summary>
         /// Gets the options to disable internal features.
@@ -249,6 +256,13 @@ namespace HtmlPdfPlus.Server.Core
         private async Task<IHtmlPdfServer<Tin, Tout>> ExecuteBuildAsync<Tin, Tout>(string sourcealias)
         {
             _sourcealias = sourcealias;
+            // Observed lazily by whatever metrics backend the host wires up (see
+            // HtmlPdfMetrics) - tagged with sourcealias so multiple AddHtmlPdfService
+            // registrations remain distinguishable.
+            _instanceMeter.CreateObservableGauge(
+                "htmlpdfplus.pool.available_pages",
+                () => new Measurement<int>(BufferLength, new KeyValuePair<string, object?>("sourcealias", _sourcealias)),
+                description: "Number of pages currently available in the pool.");
             try
             {
                 _playwright = await Playwright.CreateAsync();
@@ -320,6 +334,7 @@ namespace HtmlPdfPlus.Server.Core
                     // discard pages that belonged to the dead browser process
                 }
                 await LaunchBrowserAsync().ConfigureAwait(false);
+                HtmlPdfMetrics.BrowserRestarts.Add(1, new KeyValuePair<string, object?>("sourcealias", _sourcealias));
                 for (int i = 0; i < _pagesbuffer; i++)
                 {
                     await ReplenishBufferAsync().ConfigureAwait(false);
@@ -438,6 +453,7 @@ namespace HtmlPdfPlus.Server.Core
 
         private void Cleanup()
         {
+            _instanceMeter.Dispose();
             _browser?.CloseAsync();
             _playwright?.Dispose();
         }

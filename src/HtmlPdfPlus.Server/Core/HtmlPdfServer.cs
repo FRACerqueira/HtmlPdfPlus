@@ -110,7 +110,21 @@ namespace HtmlPdfPlus.Server.Core
                 return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
             }
             var isurl = requestHtmlPdf.Mode == RenderMode.Url;
-            return await RunServer(isurl,null,null,sw, requestHtmlPdf, token);
+            var result = await RunServer(isurl,null,null,sw, requestHtmlPdf, token);
+            RecordRequestDuration(result);
+            return result;
+        }
+
+        /// <summary>
+        /// Records the request-duration metric (see <see cref="HtmlPdfMetrics.RequestDuration"/>),
+        /// tagged with this instance's source alias and whether the request succeeded.
+        /// </summary>
+        internal void RecordRequestDuration(HtmlPdfResult<Tout> result)
+        {
+            HtmlPdfMetrics.RequestDuration.Record(
+                result.ElapsedTime.TotalMilliseconds,
+                new KeyValuePair<string, object?>("sourcealias", SourceAlias),
+                new KeyValuePair<string, object?>("success", result.IsSuccess));
         }
 
         internal async Task<HtmlPdfResult<Tout>> RunServer(
