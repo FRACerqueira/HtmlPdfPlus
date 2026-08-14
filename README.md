@@ -402,11 +402,11 @@ I believe this work can still be improved! **For reference on this approach, see
 For more examples, please refer to the [Samples directory](./samples) :
 
 - Server Only
-	- [Console HtmlToPdfPlus OnlyAtServer V1](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/v1)
+	- [Console HtmlToPdfPlus OnlyAtServer CustomHooks](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/CustomHooks)
         - Performs replacement token substitution in the HTML source before performing the conversion 
         - Performs writing to file after performing conversion
         - Return output data with filename
-	- [Console HtmlToPdfPlus OnlyAtServer V2](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/v2)
+	- [Console HtmlToPdfPlus OnlyAtServer QuickStart](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/QuickStart)
         - Performs generate pdf in bytes array
         - Performs writing to file
 - Client-Server
