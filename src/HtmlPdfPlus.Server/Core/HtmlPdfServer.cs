@@ -107,11 +107,18 @@ namespace HtmlPdfPlus.Server.Core
             }
             catch (Exception ex)
             {
-                return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
+                // Unlike RequestDuration (meaningless for a request that was never actually
+                // attempted), a validation failure is still a real failure a host's error-rate
+                // alerting needs to see - recording only errors that survive to RunServer would
+                // make this counter go silent under a flood of malformed requests.
+                var validationFailure = new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
+                RecordErrorIfAny(validationFailure);
+                return validationFailure;
             }
             var isurl = requestHtmlPdf.Mode == RenderMode.Url;
             var result = await RunServer(isurl,null,null,sw, requestHtmlPdf, token);
             RecordRequestDuration(result);
+            RecordErrorIfAny(result);
             return result;
         }
 
@@ -125,6 +132,22 @@ namespace HtmlPdfPlus.Server.Core
                 result.ElapsedTime.TotalMilliseconds,
                 new KeyValuePair<string, object?>("sourcealias", SourceAlias),
                 new KeyValuePair<string, object?>("success", result.IsSuccess));
+        }
+
+        /// <summary>
+        /// Increments the error-count metric (see <see cref="HtmlPdfMetrics.Errors"/>) when
+        /// <paramref name="result"/> is a failure, tagged with this instance's source alias and
+        /// the failure's <see cref="ErrorCode"/>. A no-op for a successful result.
+        /// </summary>
+        internal void RecordErrorIfAny(HtmlPdfResult<Tout> result)
+        {
+            if (result.IsSuccess)
+            {
+                return;
+            }
+            HtmlPdfMetrics.Errors.Add(1,
+                new KeyValuePair<string, object?>("sourcealias", SourceAlias),
+                new KeyValuePair<string, object?>("error_code", result.Error!.Code.ToString()));
         }
 
         internal async Task<HtmlPdfResult<Tout>> RunServer(

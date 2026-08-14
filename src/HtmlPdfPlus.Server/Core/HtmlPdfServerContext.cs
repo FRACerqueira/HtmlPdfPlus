@@ -141,11 +141,18 @@ namespace HtmlPdfPlus.Server.Core
             }
             catch (Exception ex)
             {
-                return new HtmlPdfResult<TOut>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
+                // Unlike RequestDuration (meaningless for a request that was never actually
+                // attempted), a validation failure is still a real failure a host's error-rate
+                // alerting needs to see - recording only errors that survive to RunServer would
+                // make this counter go silent under a flood of malformed requests.
+                var validationFailure = new HtmlPdfResult<TOut>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
+                htmlPdfServer.RecordErrorIfAny(validationFailure);
+                return validationFailure;
             }
             var isurl = requestHtmlPdf.Mode == RenderMode.Url;
             var result = await htmlPdfServer.RunServer(isurl, _inputparam, _outputparam, sw, requestHtmlPdf, token);
             htmlPdfServer.RecordRequestDuration(result);
+            htmlPdfServer.RecordErrorIfAny(result);
             return result;
         }
 

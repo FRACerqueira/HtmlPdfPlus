@@ -114,6 +114,68 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         }
 
         [Fact]
+        public async Task Run_ForValidationFailure_IncrementsErrorsButNotRequestDuration()
+        {
+            // A request-level validation failure (here: the decompressed payload exceeds the
+            // configured limit) returns before RunServer is ever reached. It must still count
+            // toward htmlpdfplus.errors (an error-rate alert must not go blind under a flood of
+            // malformed requests), but htmlpdfplus.request.duration stays deliberately silent -
+            // duration is meaningless for a request that was never actually attempted.
+            var sourcealias = $"metrics-validation-{Guid.NewGuid():N}";
+            var errorCodes = new List<string>();
+            var durations = new List<double>();
+
+            using var listener = new MeterListener();
+            listener.InstrumentPublished = (instrument, l) =>
+            {
+                if (instrument.Meter.Name == HtmlPdfMetrics.MeterName &&
+                    (instrument.Name == "htmlpdfplus.errors" || instrument.Name == "htmlpdfplus.request.duration"))
+                {
+                    l.EnableMeasurementEvents(instrument);
+                }
+            };
+            listener.SetMeasurementEventCallback<long>((instrument, measurement, tags, state) =>
+            {
+                string? alias = null;
+                string? errorCode = null;
+                foreach (var tag in tags)
+                {
+                    if (tag.Key == "sourcealias") alias = (string?)tag.Value;
+                    if (tag.Key == "error_code") errorCode = (string?)tag.Value;
+                }
+                if (alias == sourcealias && errorCode is not null)
+                {
+                    errorCodes.Add(errorCode);
+                }
+            });
+            listener.SetMeasurementEventCallback<double>((instrument, measurement, tags, state) =>
+            {
+                foreach (var tag in tags)
+                {
+                    if (tag.Key == "sourcealias" && (string?)tag.Value == sourcealias)
+                    {
+                        durations.Add(measurement);
+                    }
+                }
+            });
+            listener.Start();
+
+            using var objbuilder = new HtmlPdfBuilder(null);
+            objbuilder.MaxDecompressedRequestSize(10);
+            await objbuilder.BuildAsync(sourcealias);
+            var requestHtmlPdf = await new RequestHtmlPdf<byte[]>("<h1>Test</h1>", "teste", new PdfPageConfig(), 5000).ToBytesCompress();
+
+            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, sourcealias)
+                .Run(requestHtmlPdf, CancellationToken.None);
+
+            Assert.False(result.IsSuccess);
+            Assert.Equal(ErrorCode.InvalidRequest, result.Error!.Code);
+            var recorded = Assert.Single(errorCodes);
+            Assert.Equal(nameof(ErrorCode.InvalidRequest), recorded);
+            Assert.Empty(durations);
+        }
+
+        [Fact]
         public async Task ScopeRequestRun_RecordsRequestDuration_ExactlyOnce()
         {
             // The ScopeRequest(...).Run(token) path - the one MapHtmlPdfEndpoints actually uses
@@ -159,6 +221,225 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             Assert.True(result.IsSuccess);
             var recorded = Assert.Single(measurements);
             Assert.True(recorded);
+        }
+
+        [Fact]
+        public async Task Run_IncrementsErrorsCounter_TaggedWithErrorCode_ForFailedRender()
+        {
+            var sourcealias = $"metrics-errors-{Guid.NewGuid():N}";
+            var errorCodes = new List<string>();
+
+            using var listener = new MeterListener();
+            listener.InstrumentPublished = (instrument, l) =>
+            {
+                if (instrument.Meter.Name == HtmlPdfMetrics.MeterName && instrument.Name == "htmlpdfplus.errors")
+                {
+                    l.EnableMeasurementEvents(instrument);
+                }
+            };
+            listener.SetMeasurementEventCallback<long>((instrument, measurement, tags, state) =>
+            {
+                string? alias = null;
+                string? errorCode = null;
+                foreach (var tag in tags)
+                {
+                    if (tag.Key == "sourcealias") alias = (string?)tag.Value;
+                    if (tag.Key == "error_code") errorCode = (string?)tag.Value;
+                }
+                if (alias == sourcealias && errorCode is not null)
+                {
+                    errorCodes.Add(errorCode);
+                }
+            });
+            listener.Start();
+
+            using var objbuilder = new HtmlPdfBuilder(null);
+            objbuilder.PagesBuffer(1);
+            objbuilder.AcquireTimeout(20);
+            await objbuilder.BuildAsync(sourcealias);
+            var heldPage = await objbuilder.AcquireAsync(CancellationToken.None);
+            Assert.NotNull(heldPage);
+
+            var requestHtmlPdf = await new RequestHtmlPdf<byte[]>("<h1>Test</h1>", "teste", new PdfPageConfig(), 5000).ToBytesCompress();
+
+            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, sourcealias)
+                .Run(requestHtmlPdf, CancellationToken.None);
+
+            Assert.False(result.IsSuccess);
+            Assert.Equal(ErrorCode.PoolExhausted, result.Error!.Code);
+            var recorded = Assert.Single(errorCodes);
+            Assert.Equal(nameof(ErrorCode.PoolExhausted), recorded);
+        }
+
+        [Fact]
+        public async Task Run_DoesNotIncrementErrorsCounter_ForSuccessfulRender()
+        {
+            var sourcealias = $"metrics-errors-success-{Guid.NewGuid():N}";
+            var errorCodes = new List<string>();
+
+            using var listener = new MeterListener();
+            listener.InstrumentPublished = (instrument, l) =>
+            {
+                if (instrument.Meter.Name == HtmlPdfMetrics.MeterName && instrument.Name == "htmlpdfplus.errors")
+                {
+                    l.EnableMeasurementEvents(instrument);
+                }
+            };
+            listener.SetMeasurementEventCallback<long>((instrument, measurement, tags, state) =>
+            {
+                foreach (var tag in tags)
+                {
+                    if (tag.Key == "sourcealias" && (string?)tag.Value == sourcealias)
+                    {
+                        errorCodes.Add("recorded");
+                    }
+                }
+            });
+            listener.Start();
+
+            using var objbuilder = new HtmlPdfBuilder(null);
+            await objbuilder.BuildAsync(sourcealias);
+            var requestHtmlPdf = await new RequestHtmlPdf<byte[]>("<h1>Test</h1>", "teste", new PdfPageConfig(), 5000).ToBytesCompress();
+
+            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, sourcealias)
+                .Run(requestHtmlPdf, CancellationToken.None);
+
+            Assert.True(result.IsSuccess);
+            Assert.Empty(errorCodes);
+        }
+
+        [Fact]
+        public async Task AcquireAsync_RecordsAcquireWait_TaggedAcquired_OnSuccess()
+        {
+            var sourcealias = $"metrics-wait-acquired-{Guid.NewGuid():N}";
+            var outcomes = new List<string>();
+
+            using var listener = new MeterListener();
+            listener.InstrumentPublished = (instrument, l) =>
+            {
+                if (instrument.Meter.Name == HtmlPdfMetrics.MeterName && instrument.Name == "htmlpdfplus.pool.acquire_wait")
+                {
+                    l.EnableMeasurementEvents(instrument);
+                }
+            };
+            listener.SetMeasurementEventCallback<double>((instrument, measurement, tags, state) =>
+            {
+                string? alias = null;
+                string? outcome = null;
+                foreach (var tag in tags)
+                {
+                    if (tag.Key == "sourcealias") alias = (string?)tag.Value;
+                    if (tag.Key == "outcome") outcome = (string?)tag.Value;
+                }
+                if (alias == sourcealias && outcome is not null)
+                {
+                    outcomes.Add(outcome);
+                }
+            });
+            listener.Start();
+
+            using var obj = new HtmlPdfBuilder();
+            await obj.BuildAsync(sourcealias);
+            var page = await obj.AcquireAsync(CancellationToken.None);
+
+            Assert.NotNull(page);
+            var recorded = Assert.Single(outcomes);
+            Assert.Equal("acquired", recorded);
+        }
+
+        [Fact]
+        public async Task AcquireAsync_RecordsAcquireWait_TaggedPoolExhausted_WhenOwnTimeoutElapses()
+        {
+            var sourcealias = $"metrics-wait-exhausted-{Guid.NewGuid():N}";
+            var outcomes = new List<string>();
+
+            // Given: the pool's only page already held, before the listener starts - so the
+            // measurement from acquiring it doesn't get captured alongside the one under test.
+            using var obj = new HtmlPdfBuilder();
+            obj.PagesBuffer(1);
+            obj.AcquireTimeout(20);
+            await obj.BuildAsync(sourcealias);
+            var heldPage = await obj.AcquireAsync(CancellationToken.None);
+            Assert.NotNull(heldPage);
+
+            using var listener = new MeterListener();
+            listener.InstrumentPublished = (instrument, l) =>
+            {
+                if (instrument.Meter.Name == HtmlPdfMetrics.MeterName && instrument.Name == "htmlpdfplus.pool.acquire_wait")
+                {
+                    l.EnableMeasurementEvents(instrument);
+                }
+            };
+            listener.SetMeasurementEventCallback<double>((instrument, measurement, tags, state) =>
+            {
+                string? alias = null;
+                string? outcome = null;
+                foreach (var tag in tags)
+                {
+                    if (tag.Key == "sourcealias") alias = (string?)tag.Value;
+                    if (tag.Key == "outcome") outcome = (string?)tag.Value;
+                }
+                if (alias == sourcealias && outcome is not null)
+                {
+                    outcomes.Add(outcome);
+                }
+            });
+            listener.Start();
+
+            var page = await obj.AcquireAsync(CancellationToken.None);
+
+            Assert.Null(page);
+            var recorded = Assert.Single(outcomes);
+            Assert.Equal("pool_exhausted", recorded);
+        }
+
+        [Fact]
+        public async Task AcquireAsync_RecordsAcquireWait_TaggedCanceled_WhenCallersOwnTokenFires()
+        {
+            var sourcealias = $"metrics-wait-canceled-{Guid.NewGuid():N}";
+            var outcomes = new List<string>();
+
+            // Given: the pool's only page already held, before the listener starts - same
+            // reason as the pool_exhausted test above.
+            using var obj = new HtmlPdfBuilder();
+            obj.PagesBuffer(1);
+            await obj.BuildAsync(sourcealias);
+            var heldPage = await obj.AcquireAsync(CancellationToken.None);
+            Assert.NotNull(heldPage);
+
+            using var listener = new MeterListener();
+            listener.InstrumentPublished = (instrument, l) =>
+            {
+                if (instrument.Meter.Name == HtmlPdfMetrics.MeterName && instrument.Name == "htmlpdfplus.pool.acquire_wait")
+                {
+                    l.EnableMeasurementEvents(instrument);
+                }
+            };
+            listener.SetMeasurementEventCallback<double>((instrument, measurement, tags, state) =>
+            {
+                string? alias = null;
+                string? outcome = null;
+                foreach (var tag in tags)
+                {
+                    if (tag.Key == "sourcealias") alias = (string?)tag.Value;
+                    if (tag.Key == "outcome") outcome = (string?)tag.Value;
+                }
+                if (alias == sourcealias && outcome is not null)
+                {
+                    outcomes.Add(outcome);
+                }
+            });
+            listener.Start();
+
+            // Caller's own token (200ms) fires well before the pool's default AcquireTimeoutMs
+            // (5000ms) - same scenario as HtmlPdfBuilderTest's
+            // Ensure_buid_With_NotBufferExternalTimeout, exercised here for the metric it emits.
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(200);
+            await Assert.ThrowsAsync<OperationCanceledException>(() => obj.AcquireAsync(cts.Token));
+
+            var recorded = Assert.Single(outcomes);
+            Assert.Equal("canceled", recorded);
         }
 
         [Fact]

@@ -5,6 +5,7 @@
 // ***************************************************************************************
 
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Net;
 using System.Net.Sockets;
@@ -417,6 +418,7 @@ namespace HtmlPdfPlus.Server.Core
         /// </summary>
         internal async Task<IPage?> AcquireAsync(CancellationToken token)
         {
+            var waitSw = Stopwatch.StartNew();
             using var ctsTimeout = new CancellationTokenSource(_acquireTimeout);
             using var acquireToken = CancellationTokenSource.CreateLinkedTokenSource(ctsTimeout.Token, token);
             try
@@ -433,11 +435,33 @@ namespace HtmlPdfPlus.Server.Core
                 // favor: anything caller-driven propagates instead of being misreported as
                 // pool exhaustion, so the caller can classify it as a timeout/cancellation.
                 LogMessage($"Not AvailableBuffer");
+                RecordAcquireWait(waitSw, "pool_exhausted");
                 return null;
+            }
+            catch (OperationCanceledException)
+            {
+                // Caller-driven (overall deadline or external cancellation) - still real time
+                // spent waiting on pool capacity, worth recording, but must propagate unchanged
+                // so RunServer can classify it as Timeout/Canceled.
+                RecordAcquireWait(waitSw, "canceled");
+                throw;
             }
             _availableBuffer.TryDequeue(out var freePage);
             LogMessage($"AvailableBuffer {BufferLength}");
+            RecordAcquireWait(waitSw, "acquired");
             return freePage;
+        }
+
+        /// <summary>
+        /// Records the acquire-wait metric (see <see cref="HtmlPdfMetrics.AcquireWaitDuration"/>),
+        /// tagged with this instance's source alias and how the wait ended.
+        /// </summary>
+        private void RecordAcquireWait(Stopwatch waitSw, string outcome)
+        {
+            HtmlPdfMetrics.AcquireWaitDuration.Record(
+                waitSw.Elapsed.TotalMilliseconds,
+                new KeyValuePair<string, object?>("sourcealias", _sourcealias),
+                new KeyValuePair<string, object?>("outcome", outcome));
         }
 
         /// <summary>
