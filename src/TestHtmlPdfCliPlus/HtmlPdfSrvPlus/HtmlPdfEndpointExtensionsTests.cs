@@ -33,12 +33,12 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 
             // When: the mapped endpoint is invoked.
             using var client = host.GetTestClient();
-            using var response = await client.PostAsJsonAsync("/GeneratePdf", new byte[] { 1, 2, 3 });
+            using var response = await client.PostAsJsonAsync("/GeneratePdf", new byte[] { 1, 2, 3 }, TestContext.Current.CancellationToken);
 
             // Then: the body is the raw PDF bytes, served as application/pdf - no JSON envelope.
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal("application/pdf", response.Content.Headers.ContentType?.MediaType);
-            Assert.Equal(pdfBytes, await response.Content.ReadAsByteArrayAsync());
+            Assert.Equal(pdfBytes, await response.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken));
         }
 
         [Fact]
@@ -51,12 +51,12 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 
             // When: the mapped endpoint is invoked.
             using var client = host.GetTestClient();
-            using var response = await client.PostAsJsonAsync("/GeneratePdf", new byte[] { 1, 2, 3 });
+            using var response = await client.PostAsJsonAsync("/GeneratePdf", new byte[] { 1, 2, 3 }, TestContext.Current.CancellationToken);
 
             // Then: the status line itself carries the failure (InvalidRequest -> 400), and the
             // body is the exact structured ErrorInfo, not an embedded IsSuccess:false on a 200.
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-            var body = await response.Content.ReadFromJsonAsync<ErrorInfo>();
+            var body = await response.Content.ReadFromJsonAsync<ErrorInfo>(TestContext.Current.CancellationToken);
             Assert.NotNull(body);
             Assert.Equal(ErrorCode.InvalidRequest, body!.Code);
             Assert.Equal("bad request", body.Message);
@@ -72,11 +72,11 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 
             // When: the mapped endpoint is invoked.
             using var client = host.GetTestClient();
-            using var response = await client.PostAsJsonAsync("/GeneratePdf", new byte[] { 1, 2, 3 });
+            using var response = await client.PostAsJsonAsync("/GeneratePdf", new byte[] { 1, 2, 3 }, TestContext.Current.CancellationToken);
 
             // Then: the response is JSON carrying the full HtmlPdfResult<string>, as before D5.
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var body = await response.Content.ReadFromJsonAsync<HtmlPdfResult<string>>();
+            var body = await response.Content.ReadFromJsonAsync<HtmlPdfResult<string>>(TestContext.Current.CancellationToken);
             Assert.NotNull(body);
             Assert.True(body!.IsSuccess);
             Assert.Equal("file.pdf", body.OutputData);
