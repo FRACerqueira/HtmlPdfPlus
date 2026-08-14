@@ -168,7 +168,7 @@ sequenceDiagram
     HtmlPdfServer-->>HtmlPdfServer: Exec AfterPDF(input param, transform output)
     HtmlPdfServer->>AppServer: HtmlPdfResult
 
-    Note over AppServer,HtmlPdfClient: byte[] success -> raw PDF body (application/pdf); any other outcome -> ErrorInfo/HtmlPdfResult as JSON
+    Note over AppServer,HtmlPdfClient: byte[] success returns the raw PDF body (application/pdf), any other outcome returns ErrorInfo/HtmlPdfResult as JSON
     AppServer->>HtmlPdfClient: HTTP response
     HtmlPdfClient->>AppClient: HtmlPdfResult
 ```
