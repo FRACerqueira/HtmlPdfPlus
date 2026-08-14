@@ -91,7 +91,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         public async Task Given_NonByteArrayOutput_When_EndpointIsCalled_Then_ResponseIsJson()
         {
             // Given: a fake server whose output type is a small string (e.g. a saved filename),
-            // not the PDF itself - the D5 binary-response change does not apply here.
+            // not the PDF itself - the raw-bytes response contract does not apply here.
             var result = new HtmlPdfResult<string>(true, false, TimeSpan.Zero, "file.pdf", null);
             using var host = await CreateTestHost<object, string>(new FakeHtmlPdfServer<object, string>(result));
 
@@ -99,7 +99,7 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             using var client = host.GetTestClient();
             using var response = await client.PostAsync("/GeneratePdf", RawOctetContent([1, 2, 3]), TestContext.Current.CancellationToken);
 
-            // Then: the response is JSON carrying the full HtmlPdfResult<string>, as before D5.
+            // Then: the response is JSON carrying the full HtmlPdfResult<string>, unaffected by the raw-bytes response contract.
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var body = await response.Content.ReadFromJsonAsync<HtmlPdfResult<string>>(TestContext.Current.CancellationToken);
             Assert.NotNull(body);
