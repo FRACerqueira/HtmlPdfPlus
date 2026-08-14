@@ -49,7 +49,7 @@ Both hooks live on the **execution context** (the object returned by `ScopeData(
 
 ### See Also
 * [Main README](../../README.md)
-* [Guide index](README.md)
+* [Guide index](index.md)
 * [How-To index](howto/README.md)
 * [Resilience and observability](resilience.md)
 * [API Reference](../api/docindex.md)
