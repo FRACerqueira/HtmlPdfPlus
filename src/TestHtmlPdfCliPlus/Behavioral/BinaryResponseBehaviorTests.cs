@@ -13,7 +13,7 @@ using HtmlPdfPlus;
 namespace TestHtmlPdfPlus.Behavioral
 {
     /// <summary>
-    /// Behavioral (given/when/then) regressions for the D5 response format: a byte[] output is
+    /// Behavioral (given/when/then) regressions for the raw-bytes response format: a byte[] output is
     /// served as the raw PDF body (no JSON envelope, no base64), and a non-2xx response is
     /// expected to carry the structured <see cref="ErrorInfo"/> contract in its body.
     /// </summary>

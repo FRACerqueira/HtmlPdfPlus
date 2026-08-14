@@ -10,7 +10,7 @@ using HtmlPdfPlus.Server.Core;
 namespace TestHtmlPdfPlus.Behavioral
 {
     /// <summary>
-    /// Behavioral (given/when/then) regressions for the Fase 0 reliability fixes.
+    /// Behavioral (given/when/then) regressions for the timeout/cancellation reliability fixes.
     /// These exercise the public API end-to-end instead of internal members.
     /// </summary>
     public class TimeoutBehaviorTests
