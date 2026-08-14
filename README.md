@@ -60,53 +60,8 @@ The current version (V.1.56.0) of **Playwright** supports **only the Chromium br
     - AfterPDF : Save file, Send to cloud, etc
 - Disable features to improve/ balance performance (minify, compress and log)
 
-### What's new in the latest version 
-- **v1.0.1 (latest version)**
-    - Updated Playwright to version 1.56.0
-    - Adjusted package reference for target framework (removed  NetStandard2.1)
-    - Updated documentation
-    - include target .NET 10.0
-
-- **v1.0.0
-    - Updated Playwright to version 1.51.0
-    - Adjusted package reference for target framework
-    - Updated documentation
-    - GA version (jump to version 1.0.0)
-
-- **v0.5.0-rc**
-    - Simplified sending data to the server via http client (now aceept byte[] instead of stream)
-    - Removed ReadToBytesAsync stream extension method
-    - Exposing the RequestHtmlPdf\<T\> class for scenarios of handling sending parameters
-    - Updated documentation
-    - Preparation for GA version
-
-- **v0.4.0-rc**
-    - Relaxation of Package Reference for .net8 to .net9
-    - Renamed the 'Source' command to 'Scope'
-    - Renamed the 'Request' command to 'ScopeRequest'
-    - Changed parameter in funcion SubmitHtmlToPdf to byte[] instead of string
-    - Changed parameter for command Run to byte[] instead of string
-    - Changed parameter for command ScopeRequest to byte[] instead of string
-    - Removed DecompressBytes() method to class HtmlPdfResult
-    - Added DecompressOutputData() method to class HtmlPdfResult for custom scenarios
-    - Improvements in the compression/decompression process to use asynchronous methods
-    - Small code reviews
- 
-- **v0.3.0-beta**
-    - Added FromUrl(Uri value) command to client-side mode
-    - Fixed bug in server mode for multi thread safe when there is parameter customization and/or no client mode sending.
-        - Moved the BeforePDF(Func<string, TIn?, CancellationToken, Task<string>> inputParam) command to the execution context.
-        - Moved the AfterPDF(Func<byte[]?, TIn?, CancellationToken, Task<TOut>> outputParam) command to the execution context.
-        - Added command Source(TIn? inputparam = default) to transfer input parameter for server execution context and custom actions and html source.
-        - Added Request(string request Client) command to pass the request client data to the server execution context for custom actions and HTML source.
-        - Simplified execution commands for server side with execution context with fluid interface comands :
-            -  Removed static class RequestHtmlPdf
-            -  Added command FromHtml(string html, int converttimeout = 30000, bool minify = true)
-            -  Added command FromUrl(Uri value, int converttimeout = 30000)
-            -  Added command FromRazor\<T\>(string template, T model, int converttimeout = 30000, bool minify = true)
-
-- **v0.2.0-beta**
-    - Initial version
+### What's new
+Current version: **2.0.0**. Full version history has moved to [CHANGELOG.md](./CHANGELOG.md).
 
 ## Prerequisites
 [**Top**](#table-of-contents)
