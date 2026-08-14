@@ -128,7 +128,41 @@ It is possible to generate a PDF in two ways:
 
 #### 1.1) Via http
 
-![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/swimlanes.io.Http.png)
+```mermaid
+sequenceDiagram
+    participant AppClient as App Client
+    participant HtmlPdfClient
+    participant AppServer as App Server
+    participant HtmlPdfServer
+
+    HtmlPdfServer->>AppServer: AddHtmlPdfService
+    AppServer-->>AppServer: Warmup HtmlPdfService
+
+    Note over AppClient,HtmlPdfClient: Minify, Compress and Logging can be disabled (via DisableOptionsHtmlToPdf)
+
+    AppClient->>HtmlPdfClient: FromHtml
+    HtmlPdfClient-->>HtmlPdfClient: Minify HTML
+    AppClient->>HtmlPdfClient: FromRazor
+    HtmlPdfClient-->>HtmlPdfClient: Execute Razor engine, minify HTML
+    AppClient->>HtmlPdfClient: FromUrl
+    AppClient->>HtmlPdfClient: PageConfig / Timeout
+    AppClient->>HtmlPdfClient: Run (optional input param)
+    HtmlPdfClient-->>HtmlPdfClient: Build RequestHtmlPdf, gzip it
+    HtmlPdfClient->>AppServer: HTTP POST (gzip bytes or plain JSON as the raw body)
+
+    AppServer->>HtmlPdfServer: BeforePDF hook (optional)
+    AppServer->>HtmlPdfServer: AfterPDF hook (optional)
+    AppServer->>HtmlPdfServer: Run
+    HtmlPdfServer-->>HtmlPdfServer: Decompress to RequestHtmlPdf
+    HtmlPdfServer-->>HtmlPdfServer: Exec BeforePDF(input param)
+    HtmlPdfServer-->>HtmlPdfServer: Generate PDF
+    HtmlPdfServer-->>HtmlPdfServer: Exec AfterPDF(input param, transform output)
+    HtmlPdfServer->>AppServer: HtmlPdfResult
+
+    Note over AppServer,HtmlPdfClient: byte[] success -> raw PDF body (application/pdf); any other outcome -> ErrorInfo/HtmlPdfResult as JSON
+    AppServer->>HtmlPdfClient: HTTP response
+    HtmlPdfClient->>AppClient: HtmlPdfResult
+```
 
 #### basic usage client side
 
@@ -202,7 +236,41 @@ app.MapHtmlPdfEndpoints("/GeneratePdf");
 
 #### 1.2) Via any process
 
-![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/swimlanes.io.AnyProcess.png)
+```mermaid
+sequenceDiagram
+    participant AppClient as App Client
+    participant HtmlPdfClient
+    participant Submit as Func.Submit (custom transport)
+    participant AppServer as App Server
+    participant HtmlPdfServer
+
+    HtmlPdfServer->>AppServer: AddHtmlPdfService
+    AppServer-->>AppServer: Warmup HtmlPdfService
+
+    Note over AppClient,HtmlPdfClient: Minify, Compress and Logging can be disabled (via DisableOptionsHtmlToPdf)
+
+    AppClient->>HtmlPdfClient: FromHtml / FromRazor / FromUrl
+    HtmlPdfClient-->>HtmlPdfClient: Minify HTML (and execute Razor engine, if FromRazor)
+    AppClient->>HtmlPdfClient: PageConfig / Timeout
+    AppClient->>HtmlPdfClient: Run(Submit, optional input param)
+    HtmlPdfClient-->>HtmlPdfClient: Build RequestHtmlPdf, gzip it
+    HtmlPdfClient->>Submit: Execute Submit(bytes)
+    Submit->>AppServer: caller-defined transport (TCP, queue, gRPC, ...)
+
+    AppServer->>HtmlPdfServer: BeforePDF hook (optional)
+    AppServer->>HtmlPdfServer: AfterPDF hook (optional)
+    AppServer->>HtmlPdfServer: Run
+    HtmlPdfServer-->>HtmlPdfServer: Decompress to RequestHtmlPdf
+    HtmlPdfServer-->>HtmlPdfServer: Exec BeforePDF(input param)
+    HtmlPdfServer-->>HtmlPdfServer: Generate PDF
+    HtmlPdfServer-->>HtmlPdfServer: Exec AfterPDF(input param, transform output)
+    HtmlPdfServer->>AppServer: HtmlPdfResult<TOut>
+    AppServer->>Submit: caller-defined transport response
+    Submit-->>HtmlPdfClient: HtmlPdfResult<TOut>
+    HtmlPdfClient->>AppClient: HtmlPdfResult<TOut>
+```
+
+Unlike the HTTP path above, the wire format between `Submit` and `App Server` is entirely up to the caller's own `Submit` delegate - the library only hands it request bytes and expects an `HtmlPdfResult<TOut>` back, so there is no built-in compress/decompress step to describe on the response side (see [ClientSendTcp](./samples/ConsoleHtmlToPdfPlus.ClientSendTcp) for a working example over raw TCP).
 
 #### basic usage client side
 
@@ -283,7 +351,27 @@ var result = await PDFserver
 
 ### 2) Using ony-server
 
-![HtmlPdfPLus Logo](https://raw.githubusercontent.com/FRACerqueira/HtmlPdfPLus/refs/heads/main/docs/images/swimlanes.io.OnlyServer.png)
+```mermaid
+sequenceDiagram
+    participant AppServer as App Server
+    participant HtmlPdfServer
+
+    HtmlPdfServer->>AppServer: AddHtmlPdfService
+    AppServer-->>AppServer: Warmup HtmlPdfService
+
+    Note over AppServer,HtmlPdfServer: Minify and Logging can be disabled (via DisableFeatures on the builder) - there is no network hop here, so there is nothing to compress/decompress
+
+    AppServer->>HtmlPdfServer: FromHtml / FromRazor / FromUrl
+    HtmlPdfServer-->>HtmlPdfServer: Minify HTML (and execute Razor engine, if FromRazor)
+    AppServer->>HtmlPdfServer: Input param / Timeout / PageConfig (all optional)
+    AppServer->>HtmlPdfServer: BeforePDF / AfterPDF hooks (optional)
+    AppServer->>HtmlPdfServer: Run
+
+    HtmlPdfServer-->>HtmlPdfServer: Exec BeforePDF(input param)
+    HtmlPdfServer-->>HtmlPdfServer: Generate PDF
+    HtmlPdfServer-->>HtmlPdfServer: Exec AfterPDF(input param, transform output)
+    HtmlPdfServer->>AppServer: HtmlPdfResult
+```
 
 #### basic usage
 ```csharp
@@ -373,7 +461,7 @@ Each sample is scoped to one clear lesson. For more examples, please refer to th
 	- [RetryAfterBackpressure](./samples/ConsoleHtmlToPdfPlus.RetryAfterBackpressure) - firing concurrent requests, detecting `ErrorCode.PoolExhausted`, and backing off using `ErrorInfo.RetryAfterSeconds` before retrying
 	- [MetricsObserver](./samples/ConsoleHtmlToPdfPlus.MetricsObserver) - attaching a `MeterListener` (no OTel/exporter package needed) to observe the instruments a healthy run produces (`htmlpdfplus.pool.available_pages`, `.request.duration`, `.errors`, `.pool.acquire_wait`), including how a validation failure increments `htmlpdfplus.errors` without touching `htmlpdfplus.request.duration` - `htmlpdfplus.browser.restarts` only appears after an unexpected disconnect, so it stays silent here
 
-> `/healthz` and `/readyz` are mapped by the two web server samples above (via `MapHtmlPdfHealthEndpoints()`), but no sample calls them from a client or shows what a real orchestrator would do with the response. See [Documentation](#documentation) for how they work until a dedicated sample exists.
+> `/healthz` and `/readyz` are mapped by the two web server samples above (via `MapHtmlPdfHealthEndpoints()`), but no sample calls them from a client or shows what a real orchestrator would do with the response. See the [resilience guide](docs/guide/resilience.md) for how they work until a dedicated sample exists.
 
 ## Documentation
 [**Top**](#table-of-contents)
