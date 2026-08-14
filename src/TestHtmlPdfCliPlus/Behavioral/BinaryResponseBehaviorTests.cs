@@ -82,6 +82,42 @@ namespace TestHtmlPdfPlus.Behavioral
             Assert.NotNull(result.Error);
         }
 
+        [Fact]
+        public async Task Given_FailureResponse_When_BodyIsNotErrorInfoButRetryAfterHeaderIsPresent_Then_RetryAfterSecondsIsStillSurfaced()
+        {
+            // Given: a 503 from infrastructure in front of the app (e.g. a proxy or load
+            // balancer) - no ErrorInfo body at all, but the standard Retry-After header is set.
+            // This is the single most likely place a real Retry-After arrives in production, since
+            // it doesn't depend on the app itself having produced a body.
+            using var handler = new RetryAfterHandler(HttpStatusCode.ServiceUnavailable, "<html><body>503 Service Unavailable</body></html>", retryAfterSeconds: 30);
+            using var httpClient = new HttpClient(handler);
+
+            // When: Run is awaited via the HttpClient overload.
+            var result = await HtmlPdfClient.Create("behavioral-binary-response")
+                .FromHtml("<html><body>hi</body></html>")
+                .Run(httpClient, "http://localhost/GeneratePdf", CancellationToken.None);
+
+            // Then: even without a structured body, the Retry-After header still surfaces as
+            // RetryAfterSeconds - the backpressure signal must not be dropped on this path.
+            Assert.False(result.IsSuccess);
+            Assert.NotNull(result.Error);
+            Assert.True(result.Error!.Retryable);
+            Assert.Equal(30, result.Error.RetryAfterSeconds);
+        }
+
+        private sealed class RetryAfterHandler(HttpStatusCode statusCode, string body, int retryAfterSeconds) : HttpMessageHandler
+        {
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                var response = new HttpResponseMessage(statusCode)
+                {
+                    Content = new StringContent(body, Encoding.UTF8, "text/html")
+                };
+                response.Headers.RetryAfter = new RetryConditionHeaderValue(TimeSpan.FromSeconds(retryAfterSeconds));
+                return Task.FromResult(response);
+            }
+        }
+
         private sealed class RawBytesHandler(byte[] body, string contentType) : HttpMessageHandler
         {
             protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)

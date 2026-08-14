@@ -27,12 +27,18 @@ namespace HtmlPdfPlus
         /// <param name="code">The stable failure classification.</param>
         /// <param name="message">A human-readable description of the failure.</param>
         /// <param name="retryable"><c>true</c> if retrying the same request may succeed.</param>
+        /// <param name="retryAfterSeconds">
+        /// A suggested minimum number of seconds to wait before retrying, when this is a
+        /// backpressure signal (e.g. <see cref="ErrorCode.PoolExhausted"/>) rather than a
+        /// permanent failure. <c>null</c> when no specific delay is known.
+        /// </param>
         [JsonConstructor]
-        public ErrorInfo(ErrorCode code, string message, bool retryable = false)
+        public ErrorInfo(ErrorCode code, string message, bool retryable = false, int? retryAfterSeconds = null)
         {
             Code = code;
             Message = message ?? string.Empty;
             Retryable = retryable;
+            RetryAfterSeconds = retryAfterSeconds;
         }
 
         /// <summary>
@@ -49,6 +55,13 @@ namespace HtmlPdfPlus
         /// Gets a value indicating whether retrying the same request may succeed.
         /// </summary>
         public bool Retryable { get; }
+
+        /// <summary>
+        /// Gets a suggested minimum number of seconds to wait before retrying, or <c>null</c>
+        /// when no specific delay is known. A host exposing this over HTTP should reflect it in
+        /// the standard <c>Retry-After</c> response header.
+        /// </summary>
+        public int? RetryAfterSeconds { get; }
 
         /// <summary>
         /// Builds an <see cref="ErrorInfo"/> from a caught exception, classifying well-known

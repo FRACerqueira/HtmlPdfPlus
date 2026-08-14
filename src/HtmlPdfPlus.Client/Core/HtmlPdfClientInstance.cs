@@ -410,7 +410,20 @@ namespace HtmlPdfPlus.Client.Core
             {
                 // Body wasn't a valid ErrorInfo - fall through to the generic error below.
             }
-            error ??= ErrorInfo.FromException(new HttpRequestException($"{result.StatusCode} : {result.ReasonPhrase}"));
+            if (error is null)
+            {
+                // No structured body (e.g. a proxy/load balancer returned the 503 itself, not the
+                // app) - the standard Retry-After header may still be present and is the most
+                // likely place a real backpressure signal shows up, so it must not be dropped here.
+                var retryAfterSeconds = result.Headers.RetryAfter?.Delta is TimeSpan delta
+                    ? (int)Math.Ceiling(delta.TotalSeconds)
+                    : (int?)null;
+                error = new ErrorInfo(
+                    ErrorCode.Unknown,
+                    $"{result.StatusCode} : {result.ReasonPhrase}",
+                    retryable: retryAfterSeconds is not null,
+                    retryAfterSeconds: retryAfterSeconds);
+            }
             return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, error);
         }
     }

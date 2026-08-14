@@ -95,6 +95,34 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         }
 
         [Fact]
+        public async Task Run_ResultFalse_WhenPoolExhausted_IncludesRetryAfterSecondsFromAcquireTimeout()
+        {
+            // Arrange: a pool with its single page already checked out, and a short acquire
+            // timeout so the next request exhausts the pool quickly and deterministically.
+            using var objbuilder = new HtmlPdfBuilder(null);
+            objbuilder.PagesBuffer(1);
+            objbuilder.AcquireTimeout(20);
+            await objbuilder.BuildAsync("Server");
+            var heldPage = await objbuilder.AcquireAsync(CancellationToken.None);
+            Assert.NotNull(heldPage);
+
+            var requestHtmlPdf = await new RequestHtmlPdf<byte[]>("<h1>Test</h1>", "teste", new PdfPageConfig(), 5000).ToBytesCompress();
+
+            // Act
+            var result = await new HtmlPdfServer<object, byte[]>(objbuilder, "Server")
+                .Run(requestHtmlPdf, CancellationToken.None);
+
+            // Assert: reported as a backpressure signal, with a retry hint derived from
+            // AcquireTimeoutMs (20ms -> ceil to 1 second), not a bare "not available" failure.
+            Assert.False(result.IsSuccess);
+            Assert.True(result.BufferDrained);
+            Assert.NotNull(result.Error);
+            Assert.Equal(ErrorCode.PoolExhausted, result.Error!.Code);
+            Assert.True(result.Error.Retryable);
+            Assert.Equal(1, result.Error.RetryAfterSeconds);
+        }
+
+        [Fact]
         public async Task Run_ResultTrue_BasicPDF()
         {
             // Arrange

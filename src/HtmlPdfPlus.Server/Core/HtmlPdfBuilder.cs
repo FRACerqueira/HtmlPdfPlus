@@ -228,6 +228,8 @@ namespace HtmlPdfPlus.Server.Core
 
         internal long MaxDecompressedRequestSizeLimit => _maxDecompressedRequestSize;
 
+        internal int AcquireTimeoutMs => _acquireTimeout;
+
         internal async Task<IHtmlPdfServer<object, byte[]>> BuildAsync(string sourcealias)
         {
             return await BuildAsync<object, byte[]>(sourcealias);

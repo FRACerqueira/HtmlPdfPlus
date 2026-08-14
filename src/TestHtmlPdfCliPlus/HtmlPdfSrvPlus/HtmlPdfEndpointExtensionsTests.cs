@@ -63,6 +63,25 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         }
 
         [Fact]
+        public async Task Given_PoolExhaustedResult_When_EndpointIsCalled_Then_ResponseHasRetryAfterHeader()
+        {
+            // Given: a fake server reporting backpressure with a concrete retry hint.
+            var error = new ErrorInfo(ErrorCode.PoolExhausted, "Not AvailableBuffer", retryable: true, retryAfterSeconds: 5);
+            var result = new HtmlPdfResult<byte[]>(false, true, TimeSpan.Zero, default, error);
+            using var host = await CreateTestHost<object, byte[]>(new FakeHtmlPdfServer<object, byte[]>(result));
+
+            // When: the mapped endpoint is invoked.
+            using var client = host.GetTestClient();
+            using var response = await client.PostAsJsonAsync("/GeneratePdf", new byte[] { 1, 2, 3 }, TestContext.Current.CancellationToken);
+
+            // Then: the standard Retry-After header carries the hint, so any HTTP client - not
+            // just one that parses the JSON body - can act on the backpressure signal.
+            Assert.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+            Assert.True(response.Headers.TryGetValues("Retry-After", out var values));
+            Assert.Equal("5", Assert.Single(values!));
+        }
+
+        [Fact]
         public async Task Given_NonByteArrayOutput_When_EndpointIsCalled_Then_ResponseIsJson()
         {
             // Given: a fake server whose output type is a small string (e.g. a saved filename),
