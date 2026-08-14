@@ -20,7 +20,7 @@ HtmlPdfPlus is a powerful tool that can help you generate PDF files from HTML or
 This library was built using the Playwright (https://playwright.dev/dotnet/) (engine to automate Chromium, Firefox, and WebKit** with a single API). 
 Playwright is built to enable cross-browser web automation that is evergreen, capable, reliable, and fast.
 
-The current version (V.1.56.0) of **Playwright** supports **only the Chromium browser** for the PDF API.
+As of the Playwright version this library currently targets, its PDF generation API supports **only the Chromium browser**.
 
 Features
 ========
@@ -36,12 +36,13 @@ Features
 - Communicate with the server using REST API (with compressed request) or user custom protocol
 - Minify HTML and CSS
 - Client-side HTML parser with custom error action (optional)
-- Compress send data over network
-- Compress result PDF using GZip over network (Only type bytes array output)
+- Requests are sent as gzip-compressed raw bytes by default, no base64/JSON-string wrapping
+- A successful byte[] response is served as the raw PDF body, not wrapped in JSON
 - Extension on server side to customize the conversion process (before and after conversion)
     - BeforePDF : Normalize HTML, Replace tokens, etc
     - AfterPDF : Save file, Send to cloud, etc
-- Disable features to improve/ balance performance (minify, compress and log)
+- Disable features to improve/balance performance (minify, compress and log)
+- Backpressure signaled via ErrorCode.PoolExhausted + a real Retry-After, automatic browser recovery, liveness/readiness endpoints, and System.Diagnostics.Metrics instrumentation
 
 What's new
 ==========
@@ -50,7 +51,7 @@ Current version: 2.0.0. Full version history: https://github.com/FRACerqueira/Ht
 Prerequisites
 =============
 
-- .NET 8 or .NET 9 SDK
+- .NET 8, .NET 9 or .NET 10 SDK
 - Visual Studio 2022 or later
 - Playwright (Installed and configured for your O.S)
 
@@ -220,7 +221,7 @@ Host.CreateDefaultBuilder(args)
     {
         services.AddHtmlPdfService((cfg) =>
         {
-               .Logger(LogLevel.Debug, "MyPDFServer")
+            cfg.Logger(LogLevel.Debug, "MyPDFServer")
                .DefaultConfig((page) =>
                {
                    page.DisplayHeaderFooter(true)
@@ -252,36 +253,31 @@ else
 Samples
 =======
 
-For more examples, please refer to the Samples directory : https://github.com/FRACerqueira/HtmlPdfPlus/tree/docs/samples
+For more examples, please refer to the Samples directory : https://github.com/FRACerqueira/HtmlPdfPlus/tree/main/samples
 
 Docker Usage
 ============
 
-The use of Playwright works very well for local testing on Windows machines following the standard installation instructions.
-For containerization scenarios, image sizes are a challenge that deserves more dedicated attention.
-This project suggests a containerization example that reduces the final image size by approximately **70%** !.
+The working Dockerfile keeps only the one Playwright browser variant the code actually launches (chromium_headless_shell),
+cutting the image from 763MB to 370MB. Full details, measured numbers, and the version-coupling caveat between the
+Docker build-stage tag and the Microsoft.Playwright NuGet package: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/docker.md
 
-To achieve this reduction, the biggest challenge was controlling the necessary dependencies and keeping only the minimum for execution in a headless shell.
+Resilience and Observability
+=============================
 
-Basically, what we did was:
-- Use the base image from mcr.microsoft.com/dotnet/aspnet:9.0
-- Use the image from cr.microsoft.com/playwright/dotnet:v1.51.0 for build
-  - Removing unnecessary browser and driver installations
-  - For .NET 9, we removed the default installation (.NET 8)
-    - We installed the .NET 9 SDK version for the build phase
-- Copy the required folder (pre-installed) to run Playwright
-- Install Google Chrome Stable , fonts and install the necessary libs to make the browser work.
-- Set environment variable for Playwright
-- Enable running the service as a non-root user
+Backpressure/Retry-After, automatic browser recovery, liveness/readiness endpoints, and metrics:
+https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/resilience.md
 
-I believe this work can still be improved! 
+Architecture Decision Records
+==============================
 
-For reference on this approach, see the DockFile at: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/Dockerfile
+Decisions with a live consequence (error contract, SSRF policy, wire format, backpressure, metrics, Docker/NuGet version
+coupling) are recorded as ADRs: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/adr/indexadrs.md
 
 Documentation
 =============
 
-The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface. 
+The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface.
 The documentation is available in the Docs directory : https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/api/docindex.md
 
 
