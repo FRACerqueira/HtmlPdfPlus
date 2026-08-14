@@ -37,7 +37,7 @@ You can customize the PDF settings, such as page size and margins, and add heade
 
 This library was built using the [Playwright](https://playwright.dev/dotnet/) (engine to automate **Chromium, Firefox, and WebKit** with a single API). Playwright is built to enable cross-browser web automation that is evergreen, capable, reliable, and fast. 
 
-The current version (V.1.56.0) of **Playwright** supports **only the Chromium browser** for the PDF API.
+As of the Playwright version this library currently targets (see the `Microsoft.Playwright` reference in [`HtmlPdfPlus.Server.csproj`](./src/HtmlPdfPlus.Server/HtmlPdfPlus.Server.csproj)), its PDF generation API supports **only the Chromium browser**.
 
 ## Features
 [**Top**](#table-of-contents)
@@ -53,12 +53,13 @@ The current version (V.1.56.0) of **Playwright** supports **only the Chromium br
 - Communicate with the server using REST API (with compressed request) or user custom protocol
 - Minify HTML and CSS
 - Client-side HTML parser with custom error action (optional)
-- Compress send data over network
-- Compress result PDF using GZip over network (Only type bytes array output)
+- Requests are sent as gzip-compressed raw bytes by default, no base64/JSON-string wrapping (see [ADR-003](docs/adr/ADR003V01R01-serve-and-accept-raw-bytes-instead-of-base64-json-wrapping.md))
+- A successful `byte[]` response is served as the raw PDF body, not wrapped in JSON
 - Extension on server side to customize the conversion process (before and after conversion)
     - BeforePDF : Normalize HTML, Replace tokens, etc
     - AfterPDF : Save file, Send to cloud, etc
-- Disable features to improve/ balance performance (minify, compress and log)
+- Disable features to improve/balance performance (minify, compress and log)
+- Backpressure signaled via `ErrorCode.PoolExhausted` + a real `Retry-After`, automatic browser recovery, liveness/readiness endpoints, and `System.Diagnostics.Metrics` instrumentation - see the [resilience guide](docs/guide/resilience.md)
 
 ### What's new
 Current version: **2.0.0**. Full version history has moved to [CHANGELOG.md](./CHANGELOG.md).
@@ -383,7 +384,7 @@ Host.CreateDefaultBuilder(args)
     {
         services.AddHtmlPdfService((cfg) =>
         {
-               .Logger(LogLevel.Debug, "MyPDFServer")
+            cfg.Logger(LogLevel.Debug, "MyPDFServer")
                .DefaultConfig((page) =>
                {
                    page.DisplayHeaderFooter(true)
@@ -413,30 +414,10 @@ else
 }
 ```
 
-# Docker Usage
+## Docker Usage
 [**Top**](#table-of-contents)
 
-The use of Playwright works very well for local testing on Windows machines following the standard installation instructions.
-
-For containerization scenarios, image sizes are a challenge that deserves more dedicated attention.
-
-> **2026-08 correction.** The [Dockerfile](./Dockerfile) had been broken since 2025-11-13 (commit `93be7db`): a malformed Chrome download URL made the image fail to build at all, so the "~70% smaller" claim previously made here described an image nobody could actually produce. Investigating it surfaced a second, more important problem: the code launches Chromium with `Headless = true` and no `Channel`, which Playwright always resolves to its own bundled `chromium_headless_shell` binary - **the separately apt-installed Google Chrome was never used**, at any point. It only ever added dead weight. The Dockerfile has been rewritten around this; see below for what changed and the real, measured numbers.
-
-**What actually makes the image small now:**
-- Keep only the one Playwright-bundled browser variant the code launches - `chromium_headless_shell` - and delete the full desktop `chromium`, `firefox`, `webkit` and `ffmpeg` builds that ship alongside it but are never referenced. No separate browser is installed via `apt`.
-- The build-stage image tag (`mcr.microsoft.com/playwright/dotnet:v1.62.0`) is kept in lockstep with the `Microsoft.Playwright` NuGet package version referenced by [`HtmlPdfPlus.Server.csproj`](./src/HtmlPdfPlus.Server/HtmlPdfPlus.Server.csproj) - a mismatch here is exactly what caused the container to crash on startup during this investigation (Playwright refuses to launch a browser revision that doesn't match its own driver, and says so explicitly in the exception). **Bumping that NuGet package without bumping this tag will break the container the same way - keep them together.**
-- The final stage's dependency list (`libnss3`, `libatk-bridge2.0-0t64`, etc.) was derived by running `ldd` against the actual `chromium_headless_shell` binary, not copied from generic documentation - Ubuntu Noble's `libasound2` → `libasound2t64` package rename, for example, is easy to get wrong by guessing.
-- Both build and runtime stages target the same Ubuntu Noble base (`aspnet:10.0-noble` instead of the Debian-based default `aspnet:10.0`), so the browser binary runs on the same glibc family it was built and validated against.
-
-**Measured, not estimated:** built and booted both versions end-to-end (container start, page-pool warmup, a real `POST /GeneratePdf` producing a valid PDF) to confirm correctness before comparing size.
-
-| | Image size |
-|---|---|
-| Previous approach, with only the broken URL fixed (still boots into a crash) | 763 MB |
-| Current [Dockerfile](./Dockerfile) | **370 MB** |
-
-I believe this work can still be improved! **For reference on this approach, see the [Dockerfile](./Dockerfile)**.
-
+The use of Playwright works very well for local testing on Windows machines following the standard installation instructions. For containerization scenarios, image size is worth a closer look: the working [Dockerfile](./Dockerfile) keeps only the one browser variant the code actually launches, cutting the image from 763MB to 370MB. See the [Docker guide](docs/guide/docker.md) for the full before/after numbers, what changed, and why.
 
 ## Examples
 [**Top**](#table-of-contents)
@@ -457,7 +438,7 @@ Each sample is scoped to one clear lesson. For more examples, please refer to th
 	- [TcpServerHtmlToPdf.GenericServer](./samples/TcpServerHtmlToPdf.GenericServer) - the matching TCP listener, unpacking a request and writing the result back over the same connection
 - **Cross-language** - consuming the server from outside .NET
 	- [JavaClientSendHttp](./samples/JavaClientSendHttp) - a single dependency-free `.java` file (JDK's own `HttpClient` + `GZIPOutputStream`, no build tool) showing the exact wire format any non-.NET client must produce: JSON → gzip → POST as `application/octet-stream` - see the file header for the `javac`/`java` commands and which server profile to run
-- **Production readiness** - the v2 roadmap features, each with a deliberately tiny page pool (`PagesBuffer(1)`) so the behavior being demonstrated is easy to reproduce on any machine instead of depending on real render timing
+- **Production readiness** - the resilience/observability features covered in the [resilience guide](docs/guide/resilience.md), each with a deliberately tiny page pool (`PagesBuffer(1)`) so the behavior being demonstrated is easy to reproduce on any machine instead of depending on real render timing
 	- [RetryAfterBackpressure](./samples/ConsoleHtmlToPdfPlus.RetryAfterBackpressure) - firing concurrent requests, detecting `ErrorCode.PoolExhausted`, and backing off using `ErrorInfo.RetryAfterSeconds` before retrying
 	- [MetricsObserver](./samples/ConsoleHtmlToPdfPlus.MetricsObserver) - attaching a `MeterListener` (no OTel/exporter package needed) to observe the instruments a healthy run produces (`htmlpdfplus.pool.available_pages`, `.request.duration`, `.errors`, `.pool.acquire_wait`), including how a validation failure increments `htmlpdfplus.errors` without touching `htmlpdfplus.request.duration` - `htmlpdfplus.browser.restarts` only appears after an unexpected disconnect, so it stays silent here
 
@@ -469,6 +450,8 @@ Each sample is scoped to one clear lesson. For more examples, please refer to th
 The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface. 
 
 The documentation is available in the [Docs directory](./docs/api/docindex.md).
+
+Deeper guides live under [docs/guide](docs/guide): [resilience and observability](docs/guide/resilience.md), [Docker](docs/guide/docker.md). Architectural decisions with a live consequence are recorded as [ADRs](docs/adr/indexadrs.md). Version history is in [CHANGELOG.md](./CHANGELOG.md).
 
 ## Code of Conduct
 [**Top**](#table-of-contents)
