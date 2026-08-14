@@ -52,7 +52,7 @@ Prerequisites
 =============
 
 - .NET 8, .NET 9 or .NET 10 SDK
-- Visual Studio 2022 or later
+- Visual Studio 2026 or later
 - Playwright (Installed and configured for your O.S)
 
 Installation Steps for Playwright (Windows)
