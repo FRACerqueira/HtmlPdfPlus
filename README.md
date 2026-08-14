@@ -21,6 +21,10 @@
 - [Usage](#usage)
 - [Docker Usage](#docker-usage)
 - [Examples](#examples)
+- [Architecture](#architecture)
+- [How-To](#how-to)
+- [API Reference](#api-reference)
+- [Architecture Decision Records (ADR)](#architecture-decision-records-adr)
 - [Documentation](#documentation)
 - [Code of Conduct](#code-of-conduct)
 - [Contributing](#contributing)
@@ -444,14 +448,32 @@ Each sample is scoped to one clear lesson. For more examples, please refer to th
 
 > `/healthz` and `/readyz` are mapped by the two web server samples above (via `MapHtmlPdfHealthEndpoints()`), but no sample calls them from a client or shows what a real orchestrator would do with the response. See the [resilience guide](docs/guide/resilience.md) for how they work until a dedicated sample exists.
 
+## Architecture
+[**Top**](#table-of-contents)
+
+Package layout (`Client`/`Server`/`Shared`), the one distinction that decides whether a request gets compressed (`ScopeData()` vs `ScopeRequest(bytes)`), the page pool and browser lifecycle, and where each piece of configuration is supposed to live: see the [Architecture guide](docs/guide/architecture.md).
+
+## How-To
+[**Top**](#table-of-contents)
+
+Task-oriented recipes, one page per use case - rendering content, running client and server as separate processes, customizing the pipeline, handling failures: see the [How-To index](docs/guide/howto/README.md).
+
+## API Reference
+[**Top**](#table-of-contents)
+
+The library has a main namespace `HtmlPdfPlus` for client and server, and all methods use a fluent interface. The full generated reference for every public type is in the [Docs directory](./docs/api/docindex.md).
+
+## Architecture Decision Records (ADR)
+[**Top**](#table-of-contents)
+
+HtmlPdfPlus documents its significant architectural and design decisions as Architecture Decision Records (ADR), following the [adrplus](https://github.com/FRACerqueira/AdrPlus) convention. Each record captures the context, the decision, the alternatives considered, and the consequences - so the reasoning behind the library's design stays traceable over time.
+
+👉 See the [ADR index](docs/adr/indexadrs.md) for the full list of decisions.
+
 ## Documentation
 [**Top**](#table-of-contents)
 
-The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface. 
-
-The documentation is available in the [Docs directory](./docs/api/docindex.md).
-
-Deeper guides live under [docs/guide](docs/guide): [resilience and observability](docs/guide/resilience.md), [Docker](docs/guide/docker.md). Architectural decisions with a live consequence are recorded as [ADRs](docs/adr/indexadrs.md). Version history is in [CHANGELOG.md](./CHANGELOG.md).
+Deeper operational guides live under [docs/guide](docs/guide/README.md): [resilience and observability](docs/guide/resilience.md), [Docker](docs/guide/docker.md). Version history is in [CHANGELOG.md](./CHANGELOG.md).
 
 ## Code of Conduct
 [**Top**](#table-of-contents)
@@ -485,22 +507,4 @@ This project is licensed under the MIT License - see the [License](LICENSE.md) f
 ## FAQ
 [**Top**](#table-of-contents)
 
-**Q: What browsers are supported for PDF generation?**
-
-A: Currently, only the Chromium browser is supported for the PDF API.
-
-**Q: What init args for speed and reduce resource usage ?**
-
-A: Currently, HtmlPdfPlus.Server starts with "--run-all-compositor-stages-before-draw --disable-dev-shm-usage -disable-setuid-sandbox --no-sandbox" when no argument value is passed.
-
-**Q: Can I customize the PDF settings?**
-
-A: Yes, you can customize settings such as page size, margins, headers, and footers.
-
-**Q: Is there support for asynchronous operations?**
-
-A: Yes, the API supports asynchronous operations.
-
-**Q: How can I contribute to the project?**
-
-A: Please refer to the [Contributing](CONTRIBUTING.md) section for details on how to contribute.
+Common questions, answered briefly: see the [FAQ page](docs/guide/faq.md).

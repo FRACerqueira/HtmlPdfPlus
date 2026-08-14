@@ -262,23 +262,44 @@ The working Dockerfile keeps only the one Playwright browser variant the code ac
 cutting the image from 763MB to 370MB. Full details, measured numbers, and the version-coupling caveat between the
 Docker build-stage tag and the Microsoft.Playwright NuGet package: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/docker.md
 
+Architecture
+============
+
+Package layout (Client/Server/Shared), the ScopeData() vs ScopeRequest(bytes) distinction, the page pool and browser
+lifecycle, and where configuration lives: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/architecture.md
+
+How-To
+======
+
+Task-oriented recipes - rendering content, transports, customization, error handling:
+https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/howto/README.md
+
 Resilience and Observability
 =============================
 
 Backpressure/Retry-After, automatic browser recovery, liveness/readiness endpoints, and metrics:
 https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/resilience.md
 
-Architecture Decision Records
-==============================
-
-Decisions with a live consequence (error contract, SSRF policy, wire format, backpressure, metrics, Docker/NuGet version
-coupling) are recorded as ADRs: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/adr/indexadrs.md
-
-Documentation
+API Reference
 =============
 
-The library is well documented and has a main namespace `HtmlPdfPlus` for client and server, and all methods use fluent interface.
-The documentation is available in the Docs directory : https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/api/docindex.md
+The library has a main namespace `HtmlPdfPlus` for client and server, and all methods use a fluent interface. The full
+generated reference for every public type is in the Docs directory : https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/api/docindex.md
+
+Architecture Decision Records (ADR)
+====================================
+
+HtmlPdfPlus documents its significant architectural and design decisions as Architecture Decision Records (ADR),
+following the AdrPlus convention (https://github.com/FRACerqueira/AdrPlus). Each record captures the context, the
+decision, the alternatives considered, and the consequences - so the reasoning behind the library's design stays
+traceable over time.
+
+See the ADR index for the full list of decisions: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/adr/indexadrs.md
+
+FAQ
+===
+
+Common questions, answered briefly: https://github.com/FRACerqueira/HtmlPdfPlus/blob/main/docs/guide/faq.md
 
 
 
