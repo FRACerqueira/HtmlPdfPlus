@@ -17,7 +17,7 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerCustomHooks
 
         public static async Task Main(string[] args)
         {
-            Console.WriteLine("Example: server-only conversion with BeforePDF/AfterPDF hooks (token substitution, custom file output) and DisableCompress for same-process performance");
+            Console.WriteLine("Example: server-only conversion with BeforePDF/AfterPDF hooks (token substitution, custom file output)");
             Console.WriteLine("=====================================================================================================================================================");
 
             var HostApp = CreateHostBuilder(args).Build();
@@ -87,9 +87,13 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerCustomHooks
                                 cfg.DisplayHeaderFooter(true)
                                    .Margins(10, 10, 10, 10);
                             })
-                            .Logger(LogLevel.Debug, "MyPDFServer")
-                            //when run in the same context, not Compress is fast because it is not required to transfer data over the network
-                            .DisableFeatures(DisableOptionsHtmlToPdf.DisableCompress);
+                            .Logger(LogLevel.Debug, "MyPDFServer");
+                        // Note: DisableOptionsHtmlToPdf.DisableCompress only affects the
+                        // ScopeRequest(bytes)/Run(bytes) path, which decompresses an incoming
+                        // payload - ScopeData() below never receives one, so there is nothing to
+                        // compress or decompress in this same-process scenario regardless of this
+                        // flag. See docs/guide/architecture.md for the ScopeData vs ScopeRequest
+                        // distinction.
                     });
                 });
 
