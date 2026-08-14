@@ -230,6 +230,12 @@ namespace HtmlPdfPlus.Server.Core
 
         internal int AcquireTimeoutMs => _acquireTimeout;
 
+        /// <summary>
+        /// Gets a value indicating whether the browser is currently being restarted after an
+        /// unexpected disconnect - a transient state in which the pool cannot serve pages.
+        /// </summary>
+        internal bool IsRecovering => Volatile.Read(ref _recovering) == 1;
+
         internal async Task<IHtmlPdfServer<object, byte[]>> BuildAsync(string sourcealias)
         {
             return await BuildAsync<object, byte[]>(sourcealias);

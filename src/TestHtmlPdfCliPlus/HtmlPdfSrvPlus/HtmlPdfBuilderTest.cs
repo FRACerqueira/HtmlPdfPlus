@@ -209,6 +209,30 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             Assert.NotNull(page);
         }
 
+        [Fact]
+        public async Task Ensure_IsRecovering_IsFalse_BeforeCrashAndAfterRecoveryCompletes()
+        {
+            // Given: a built pool, not recovering.
+            using var obj = new HtmlPdfBuilder();
+            obj.PagesBuffer(2);
+            await obj.BuildAsync("Teste");
+            Assert.False(obj.IsRecovering);
+
+            // When: the browser disconnects unexpectedly (same faithful CloseAsync simulation
+            // used elsewhere in this suite) and auto-recovery runs to completion.
+            await obj.CurrentBrowser!.CloseAsync();
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            while (obj.CurrentBrowser is null || !obj.CurrentBrowser.IsConnected || obj.BufferLength < 2)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+                await Task.Delay(50, cts.Token);
+            }
+
+            // Then: a health check reading IsRecovering after recovery has fully completed must
+            // not report a permanently degraded instance.
+            Assert.False(obj.IsRecovering);
+        }
+
         [Theory]
         [InlineData("http://10.0.0.1", false)]
         [InlineData("http://172.16.5.4", false)]
