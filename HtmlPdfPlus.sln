@@ -9,9 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{2666
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{ED148173-C3B1-478E-A38D-1F90CC1DB0D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.OnlyAtServerV1", "samples\ConsoleHtmlToPdfPlus.OnlyAtServer\v1\ConsoleHtmlToPdfPlus.OnlyAtServerV1.csproj", "{CF7F88CF-60DB-4A6D-90C4-89D0E5762660}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.OnlyAtServerCustomHooks", "samples\ConsoleHtmlToPdfPlus.OnlyAtServer\CustomHooks\ConsoleHtmlToPdfPlus.OnlyAtServerCustomHooks.csproj", "{CF7F88CF-60DB-4A6D-90C4-89D0E5762660}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.OnlyAtServerV2", "samples\ConsoleHtmlToPdfPlus.OnlyAtServer\v2\ConsoleHtmlToPdfPlus.OnlyAtServerV2.csproj", "{35A2065E-8BCA-42F9-94E3-614700B72D4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.OnlyAtServerQuickStart", "samples\ConsoleHtmlToPdfPlus.OnlyAtServer\QuickStart\ConsoleHtmlToPdfPlus.OnlyAtServerQuickStart.csproj", "{35A2065E-8BCA-42F9-94E3-614700B72D4F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleHtmlToPdfPlus.ClientSendHttp", "samples\ConsoleHtmlToPdfPlus.ClientSendHttp\ConsoleHtmlToPdfPlus.ClientSendHttp.csproj", "{685909BC-FE72-4D1E-BBFA-5F216EBA10FF}"
 EndProject

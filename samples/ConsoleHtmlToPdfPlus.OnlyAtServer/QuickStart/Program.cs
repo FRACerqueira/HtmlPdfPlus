@@ -4,52 +4,40 @@
 // https://github.com/FRACerqueira/HtmlPdfPlus
 // ***************************************************************************************
 
-using HtmlPdfPlus;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace ConsoleHtmlToPdfPlus.ClientSendHttp
+namespace ConsoleHtmlToPdfPlus.OnlyAtServerQuickStart
 {
     public class Program
     {
         private static readonly string PathToSamples = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        private static IHost? HostApp = null;
+
         public static async Task Main(string[] args)
         {
-            Console.WriteLine("Example of HTML to PDF Plus console using only Client with all settings sent via http to server PDF");
-            Console.WriteLine("===================================================================================================");
-            Console.WriteLine(""); 
-            Console.WriteLine("Start the WebHtmlToPdf.GenericServer Server project first. When ready, press any key to continue");
-            Console.WriteLine("");
-            Console.ReadKey();
+            Console.WriteLine("Example: minimal server-only conversion - default byte[] output, FromHtml and FromUrl render modes, no hooks");
+            Console.WriteLine("==============================================================================================================");
 
-            HostApp = CreateHostBuilder(args).Build();
+            var HostApp = CreateHostBuilder(args).Build();
 
-             //token to gracefull shutdown
+            Console.WriteLine("Warmup HtmlPdfServerPlus with buffer");
+
+            //token to gracefull shutdown
             var applifetime = HostApp.Services.GetService<IHostApplicationLifetime>()!;
 
-            //client http to endpoint    
-            var clienthttp = HostApp!.Services.GetRequiredService<IHttpClientFactory>().CreateClient("HtmlPdfServer");
+            //instance of Html to Pdf Engine and Warmup HtmlPdfServerPlus
+            var PDFserver = HostApp!.Services.GetHtmlPdfService();
 
-            //create client instance and to HtmlPdfPlus server endpoint
-            Console.WriteLine($"HtmlPdfClient send Html to PDF Server via http post");
+            Console.WriteLine($"HtmlPdfServerPlus ready");
 
-            var pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
-                             .PageConfig((cfg) =>
-                             {
-                                 cfg.Margins(10)
-                                   .Footer("'<span style=\"text-align: center;width: 100%;font-size: 10px\"> <span class=\"pageNumber\"></span> of <span class=\"totalPages\"></span></span>")
-                                   .Header("'<span style=\"text-align: center;width: 100%;font-size: 10px\" class=\"title\"></span>")
-                                   .Orientation(PageOrientation.Landscape)
-                                   .DisplayHeaderFooter(true);
-                             })
-                             .Logger(HostApp.Services.GetService<ILogger<Program>>())
-                             .FromHtml(HtmlSample())
-                             .Timeout(5000)
-                             .Run(clienthttp, applifetime.ApplicationStopping);
+            //Performs conversion on the server
+            var pdfresult = await PDFserver
+                .ScopeData()
+                .FromHtml(HtmlSample(),5000)
+                .Run(applifetime.ApplicationStopping);
 
-            Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
+            Console.WriteLine($"HtmlPdfServer IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 
             //performs writing to file after performing conversion
             if (pdfresult.IsSuccess)
@@ -60,58 +48,16 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
             }
             else
             {
-                Console.WriteLine($"HtmlPdfClient error: {pdfresult.Error!}");
+                Console.WriteLine($"HtmlPdfServer error: {pdfresult.Error}");
             }
 
-            Console.WriteLine("Press any key to next");
-            Console.ReadKey();
+            //Performs conversion on the server
+             pdfresult = await PDFserver
+                .ScopeData()
+                .FromUrl(new Uri("https://github.com/FRACerqueira/HtmlPdfPlus"), 5000)
+                .Run(applifetime.ApplicationStopping);
 
-            //create client instance  and send to server
-            Console.WriteLine($"HtmlPdfClient send TemplateRazor to PDF Server via http post");
-
-            var lstprod = new List<Product>();
-            for (int i = 0; i < 40; i++)
-            {
-                lstprod.Add(new Product($"Product{i}", 9.99m));
-            }
-
-            var order1 = new Order("Roberto Rivellino", "Rua S&atilde;o Jorge, 777", "+55 11 912345678", lstprod);
-
-            pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
-                                 .PageConfig((cfg) => cfg.Margins(10))
-                                 .Logger(HostApp.Services.GetService<ILogger<Program>>())
-                                 .FromRazor(TemplateRazor(), order1)
-                                 .Timeout(5000)
-                                 .Run(clienthttp,applifetime.ApplicationStopping);
-
-            Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
-
-            //performs writing to file after performing conversion
-            if (pdfresult.IsSuccess)
-            {
-                var fullpath = Path.Combine(PathToSamples, "html2pdfRazorTemplate.pdf");
-                await File.WriteAllBytesAsync(fullpath, pdfresult.OutputData!);
-                Console.WriteLine($"File PDF generate at {fullpath}");
-            }
-            else
-            {
-                Console.WriteLine($"HtmlPdfClient error: {pdfresult.Error!}");
-            }
-
-            Console.WriteLine("Press any key to next");
-            Console.ReadKey();
-
-            //create client instance  and send to server
-            Console.WriteLine($"HtmlPdfClient send Url to PDF Server via http post");
-
-            pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
-                                .PageConfig((cfg) => cfg.Margins(10))
-                                .Logger(HostApp.Services.GetService<ILogger<Program>>())
-                                .FromUrl(new Uri("https://github.com/FRACerqueira/HtmlPdfPlus"))
-                                .Timeout(15000)
-                                .Run(clienthttp, applifetime.ApplicationStopping);
-
-            Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
+            Console.WriteLine($"HtmlPdfServer IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 
             //performs writing to file after performing conversion
             if (pdfresult.IsSuccess)
@@ -122,20 +68,13 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
             }
             else
             {
-                Console.WriteLine($"HtmlPdfClient error: {pdfresult.Error!}");
+                Console.WriteLine($"HtmlPdfServer error: {pdfresult.Error}");
             }
 
-
-            Console.WriteLine("Press any key to end");
+            Console.WriteLine("Press any key");
             Console.ReadKey();
 
-
         }
-
-        public record Product(string Name, decimal Price);
-
-        public record Order(string CustomerName, string CustomerAddress, string CustomerPhoneNumber, List<Product> Products);
-
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureLogging((hostContext, logbuilder) =>
@@ -147,75 +86,18 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
                         .AddConsole();
                 })
                 .ConfigureServices((hostContext, services) =>
-                { 
-                  services.AddHttpClient("HtmlPdfServer", httpClient =>
-                  {
-                      httpClient.BaseAddress = new Uri("https://localhost:7212/GeneratePdf");
-                  });
+                {
+                    services.AddHtmlPdfService((cfg) =>
+                    {
+                        cfg.DisableFeatures(HtmlPdfPlus.DisableOptionsHtmlToPdf.DisableCompress)
+                           .Logger(LogLevel.Debug, "MyPDFServer")
+                           .DefaultConfig((page) =>
+                           {
+                               page.DisplayHeaderFooter(true)
+                                  .Margins(10, 10, 10, 10);
+                           });
+                    });
                 });
-
-        private static string TemplateRazor()
-        {
-            return """
-                <!DOCTYPE html>
-                <html lang="pt-br">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>Customer Details</title>
-                    <style>
-                        table {
-                            border-collapse: collapse;
-                            width: 100%;
-                        }
-                        th, td {
-                            border: 1px solid #ddd;
-                            padding: 8px;
-                        }
-                        th {
-                            background-color: #f4f4f4;
-                            text-align: left;
-                        }
-                        tr { 
-                            page-break-inside: avoid; 
-                        }
-                    </style>
-                </head>
-                <body>
-                    <h1>Customer Details</h1>
-                    <p><strong>Name:</strong> @Model.CustomerName</p>
-                    <p><strong>Address:</strong> @Model.CustomerAddress</p>
-                    <p><strong>Phone Number:</strong> @Model.CustomerPhoneNumber</p>
-
-                    <h2>Products (@Model.Products.Count)</h2>
-                    @if(Model.Products.Any())
-                    {
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Product Name</th>
-                                    <th>Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var product in Model.Products)
-                                {
-                                    <tr>
-                                        <td>@product.Name</td>
-                                        <td>@product.Price.ToString("C")</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    } 
-                    else
-                    {
-                        <p>No products found.</p>
-                    }
-                </body>
-                </html>
-                """;
-
-        }
 
         private static string HtmlSample()
         {

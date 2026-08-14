@@ -177,11 +177,7 @@ builder.Services.AddHtmlPdfService((cfg) =>
 });
 ...
 
-app.MapPost("/GeneratePdf", async ([FromServices] IHtmlPdfServer<object, byte[]> PDFserver, [FromBody] byte[] requestclienthtmltopdf, CancellationToken token) =>
-{
-    return await PDFserver
-        .Run(requestclienthtmltopdf, token);
-}).Produces<HtmlPdfResult<byte[]>>(200);
+app.MapHtmlPdfEndpoints();
 
 
 1.2) Using client-server mode Via any protocol
