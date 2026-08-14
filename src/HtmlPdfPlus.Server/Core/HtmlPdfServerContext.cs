@@ -144,7 +144,9 @@ namespace HtmlPdfPlus.Server.Core
                 return new HtmlPdfResult<TOut>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
             }
             var isurl = requestHtmlPdf.Mode == RenderMode.Url;
-            return await htmlPdfServer.RunServer(isurl, _inputparam, _outputparam, sw, requestHtmlPdf, token);
+            var result = await htmlPdfServer.RunServer(isurl, _inputparam, _outputparam, sw, requestHtmlPdf, token);
+            htmlPdfServer.RecordRequestDuration(result);
+            return result;
         }
 
         /// <summary>
