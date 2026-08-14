@@ -399,41 +399,25 @@ I believe this work can still be improved! **For reference on this approach, see
 ## Examples
 [**Top**](#table-of-contents)
 
-For more examples, please refer to the [Samples directory](./samples) :
+Each sample is scoped to one clear lesson. For more examples, please refer to the [Samples directory](./samples):
 
-- Server Only
-	- [Console HtmlToPdfPlus OnlyAtServer CustomHooks](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/CustomHooks)
-        - Performs replacement token substitution in the HTML source before performing the conversion 
-        - Performs writing to file after performing conversion
-        - Return output data with filename
-	- [Console HtmlToPdfPlus OnlyAtServer QuickStart](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/QuickStart)
-        - Performs generate pdf in bytes array
-        - Performs writing to file
-- Client-Server
-	- [Console HtmlToPdfPlus Client by Http](./samples/ConsoleHtmlToPdfPlus.ClientSendHttp)
-        - Performs sending data to the server via http client
-        - Performs writing to file
-	- [Server HtmlToPdfPlus Generic](./samples/WebHtmlToPdf.GenericServer)
-        - Performs generate pdf in bytes array
-        - Send data to client via http
-- Client-Server Custom
-	- [Console HtmlToPdfPlus Client Custom by Http](./samples/ConsoleHtmlToPdfPlus.ClientCustomSendHttp)
-        - Performs a generic suggestion for writing a file to a cloud like gcp/azure   
-        - Performs sending data to the server via http client
-	- [Server HtmlToPdfPlus Custom Save File](./samples/WebHtmlToPdf.CustomSaveFileServer)
-        - Performs replacement token substitution in the HTML source before performing the conversion 
-        - Performs a generic suggestion writing to file after performing conversion
-        - Send data (name of file or full path file) to client via http
-- Client-Server TCP
-	- [Console HtmlToPdfPlus Client Tcp](./samples/ConsoleHtmlToPdfPlus.ClientSendTcp)
-        - Performs sending data to the server via tcp client (using [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp) package)
-        - Performs receiver data from the server via tcp client
-        - Performs writing to file
-    - [Server Console HtmlToPdfPlus Tcp](./samples/TcpServerHtmlToPdf.GenericServer)
-        - Listening port on tcp server (using [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp) package)
-        - Performs generate pdf in bytes array
-        - Send data to client via tcp server
- 
+- **Server Only** - no client, no network, HTML/URL converted in the same process
+	- [OnlyAtServer/CustomHooks](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/CustomHooks) - `BeforePDF`/`AfterPDF` hooks (token substitution, custom file output), typed `TIn`/`TOut`, and `DisableOptionsHtmlToPdf.DisableCompress` for same-process performance
+	- [OnlyAtServer/QuickStart](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/QuickStart) - the minimal default setup: `byte[]` output, both `FromHtml` and `FromUrl` render modes, no hooks
+- **Client-Server (HTTP)** - client and server as separate processes over `HttpClient`
+	- [ClientSendHttp](./samples/ConsoleHtmlToPdfPlus.ClientSendHttp) - one client walking through all three content sources (`FromHtml`, `FromRazor` with a typed model, `FromUrl`) against the same generic server
+	- [WebHtmlToPdf.GenericServer](./samples/WebHtmlToPdf.GenericServer) - the server side: `MapHtmlPdfEndpoints()`, `AddOpenApi()`, and the health endpoints, in as few lines as the library allows
+- **Client-Server Custom** - customizing what the server returns instead of raw PDF bytes
+	- [ClientCustomSendHttp](./samples/ConsoleHtmlToPdfPlus.ClientCustomSendHttp) - typed input/output (`DataSavePDF`) standing in for "save the PDF to cloud storage, return its path"
+	- [WebHtmlToPdf.CustomSaveFileServer](./samples/WebHtmlToPdf.CustomSaveFileServer) - the matching server: token substitution via `BeforePDF`, then `AfterPDF` turning the PDF bytes into a saved-file result
+- **Client-Server TCP** - swapping the transport for a non-HTTP one (⚠ demonstrates shipping flexibility only, not production-ready)
+	- [ClientSendTcp](./samples/ConsoleHtmlToPdfPlus.ClientSendTcp) - the client's `Run(Func<byte[],...>)` overload driving a raw TCP round-trip via [SuperSimpleTcp](https://github.com/jchristn/SuperSimpleTcp)
+	- [TcpServerHtmlToPdf.GenericServer](./samples/TcpServerHtmlToPdf.GenericServer) - the matching TCP listener, unpacking a request and writing the result back over the same connection
+- **Cross-language** - consuming the server from outside .NET
+	- [JavaClientSendHttp](./samples/JavaClientSendHttp) - a single dependency-free `.java` file (JDK's own `HttpClient` + `GZIPOutputStream`, no build tool) showing the exact wire format any non-.NET client must produce: JSON → gzip → POST as `application/octet-stream`
+
+> `/healthz` and `/readyz` are mapped by the two web server samples above (via `MapHtmlPdfHealthEndpoints()`), but no sample calls them from a client or shows what a real orchestrator would do with the response. The `Retry-After` backpressure signal on `ErrorCode.PoolExhausted` and the `System.Diagnostics.Metrics` instruments (`htmlpdfplus.*`) have no sample coverage at all yet. See [Documentation](#documentation) for how each of those works until dedicated samples exist.
+
 ## Documentation
 [**Top**](#table-of-contents)
 
