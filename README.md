@@ -72,7 +72,7 @@ Current version: **2.0.0**. Full version history has moved to [CHANGELOG.md](./C
 [**Top**](#table-of-contents)
 
 - .NET 8, .NET 9 or .NET 10 SDK
-- Visual Studio 2022 or later
+- Visual Studio 2026 or later
 - Playwright (Installed and configured for your O.S)
 
 
@@ -421,7 +421,7 @@ else
 ## Docker Usage
 [**Top**](#table-of-contents)
 
-The use of Playwright works very well for local testing on Windows machines following the standard installation instructions. For containerization scenarios, image size is worth a closer look: the working [Dockerfile](./Dockerfile) keeps only the one browser variant the code actually launches, cutting the image from 763MB to 370MB. See the [Docker guide](docs/guide/docker.md) for the full before/after numbers, what changed, and why.
+The use of Playwright works very well for local testing on Windows machines following the standard installation instructions. For containerization scenarios, image size is worth a closer look: the working [Dockerfile](./Dockerfile) keeps only the one browser variant the code actually launches, cutting the image from 763MB to **370MB**. See the [Docker guide](docs/guide/docker.md) for the full before/after numbers, what changed, and why.
 
 ## Examples
 [**Top**](#table-of-contents)
