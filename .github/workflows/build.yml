@@ -1,10 +1,34 @@
 name: Build
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: '10.0.x' # SDK Version to use.
+
+    - name: Build project
+      run: dotnet build HtmlPdfPlus.sln -c Release
+
+    - name: Install Playwright browsers
+      run: pwsh src/TestHtmlPdfCliPlus/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
+
+    - name: Run test cases
+      run: dotnet test -c Release --no-build
+
+  build-matrix:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main')
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v5
 

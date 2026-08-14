@@ -71,29 +71,74 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         }
 
         [Fact]
-        public async Task Given_DisconnectedBrowser_When_ReadyEndpointCalled_Then_Returns503BeforeRecoveryCompletes()
+        public async Task Given_UnexpectedDisconnect_When_HealthCapturedAtDetectionTime_Then_ReportsUnhealthy()
         {
-            // Given: a real browser/pool that has just disconnected. CloseAsync raises the same
-            // Disconnected event Playwright fires on a real crash (same simulation used
-            // elsewhere in this suite), and relaunching Chromium takes far longer than
-            // dispatching the in-memory GET below, so the request reliably lands before
-            // auto-recovery finishes.
+            // Given: a real browser/pool. CloseAsync raises the same Disconnected event
+            // Playwright fires on a real crash. Recovery kicks off from that same event
+            // (HtmlPdfBuilder's own handler runs first, since it subscribed first), so how
+            // it races a *subsequent* HTTP round-trip is environment-dependent - it was
+            // observed to complete before an awaited-afterwards check on some CI runners
+            // and not others, regardless of OS. To assert the actual guarantee (health
+            // state reflects the disconnect at detection time) without racing that
+            // background recovery, the health snapshot is captured synchronously inside
+            // the Disconnected handler itself - the same call stack that flips
+            // HtmlPdfBuilder's internal recovering flag to true, before any scheduling gap
+            // gives recovery a chance to run further.
             using var builder = new HtmlPdfBuilder(null);
             builder.PagesBuffer(1);
-            var server = await builder.BuildAsync("Server");
-            using var host = await CreateTestHost(server);
+            var server = (HtmlPdfServer<object, byte[]>)await builder.BuildAsync("Server");
+
+            var browser = builder.CurrentBrowser!;
+            HtmlPdfHealthStatus? capturedStatus = null;
+            var disconnected = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            browser.Disconnected += (_, _) =>
+            {
+                capturedStatus = server.GetHealthStatus();
+                disconnected.TrySetResult();
+            };
+
+            // When
+            await browser.CloseAsync();
+            await disconnected.Task.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+
+            // Then: an orchestrator polling /readyz must see this instance drop out of
+            // rotation the moment the disconnect is detected, not only once recovery
+            // finishes relaunching Chromium.
+            Assert.NotNull(capturedStatus);
+            Assert.True(capturedStatus!.Recovering);
+            Assert.False(capturedStatus.Healthy);
+        }
+
+        [Fact]
+        public async Task Given_ServerWithoutHealthSignal_When_ReadyEndpointCalled_Then_Returns503()
+        {
+            // Given: a registration that isn't the library's own concrete IHtmlPdfServer (a
+            // custom decorator, a test double) - it has no browser/pool to report on, which
+            // MapHtmlPdfHealthEndpoints treats as a readiness failure rather than a crash.
+            using var host = await CreateTestHost(new NoHealthSignalServer());
             using var client = host.GetTestClient();
 
             // When
-            await builder.CurrentBrowser!.CloseAsync();
             using var readyResponse = await client.GetAsync("/readyz", TestContext.Current.CancellationToken);
 
-            // Then: readiness reflects the disconnect immediately - an orchestrator polling
-            // /readyz must see this instance drop out of rotation while it recovers.
+            // Then
             Assert.Equal(HttpStatusCode.ServiceUnavailable, readyResponse.StatusCode);
             var status = await readyResponse.Content.ReadFromJsonAsync<HtmlPdfHealthStatus>(TestContext.Current.CancellationToken);
             Assert.NotNull(status);
             Assert.False(status!.Healthy);
+        }
+
+        private sealed class NoHealthSignalServer : IHtmlPdfServer<object, byte[]>
+        {
+            public void Dispose()
+            {
+            }
+
+            public IHtmlPdfServerContext<object, byte[]> ScopeData(object? inputparam = default) => throw new NotSupportedException();
+
+            public IHtmlPdfServerContext<object, byte[]> ScopeRequest(byte[] requestClient) => throw new NotSupportedException();
+
+            public Task<HtmlPdfResult<byte[]>> Run(byte[] requestClient, CancellationToken token = default) => throw new NotSupportedException();
         }
 
         private static async Task<IHost> CreateTestHost(IHtmlPdfServer<object, byte[]> server)
