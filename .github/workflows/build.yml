@@ -1,6 +1,6 @@
 name: Build
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
       run: dotnet test -c Release --no-build
 
   build-matrix:
-    if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main'
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main')
     strategy:
       fail-fast: false
       matrix:
