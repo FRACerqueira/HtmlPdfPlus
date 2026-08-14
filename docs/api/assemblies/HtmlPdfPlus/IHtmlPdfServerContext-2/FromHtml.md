@@ -4,7 +4,7 @@
 </br>
 
 
-#### Register the HTML to be executed by the server in the execution context. This command disables data compression.
+#### Register the HTML to be executed by the server in the execution context.
 
 ```csharp
 public IHtmlPdfServerContext FromHtml(string html, int converttimeout = 30000, bool minify = true)

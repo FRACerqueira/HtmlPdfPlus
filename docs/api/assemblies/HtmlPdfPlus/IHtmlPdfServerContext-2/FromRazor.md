@@ -4,7 +4,7 @@
 </br>
 
 
-#### Execute the Razor HTML template with the data and register the HTML by the server to be executed by the server in the execution context.This command disables data compression.
+#### Execute the Razor HTML template with the data and register the resulting HTML to be executed by the server in the execution context.
 
 ```csharp
 public IHtmlPdfServerContext FromRazor<T>(string templatetext, T model, int converttimeout = 30000, 

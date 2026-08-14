@@ -4,7 +4,7 @@
 </br>
 
 
-#### Register Page Url to be executed by the server in the execution context. This command disables data compression e minify. Registered with an explicit Url, subject to the server's configured URL policy (see [`UrlAllowPolicy`](../IHtmlPdfSrvBuilder/UrlAllowPolicy.md)) before navigation.
+#### Register Page Url to be executed by the server in the execution context. Registered with an explicit Url, subject to the server's configured URL policy (see [`UrlAllowPolicy`](../IHtmlPdfSrvBuilder/UrlAllowPolicy.md)) before navigation.
 
 ```csharp
 public IHtmlPdfServerContext FromUrl(Uri value, int converttimeout = 30000)

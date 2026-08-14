@@ -42,7 +42,7 @@ the HTTP contract directly needs to be updated together with the packages.
 
 ### Changed
 - **Breaking:** the HTTP response for a `byte[]` output is now the raw PDF
-  body (`application/octet-stream`), not a JSON envelope with a base64
+  body (`application/pdf`), not a JSON envelope with a base64
   string. Non-2xx responses now carry the structured `ErrorInfo` contract
   in the body instead of a bare error message.
 - **Breaking:** the HTTP request body is now sent as raw (optionally

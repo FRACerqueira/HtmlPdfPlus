@@ -21,9 +21,9 @@ public interface IHtmlPdfServerContext<TIn, TOut>
 | --- | --- |
 | [AfterPDF](IHtmlPdfServerContext-2/AfterPDF.md)(…) | Function to transform to a new output type after performing HTML to PDF conversion. |
 | [BeforePDF](IHtmlPdfServerContext-2/BeforePDF.md)(…) | Function to enrich HTML or Url before performing conversion. |
-| [FromHtml](IHtmlPdfServerContext-2/FromHtml.md)(…) | Register the HTML to be executed by the server in the execution context. This command disables data compression. |
-| [FromRazor&lt;T&gt;](IHtmlPdfServerContext-2/FromRazor.md)(…) | Execute the Razor HTML template with the data and register the HTML by the server to be executed by the server in the execution context.This command disables data compression. |
-| [FromUrl](IHtmlPdfServerContext-2/FromUrl.md)(…) | Register Page Url to be executed by the server in the execution context. This command disables data compression e minify. Registered with an explicit Url, subject to the server's configured URL policy (see [`UrlAllowPolicy`](./IHtmlPdfSrvBuilder/UrlAllowPolicy.md)) before navigation. |
+| [FromHtml](IHtmlPdfServerContext-2/FromHtml.md)(…) | Register the HTML to be executed by the server in the execution context. |
+| [FromRazor&lt;T&gt;](IHtmlPdfServerContext-2/FromRazor.md)(…) | Execute the Razor HTML template with the data and register the resulting HTML to be executed by the server in the execution context. |
+| [FromUrl](IHtmlPdfServerContext-2/FromUrl.md)(…) | Register Page Url to be executed by the server in the execution context. Registered with an explicit Url, subject to the server's configured URL policy (see [`UrlAllowPolicy`](./IHtmlPdfSrvBuilder/UrlAllowPolicy.md)) before navigation. |
 | [Run](IHtmlPdfServerContext-2/Run.md)(…) | Perform HTML to PDF conversion from context data sources |
 
 ### See Also

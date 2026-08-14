@@ -5,6 +5,8 @@
 ![GitHub license](https://img.shields.io/github/license/fracerqueira/HtmlPdfPlus)
 [![Build](https://github.com/FRACerqueira/HtmlPdfPlus/workflows/Build/badge.svg)](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/build.yml)
 [![Publish](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/publish.yml/badge.svg)](https://github.com/FRACerqueira/HtmlPdfPlus/actions/workflows/publish.yml)
+[![.NET](https://img.shields.io/badge/.NET-8%20%7C%209%20%7C%2010-512BD4)](https://dotnet.microsoft.com/)
+
 
 ## The best tool to convert HTML to PDF in .NET with a modern engine
 
@@ -431,7 +433,7 @@ The use of Playwright works very well for local testing on Windows machines foll
 Each sample is scoped to one clear lesson. For more examples, please refer to the [Samples directory](./samples):
 
 - **Server Only** - no client, no network, HTML/URL converted in the same process
-	- [OnlyAtServer/CustomHooks](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/CustomHooks) - `BeforePDF`/`AfterPDF` hooks (token substitution, custom file output), typed `TIn`/`TOut`, and `DisableOptionsHtmlToPdf.DisableCompress` for same-process performance
+	- [OnlyAtServer/CustomHooks](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/CustomHooks) - `BeforePDF`/`AfterPDF` hooks (token substitution, custom file output) and typed `TIn`/`TOut`
 	- [OnlyAtServer/QuickStart](./samples/ConsoleHtmlToPdfPlus.OnlyAtServer/QuickStart) - the minimal default setup: `byte[]` output, both `FromHtml` and `FromUrl` render modes, no hooks
 - **Client-Server (HTTP)** - client and server as separate processes over `HttpClient`
 	- [ClientSendHttp](./samples/ConsoleHtmlToPdfPlus.ClientSendHttp) - one client walking through all three content sources (`FromHtml`, `FromRazor` with a typed model, `FromUrl`) against the same generic server
