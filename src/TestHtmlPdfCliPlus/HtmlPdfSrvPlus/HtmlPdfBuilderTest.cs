@@ -93,15 +93,18 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         [Fact]
         public async Task Ensure_buid_With_NotBufferExternalTimeout()
         {
+            // The caller's own token (200ms) fires well before the pool's default
+            // AcquireTimeoutMs (5000ms) - this is caller-driven, not a genuine pool
+            // exhaustion, so AcquireAsync must propagate it instead of returning null (which
+            // would misreport it as PoolExhausted upstream).
             using var obj = new HtmlPdfBuilder();
             using var cts = new CancellationTokenSource();
             obj.PagesBuffer(1);
             await obj.BuildAsync("Teste");
             cts.CancelAfter(200);
             var firtpage = await obj.AcquireAsync(cts.Token);
-            var page = await obj.AcquireAsync(cts.Token);
             Assert.NotNull(firtpage);
-            Assert.Null(page);
+            await Assert.ThrowsAsync<OperationCanceledException>(() => obj.AcquireAsync(cts.Token));
         }
 
 

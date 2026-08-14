@@ -402,8 +402,15 @@ namespace HtmlPdfPlus.Server.Core
             {
                 await _bufferSignal.WaitAsync(acquireToken.Token).ConfigureAwait(false);
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException) when (!token.IsCancellationRequested)
             {
+                // The caller's own token (the overall request deadline, or an external
+                // cancellation) was not the cause - only this pool's own configured
+                // AcquireTimeoutMs elapsed with no page freed. A genuine pool-exhaustion
+                // signal. Checking the caller's token first (rather than this method's own
+                // ctsTimeout) means a near-simultaneous race is resolved in the caller's
+                // favor: anything caller-driven propagates instead of being misreported as
+                // pool exhaustion, so the caller can classify it as a timeout/cancellation.
                 LogMessage($"Not AvailableBuffer");
                 return null;
             }
