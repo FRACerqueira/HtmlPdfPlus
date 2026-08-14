@@ -25,5 +25,5 @@ I believe this work can still be improved! **For reference on this approach, see
 
 ### See Also
 * [Main README](../../README.md)
-* [Guide index](README.md)
+* [Guide index](index.md)
 * [ADR-006: single browser variant + Docker/NuGet version coupling](../adr/ADR006V01R01-keep-only-chromium-headless-shell-and-couple-its-docker-tag-to-the-nu-get-version.md)

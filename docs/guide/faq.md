@@ -24,5 +24,5 @@ A: See [Contributing](../../CONTRIBUTING.md).
 
 ### See Also
 * [Main README](../../README.md)
-* [Guide index](README.md)
+* [Guide index](index.md)
 * [How-To](howto/README.md)

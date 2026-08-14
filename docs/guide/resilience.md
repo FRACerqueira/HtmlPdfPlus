@@ -87,7 +87,7 @@ See the [MetricsObserver](../../samples/ConsoleHtmlToPdfPlus.MetricsObserver) sa
 
 ### See Also
 * [Main README](../../README.md)
-* [Guide index](README.md)
+* [Guide index](index.md)
 * [Architecture guide](architecture.md)
 * [How-To: customization and error handling](howto/customization-and-errors.md)
 * [Architecture Decision Records](../adr/indexadrs.md)

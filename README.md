@@ -473,7 +473,7 @@ HtmlPdfPlus documents its significant architectural and design decisions as Arch
 ## Documentation
 [**Top**](#table-of-contents)
 
-Deeper operational guides live under [docs/guide](docs/guide/README.md): [resilience and observability](docs/guide/resilience.md), [Docker](docs/guide/docker.md). Version history is in [CHANGELOG.md](./CHANGELOG.md).
+Deeper operational guides live under [docs/guide](docs/guide/index.md): [resilience and observability](docs/guide/resilience.md), [Docker](docs/guide/docker.md). Version history is in [CHANGELOG.md](./CHANGELOG.md).
 
 ## Code of Conduct
 [**Top**](#table-of-contents)

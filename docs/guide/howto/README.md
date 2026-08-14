@@ -16,4 +16,5 @@ For the design behind any of these, see the [architecture guide](../architecture
 
 ### See Also
 * [Main README](../../../README.md)
+* [Guide index](../index.md)
 * [Architecture guide](../architecture.md)
