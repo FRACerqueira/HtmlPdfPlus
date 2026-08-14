@@ -5,8 +5,6 @@
 // https://github.com/FRACerqueira/HtmlPdfPlus
 // ***************************************************************************************
 
-using HtmlPdfPlus;
-using Microsoft.AspNetCore.Mvc;
 using WebHtmlToPdf.CustomSaveFileServer;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,30 +28,26 @@ app.MapOpenApi();
 
 app.UseHttpsRedirection();
 
-app.MapPost("/SavePdf", async ([FromServices] IHtmlPdfServer<DataSavePDF,string> PDFserver, [FromBody] byte[] clienthtmltopdf, CancellationToken token) =>
-{
-    return await PDFserver
-        .ScopeRequest(clienthtmltopdf)
-        .BeforePDF( (html,inputparam, _) =>
+app.MapHtmlPdfEndpoints<DataSavePDF, string>(
+    "/SavePdf",
+    beforePdf: (html, inputparam, _) =>
+    {
+        if (inputparam is null)
         {
-            if (inputparam is null)
-            {
-                return Task.FromResult(html);
-            }
-            //performs replacement token substitution in the HTML source before performing the conversion
-            var aux = html.Replace("[{FileName}]", inputparam.Filename);
-            return Task.FromResult(aux);
-        })
-        .AfterPDF( (pdfbyte, inputparam, token) =>
+            return Task.FromResult(html);
+        }
+        //performs replacement token substitution in the HTML source before performing the conversion
+        var aux = html.Replace("[{FileName}]", inputparam.Filename);
+        return Task.FromResult(aux);
+    },
+    afterPdf: (pdfbyte, inputparam, token) =>
+    {
+        if (inputparam is null)
         {
-            if (inputparam is null)
-            {
-                return Task.FromResult(string.Empty);
-            }
-            //TODO : performs writing to file  after performing conversion
-            return Task.FromResult(inputparam.Filename);
-        })
-        .Run(token);
-}).Produces<HtmlPdfResult<string>>(200);
+            return Task.FromResult(string.Empty);
+        }
+        //TODO : performs writing to file  after performing conversion
+        return Task.FromResult(inputparam.Filename);
+    });
 
 app.Run();
