@@ -26,7 +26,7 @@ var pdfresult = await HtmlPdfClient.Create("MyClient").FromHtml(html).Run(httpCl
 var pdfresult = await HtmlPdfClient.Create("MyClient").FromHtml(html)
     .Run<TIn, TOut>(mySubmitFunc, inputParam, token);
 ```
-`mySubmitFunc` is `Func<byte[], TIn?, CancellationToken, Task<HtmlPdfResult<TOut>>>` - you own the wire entirely; the library only builds the request bytes and parses the result. On the receiving end, call `ScopeRequest(bytes).Run(...)` with whatever bytes your transport delivered. Samples: [ClientSendTcp](../../../samples/ConsoleHtmlToPdfPlus.ClientSendTcp) / [TcpServerHtmlToPdf.GenericServer](../../../samples/TcpServerHtmlToPdf.GenericServer).
+`mySubmitFunc` is `Func<byte[], CancellationToken, Task<HtmlPdfResult<TOut>>>` - it only receives the request bytes and a cancellation token; `inputParam` (`TIn?`) is a separate argument to `Run`, not part of the delegate. You own the wire entirely; the library only builds the request bytes and parses the result. On the receiving end, call `ScopeRequest(bytes).Run(...)` with whatever bytes your transport delivered. Samples: [ClientSendTcp](../../../samples/ConsoleHtmlToPdfPlus.ClientSendTcp) / [TcpServerHtmlToPdf.GenericServer](../../../samples/TcpServerHtmlToPdf.GenericServer).
 
 #### Call the server from a non-.NET client
 

@@ -15,7 +15,7 @@ namespace HtmlPdfPlus
     public interface IHtmlPdfServerContext<TIn,TOut>
     {
         /// <summary>
-        /// Register the HTML to be executed by the server in the execution context. This command disables data compression.
+        /// Register the HTML to be executed by the server in the execution context.
         /// </summary>
         /// <param name="html">The HTML content.</param>
         /// <param name="converttimeout">Timeout for conversion in milliseconds</param>
@@ -26,7 +26,7 @@ namespace HtmlPdfPlus
         IHtmlPdfServerContext<TIn, TOut> FromHtml(string html, int converttimeout = 30000, bool minify = true);
 
         /// <summary>
-        /// Register Page Url to be executed by the server in the execution context. This command disables data compression e minify.
+        /// Register Page Url to be executed by the server in the execution context.
         /// Registered with an explicit <see cref="RenderMode.Url"/>, subject to the server's
         /// configured URL policy (see <see cref="IHtmlPdfSrvBuilder.UrlAllowPolicy(Func{Uri, bool})"/>) before navigation.
         /// </summary>
@@ -37,7 +37,7 @@ namespace HtmlPdfPlus
         IHtmlPdfServerContext<TIn, TOut> FromUrl(Uri value, int converttimeout = 30000);
 
         /// <summary>
-        /// Execute the Razor HTML template with the data and register the HTML by the server  to be executed by the server in the execution context.This command disables data compression.
+        /// Execute the Razor HTML template with the data and register the resulting HTML to be executed by the server in the execution context.
         /// </summary>
         /// <param name="templatetext">Razor template source.</param>
         /// <param name="model">Data to apply to the template.</param>
