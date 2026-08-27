@@ -16,15 +16,17 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
         [InlineData(LogLevel.Critical)]
         [InlineData(LogLevel.Warning)]
         [InlineData(LogLevel.Error)]
-        public void Ensure_Run_Error_When_InvalidLogLevel(LogLevel level)
+        [InlineData(LogLevel.Information)]
+        [InlineData(LogLevel.Debug)]
+        [InlineData(LogLevel.Trace)]
+        public void Ensure_Logger_AcceptsAnyLogLevel_WithoutThrowing(LogLevel level)
         {
-           var logger = new NullLogger<string>();
+            var logger = new NullLogger<string>();
 
-            Assert.Throws<ArgumentException>(() =>
-            {
-                HtmlPdfClient.Create("Teste")
-                    .Logger(logger,level);
-            });
+            var client = HtmlPdfClient.Create("Teste")
+                .Logger(logger, level);
+
+            Assert.NotNull(client);
         }
 
         [Theory]

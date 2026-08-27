@@ -72,21 +72,47 @@ namespace Microsoft.Extensions.DependencyInjection
 
             serviceCollection.AddSingleton<IHtmlPdfServer<TIn, TOut>>(service =>
             {
-                var appLifetime = service.GetService<IHostApplicationLifetime>();
                 var cfg = new HtmlPdfBuilder(service.GetService<ILoggerFactory>());
-                if (config is null)
-                {
-                    cfg.Logger(LogLevel.Debug, sourceAlias);
-                }
-                else
-                {
-                    config.Invoke(cfg);
-                }
-                appLifetime?.ApplicationStopping.Register(cfg.Dispose);
+                config?.Invoke(cfg);
+                // Resolve the final sourceAlias BEFORE creating our own default logger below - a
+                // caller's own config callback may already have set up a custom-category logger
+                // (rescued here from cfg.LogCategoryName), otherwise fall back to a generated,
+                // guaranteed-unique alias. Every metric this builder reports is tagged with
+                // sourcealias, so leaving it empty when multiple registrations share the same
+                // fallback would make them indistinguishable in aggregate.
                 if (string.IsNullOrEmpty(sourceAlias) && !string.IsNullOrEmpty(cfg.LogCategoryName))
                 {
                     sourceAlias = cfg.LogCategoryName;
                 }
+                if (string.IsNullOrEmpty(sourceAlias))
+                {
+                    sourceAlias = $"HtmlPdfPlus-{Guid.NewGuid():N}";
+                }
+                if (cfg.Log is null && !cfg.DisableOptions.HasFlag(DisableOptionsHtmlToPdf.DisableLogging))
+                {
+                    // Same default regardless of whether a config callback was supplied - only
+                    // AddHtmlPdfService() (no config) used to get this; any config callback that
+                    // didn't itself call .Logger(...) silently got no logging at all. Uses the
+                    // now-fully-resolved sourceAlias (not the possibly-empty parameter) as the
+                    // logger's category, so a category-scoped log-level override can actually
+                    // target this instance instead of always landing on an empty category.
+                    cfg.Logger(LogLevel.Debug, sourceAlias);
+                }
+                // Disposal is primarily left to the DI container itself (it tracks and disposes
+                // every IDisposable singleton it creates, including via a factory registration like
+                // this one) - that happens once Dispose()/DisposeAsync() is actually called on the
+                // ServiceProvider, which for the conventional app.Run()/RunAsync() hosting pattern
+                // occurs after Generic Host's graceful drain, not before it (an explicit
+                // ApplicationStopping hook fired too early here, tearing down the shared browser/
+                // pool mid-request - see the regression test guarding that removal). Calling
+                // StopAsync() alone, without ever disposing the container, does NOT trigger
+                // container disposal - the ApplicationStopped registration below is a backstop for
+                // exactly that gap. ApplicationStopped fires only after the graceful drain
+                // completes (unlike ApplicationStopping), so it does not reintroduce the
+                // mid-request teardown this design avoided; HtmlPdfBuilder.Dispose() is idempotent,
+                // so running both this hook and container disposal is safe.
+                var appLifetime = service.GetService<IHostApplicationLifetime>();
+                appLifetime?.ApplicationStopped.Register(cfg.Dispose);
                 return cfg.BuildAsync<TIn, TOut>(sourceAlias).Result;
             });
             return serviceCollection;

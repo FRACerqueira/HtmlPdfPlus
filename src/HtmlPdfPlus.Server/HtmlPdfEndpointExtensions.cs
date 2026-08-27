@@ -110,6 +110,7 @@ namespace Microsoft.AspNetCore.Routing
             return route
                 .Produces<ErrorInfo>(StatusCodes.Status400BadRequest)
                 .Produces<ErrorInfo>(StatusCodes.Status500InternalServerError)
+                .Produces<ErrorInfo>(StatusCodes.Status502BadGateway)
                 .Produces<ErrorInfo>(StatusCodes.Status503ServiceUnavailable)
                 .Produces<ErrorInfo>(StatusCodes.Status504GatewayTimeout);
         }

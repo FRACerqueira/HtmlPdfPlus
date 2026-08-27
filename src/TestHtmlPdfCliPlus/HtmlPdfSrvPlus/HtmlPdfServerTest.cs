@@ -6,6 +6,7 @@
 
 using HtmlPdfPlus;
 using HtmlPdfPlus.Server.Core;
+using Microsoft.Playwright;
 
 namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
 {
@@ -305,6 +306,30 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             Assert.True(result.ElapsedTime.TotalMilliseconds > 0);
             Assert.NotNull(result.OutputData);
             Assert.Equal("Test",result.OutputData);
+        }
+
+        [Fact]
+        public void ClassifyGeneratePdfException_PlaywrightException_ReturnsRetryableRenderFailed()
+        {
+            // Arrange
+            var ex = new PlaywrightException("Target page, context or browser has been closed");
+            // Act
+            var error = HtmlPdfServer<object, byte[]>.ClassifyGeneratePdfException(ex);
+            // Assert
+            Assert.Equal(ErrorCode.RenderFailed, error.Code);
+            Assert.True(error.Retryable);
+        }
+
+        [Fact]
+        public void ClassifyGeneratePdfException_NonPlaywrightException_FallsBackToGenericClassification()
+        {
+            // Arrange
+            var ex = new InvalidOperationException("boom");
+            // Act
+            var error = HtmlPdfServer<object, byte[]>.ClassifyGeneratePdfException(ex);
+            // Assert - unchanged behavior for every failure kind that isn't a live browser/render failure.
+            Assert.Equal(ErrorCode.InvalidRequest, error.Code);
+            Assert.False(error.Retryable);
         }
     }
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.

@@ -25,7 +25,6 @@ An instance of [`IHtmlPdfServerContext`](../IHtmlPdfServerContext-2.md).
 | exception | condition |
 | --- | --- |
 | ArgumentNullException | Thrown when the HTML content is null. |
-| ArgumentException | Thrown when the timeout value is invalid. |
 
 ### See Also
 

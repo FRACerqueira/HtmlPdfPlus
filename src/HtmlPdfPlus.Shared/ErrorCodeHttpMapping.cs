@@ -23,7 +23,11 @@ namespace HtmlPdfPlus
         {
             ErrorCode.InvalidRequest => 400,
             ErrorCode.Timeout => 504,
-            ErrorCode.Canceled => 400,
+            // Canceled is always Retryable:true (see ErrorInfo.FromException) - a 400 would tell
+            // a caller that only reads HTTP semantics (a proxy, a non-JSON-parsing client) not to
+            // retry, contradicting that. 503 (temporary condition) matches the retryable intent
+            // without reusing 504, which is reserved for the semantically distinct Timeout.
+            ErrorCode.Canceled => 503,
             ErrorCode.PoolExhausted => 503,
             ErrorCode.RenderFailed => 502,
             ErrorCode.Internal => 500,

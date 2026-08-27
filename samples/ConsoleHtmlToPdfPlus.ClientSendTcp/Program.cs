@@ -120,8 +120,9 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
                 cts.CancelAfter(TimeoutWaitResponse);
                 //wait response to tcpserver (trigger by DataReceivedTcp release enter Semaphore)
                 await SemaphoreSlim.WaitAsync(TimeoutWaitResponse, token);
-                var aux = JsonSerializer.Deserialize<HtmlPdfResult<byte[]>>(Encoding.UTF8.GetString(ResultTcp!))!;
-                return aux.DecompressOutputData();
+                // A byte[] output is the raw PDF itself, never app-level compressed (see ADR-003) -
+                // no decompression step here, unlike before that ADR.
+                return JsonSerializer.Deserialize<HtmlPdfResult<byte[]>>(Encoding.UTF8.GetString(ResultTcp!))!;
             }
             catch (Exception ex)
             {

@@ -18,11 +18,12 @@ public record HtmlPdfHealthStatus
 | [AvailablePages](HtmlPdfHealthStatus/AvailablePages.md) { get; set; } | The number of pages currently available in the pool. |
 | [BrowserConnected](HtmlPdfHealthStatus/BrowserConnected.md) { get; set; } | Whether the underlying browser process is currently connected. |
 | [Healthy](HtmlPdfHealthStatus/Healthy.md) { get; } | Gets a value indicating whether this instance can currently accept and process requests. |
+| [PoolStarved](HtmlPdfHealthStatus/PoolStarved.md) { get; set; } | Whether the most recent recovery reconnected the browser but could not create a single usable page. `false` by default for callers/tests that predate this field. |
 | [Recovering](HtmlPdfHealthStatus/Recovering.md) { get; set; } | Whether the browser is currently being restarted after an unexpected disconnect. |
 
 ### Remarks
 
-This is deliberately separate from per-request backpressure (PoolExhausted): a momentarily saturated pool with [`AvailablePages`](./HtmlPdfHealthStatus/AvailablePages.md) at zero is still healthy and should keep receiving traffic, retried via the standard `Retry-After` signal - only a disconnected or actively recovering browser makes this instance unable to make progress at all.
+This is deliberately separate from per-request backpressure (PoolExhausted): a momentarily saturated pool with [`AvailablePages`](./HtmlPdfHealthStatus/AvailablePages.md) at zero is still healthy and should keep receiving traffic, retried via the standard `Retry-After` signal. [`PoolStarved`](./HtmlPdfHealthStatus/PoolStarved.md) is a different condition: unlike a momentarily saturated pool, which self-corrects as soon as any in-flight request returns its page, a pool that came back from recovery with zero pages cannot self-correct - no request can ever acquire a page in the first place to later return one.
 
 ### See Also
 

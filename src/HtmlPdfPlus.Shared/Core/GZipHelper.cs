@@ -74,6 +74,13 @@ namespace HtmlPdfPlus.Shared.Core
                 // Our own size-limit rejection - propagate the specific message unchanged.
                 throw;
             }
+            catch (OperationCanceledException)
+            {
+                // A genuine cancellation (caller's token fired mid-loop) must propagate as-is so
+                // callers can classify it as Canceled/retryable, instead of being wrapped into an
+                // InvalidOperationException and misreported as a malformed/non-retryable request.
+                throw;
+            }
             catch (Exception ex)
             {
                 // Log the exception

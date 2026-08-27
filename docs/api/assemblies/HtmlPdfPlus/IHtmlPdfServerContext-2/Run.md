@@ -16,15 +16,7 @@ public Task<HtmlPdfResult<TOut>> Run(CancellationToken token = default)
 
 ### Return Value
 
-An instance of HtmlPdfResult.
-
-### Exceptions
-
-| exception | condition |
-| --- | --- |
-| ArgumentException | Thrown when the empty source Html or Url. |
-| ArgumentException | Thrown when *TOut* is invalid. |
-| ArgumentException | Thrown when [`ScopeRequest`](../IHtmlPdfServer-2/ScopeRequest.md) is invalid. |
+An instance of HtmlPdfResult. Any invalid request (empty source Html or Url, a malformed [`ScopeRequest`](../IHtmlPdfServer-2/ScopeRequest.md) payload, an out-of-range page config value) is reported as a failure result with a structured ErrorInfo/ErrorCode (see ADR-001) - never thrown.
 
 ### See Also
 

@@ -53,10 +53,11 @@ namespace Microsoft.AspNetCore.Routing
             endpoints.MapGet(livePattern, ([FromServices] IHtmlPdfServer<TIn, TOut> pdfServer) => Results.Ok())
                 .Produces(StatusCodes.Status200OK);
 
-            // Readiness: reflects renderer health (browser connected, not mid-restart), not
-            // per-request saturation - a momentarily empty pool is still healthy and should keep
-            // receiving traffic, backed off via the standard PoolExhausted/Retry-After signal
-            // instead of being pulled out of rotation here.
+            // Readiness: reflects renderer health (browser connected, not mid-restart, and the
+            // pool not starved after a recovery that came back with zero usable pages), not
+            // per-request saturation - a momentarily empty (but not starved) pool is still
+            // healthy and should keep receiving traffic, backed off via the standard
+            // PoolExhausted/Retry-After signal instead of being pulled out of rotation here.
             endpoints.MapGet(readyPattern, ([FromServices] IHtmlPdfServer<TIn, TOut> pdfServer) =>
             {
                 if (pdfServer is not HtmlPdfServer<TIn, TOut> concrete)
