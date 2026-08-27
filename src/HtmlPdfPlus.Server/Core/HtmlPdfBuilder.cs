@@ -32,6 +32,13 @@ namespace HtmlPdfPlus.Server.Core
         private int _recovering;
         private int _poolStarved;
         private int _browserGeneration;
+
+        // Serializes every _poolStarved transition against a live BufferLength read, instead of
+        // each writer acting on a snapshot taken before it decided to write. Without this, a
+        // failed replenish that saw BufferLength==0 could still write "starved" AFTER a
+        // concurrent successful replenish already enqueued a page and written "not starved" -
+        // latching a false-unhealthy /readyz on a pool that can actually serve requests.
+        private readonly object _poolStarvedLock = new();
         private Func<Uri, bool> _urlAllowPolicy = DefaultUrlPolicy;
         private long _maxDecompressedRequestSize = 52_428_800;
         private readonly ConcurrentQueue<IPage> _availableBuffer = new();
@@ -461,8 +468,17 @@ namespace HtmlPdfPlus.Server.Core
                     // pages means no request can ever acquire one to later return one). Surface
                     // it as unhealthy instead of falsely reporting readiness, and log it above
                     // Information so it survives a host's default minimum level even though this
-                    // instance's own configured LevelLog may be lower.
-                    Volatile.Write(ref _poolStarved, 1);
+                    // instance's own configured LevelLog may be lower. Re-check BufferLength live
+                    // under the lock rather than trusting `refilled == 0` alone, in case a
+                    // concurrent request-return replenish (TryReplenishBufferAsync) added a page
+                    // in the meantime.
+                    lock (_poolStarvedLock)
+                    {
+                        if (BufferLength == 0)
+                        {
+                            Volatile.Write(ref _poolStarved, 1);
+                        }
+                    }
                     LogMessage($"Browser recovered but the pool could not be refilled (0/{_pagesbuffer}) - marking PoolStarved", LogLevel.Error);
                 }
                 else
@@ -524,8 +540,7 @@ namespace HtmlPdfPlus.Server.Core
                 LogMessage($"RestoreAvailableBuffer: page.CloseAsync failed: {ex}", LogLevel.Warning);
             }
 
-            var isCurrentGeneration = _pageGenerations.TryGetValue(page, out var pageGeneration)
-                && pageGeneration == Volatile.Read(ref _browserGeneration);
+            var isCurrentGeneration = IsCurrentGeneration(page);
             _pageGenerations.TryRemove(page, out _);
             if (!isCurrentGeneration)
             {
@@ -535,11 +550,35 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         /// <summary>
+        /// Replenishes the pool for a page that is still in use (the stuck-render branch of
+        /// <c>HtmlPdfServer.GeneratePDF</c>'s `finally`, where the page cannot be closed/removed
+        /// from <see cref="_pageGenerations"/> yet - see <see cref="CloseWhenSettled"/>) - unless
+        /// it belongs to a browser generation that has since crashed and been replaced, in which
+        /// case recovery's own refill already restored capacity, so replenishing here would
+        /// silently overshoot PagesBuffer (the same reason <see cref="RestoreAvailableBuffer"/>
+        /// gates its own replenish on the page's generation).
+        /// </summary>
+        internal async Task ReplenishIfCurrentGenerationAsync(IPage page)
+        {
+            if (!IsCurrentGeneration(page))
+            {
+                return;
+            }
+            await TryReplenishBufferAsync().ConfigureAwait(false);
+        }
+
+        private bool IsCurrentGeneration(IPage page)
+        {
+            return _pageGenerations.TryGetValue(page, out var pageGeneration)
+                && pageGeneration == Volatile.Read(ref _browserGeneration);
+        }
+
+        /// <summary>
         /// Best-effort variant of <see cref="ReplenishBufferAsync"/> for the request-return paths
-        /// (<see cref="RestoreAvailableBuffer"/> and the stuck-render branch in
-        /// <c>HtmlPdfServer.GeneratePDF</c>'s `finally`), where a failure must never propagate and
-        /// override whatever outcome the request itself already produced. Logs the failure and
-        /// marks the pool starved if it leaves zero pages available, instead of throwing.
+        /// (<see cref="RestoreAvailableBuffer"/> and <see cref="ReplenishIfCurrentGenerationAsync"/>),
+        /// where a failure must never propagate and override whatever outcome the request itself
+        /// already produced. Logs the failure and marks the pool starved if it leaves zero pages
+        /// available, instead of throwing.
         /// </summary>
         internal async Task TryReplenishBufferAsync()
         {
@@ -550,9 +589,14 @@ namespace HtmlPdfPlus.Server.Core
             catch (Exception ex)
             {
                 LogMessage($"Pool replenish failed on request return: {ex}", LogLevel.Error);
-                if (BufferLength == 0)
+                // See _poolStarvedLock's comment: check BufferLength live under the same lock
+                // ReplenishBufferAsync's success path uses, instead of acting on this snapshot.
+                lock (_poolStarvedLock)
                 {
-                    Volatile.Write(ref _poolStarved, 1);
+                    if (BufferLength == 0)
+                    {
+                        Volatile.Write(ref _poolStarved, 1);
+                    }
                 }
             }
         }
@@ -569,7 +613,13 @@ namespace HtmlPdfPlus.Server.Core
             _availableBuffer.Enqueue(page);
             _bufferSignal.Release();
             // Any successful add proves the pool isn't stuck starved anymore (see IsPoolStarved).
-            Volatile.Write(ref _poolStarved, 0);
+            // Serialized against the "mark starved" writers above via _poolStarvedLock so a
+            // failure that already committed to writing 1 cannot land after this 0 and latch a
+            // false-unhealthy state on a pool that just proved it can still serve requests.
+            lock (_poolStarvedLock)
+            {
+                Volatile.Write(ref _poolStarved, 0);
+            }
             LogMessage($"RestoreAvailableBuffer to {BufferLength}");
         }
 

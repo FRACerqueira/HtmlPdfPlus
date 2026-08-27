@@ -265,6 +265,58 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             Assert.Equal(2, obj.BufferLength);
         }
 
+        [Fact]
+        public async Task Ensure_StuckRenderReplenish_DoesNotOvershootPagesBuffer_When_PageBelongsToStaleGeneration()
+        {
+            // Given: a page checked out (buffer at 0) right before the browser dies - the same
+            // setup GeneratePDF's stuck-render `finally` branch encounters when a page's PdfAsync
+            // call is still running past its own deadline at the moment of the crash.
+            using var obj = new HtmlPdfBuilder();
+            obj.PagesBuffer(2);
+            await obj.BuildAsync("Teste");
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            var stalePage = await obj.AcquireAsync(cts.Token);
+
+            // When: the browser disconnects unexpectedly and recovery refills the pool for the
+            // NEW browser, then the stuck-render branch replenishes for the page that was still
+            // in flight on the OLD (now dead) browser - exactly what ReplenishIfCurrentGenerationAsync
+            // is meant to guard, mirroring RestoreAvailableBuffer's own generation gate.
+            await obj.CurrentBrowser!.CloseAsync();
+            while (obj.CurrentBrowser is null || !obj.CurrentBrowser.IsConnected || obj.BufferLength < 2)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+                await Task.Delay(50, cts.Token);
+            }
+            Assert.Equal(2, obj.BufferLength);
+
+            await obj.ReplenishIfCurrentGenerationAsync(stalePage!);
+
+            // Then: replenishing for a stale-generation page must not add on top of the capacity
+            // recovery already restored for the current browser - the pool stays at PagesBuffer,
+            // it does not silently overshoot.
+            Assert.Equal(2, obj.BufferLength);
+        }
+
+        [Fact]
+        public async Task Ensure_StuckRenderReplenish_Replenishes_When_PageBelongsToCurrentGeneration()
+        {
+            // Given: a page still checked out from the CURRENT (healthy) browser - no crash/recovery
+            // involved, just an ordinary stuck-render timeout on an otherwise-fine browser.
+            using var obj = new HtmlPdfBuilder();
+            obj.PagesBuffer(2);
+            await obj.BuildAsync("Teste");
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            var currentPage = await obj.AcquireAsync(cts.Token);
+            Assert.Equal(1, obj.BufferLength);
+
+            // When: the stuck-render branch replenishes for it.
+            await obj.ReplenishIfCurrentGenerationAsync(currentPage!);
+
+            // Then: unlike the stale-generation case, this page's generation matches the current
+            // browser, so it must actually restore capacity.
+            Assert.Equal(2, obj.BufferLength);
+        }
+
         [Theory]
         [InlineData("http://10.0.0.1", false)]
         [InlineData("http://172.16.5.4", false)]

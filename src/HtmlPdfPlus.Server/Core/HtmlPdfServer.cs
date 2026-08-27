@@ -484,12 +484,17 @@ namespace HtmlPdfPlus.Server.Core
                         // above could not abort it - it may still be running on this page.
                         // Replenish the pool immediately with a fresh page, and only close
                         // this one once that work actually settles, instead of closing a page
-                        // that is still in use underneath it. TryReplenishBufferAsync never
-                        // throws, so CloseWhenSettled always runs regardless of whether the
-                        // replenish itself succeeded - a pool-bookkeeping failure here must not
-                        // leave this still-running page permanently unscheduled for cleanup, nor
-                        // override whatever exception is already propagating from the try block.
-                        await PdfSrvBuilder!.TryReplenishBufferAsync();
+                        // that is still in use underneath it. ReplenishIfCurrentGenerationAsync
+                        // skips the replenish if this page's browser generation has since
+                        // crashed and been replaced (recovery's own refill already restored
+                        // that capacity - replenishing here too would silently overshoot
+                        // PagesBuffer, the same reason RestoreAvailableBuffer gates its own
+                        // replenish call). It never throws, so CloseWhenSettled always runs
+                        // regardless of whether the replenish itself ran or succeeded - a
+                        // pool-bookkeeping failure here must not leave this still-running page
+                        // permanently unscheduled for cleanup, nor override whatever exception
+                        // is already propagating from the try block.
+                        await PdfSrvBuilder!.ReplenishIfCurrentGenerationAsync(page);
                         PdfSrvBuilder!.CloseWhenSettled(page, taskpdf);
                     }
                     else
