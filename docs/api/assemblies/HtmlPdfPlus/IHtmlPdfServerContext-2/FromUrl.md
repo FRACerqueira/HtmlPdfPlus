@@ -19,12 +19,6 @@ public IHtmlPdfServerContext FromUrl(Uri value, int converttimeout = 30000)
 
 An instance of [`IHtmlPdfServerContext`](../IHtmlPdfServerContext-2.md).
 
-### Exceptions
-
-| exception | condition |
-| --- | --- |
-| ArgumentException | Thrown when the timeout value is invalid. |
-
 ### See Also
 
 * interface [IHtmlPdfServerContext&lt;TIn,TOut&gt;](../IHtmlPdfServerContext-2.md)

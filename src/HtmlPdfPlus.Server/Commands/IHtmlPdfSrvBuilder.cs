@@ -67,10 +67,9 @@ namespace HtmlPdfPlus
         /// <summary>
         /// Set Logger integration.
         /// </summary>
-        /// <param name="logLevel">Log level. The valid levels are: None, Trace, Debug (default), Info. <see cref="LogLevel"/>.</param>
+        /// <param name="logLevel">Log level. Default is <see cref="LogLevel.Debug"/>. <see cref="LogLevel"/>.</param>
         /// <param name="categoryName">Name of category logger. Default is "HtmlPdfServer".</param>
         /// <returns><see cref="IHtmlPdfSrvBuilder"/> instance.</returns>
-        /// <exception cref="ArgumentException">Thrown when the log level or category name is invalid.</exception>
         IHtmlPdfSrvBuilder Logger(LogLevel logLevel, string categoryName = "HtmlPdfServer");
 
         /// <summary>

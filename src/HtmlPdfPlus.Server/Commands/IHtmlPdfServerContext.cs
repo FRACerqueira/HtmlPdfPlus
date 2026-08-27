@@ -22,7 +22,6 @@ namespace HtmlPdfPlus
         /// <param name="minify"><c>True</c> to minify html. Default value is <c>true</c></param>
         /// <returns>An instance of <see cref="IHtmlPdfServerContext{TIn,TOut}"/>.</returns>
         /// <exception cref="ArgumentNullException">Thrown when the HTML content is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when the timeout value is invalid.</exception>
         IHtmlPdfServerContext<TIn, TOut> FromHtml(string html, int converttimeout = 30000, bool minify = true);
 
         /// <summary>
@@ -33,7 +32,6 @@ namespace HtmlPdfPlus
         /// <param name="value">The url</param>
         /// <param name="converttimeout">Timeout for conversion in milliseconds</param>
         /// <returns>An instance of <see cref="IHtmlPdfServerContext{TIn,TOut}"/>.</returns>
-        /// <exception cref="ArgumentException">Thrown when the timeout value is invalid.</exception>
         IHtmlPdfServerContext<TIn, TOut> FromUrl(Uri value, int converttimeout = 30000);
 
         /// <summary>
@@ -45,8 +43,7 @@ namespace HtmlPdfPlus
         /// <param name="minify"><c>True</c> to minify html. Default value is <c>true</c></param>
         /// <typeparam name="T">Type of data model.</typeparam>
         /// <returns>An instance of <see cref="IHtmlPdfServerContext{TIn,TOut}"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the template or model is null.</exception>
-        /// <exception cref="ArgumentException">Thrown when the timeout value is invalid.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="templatetext"/> is null or empty.</exception>
         IHtmlPdfServerContext<TIn,TOut> FromRazor<T>(string templatetext, T model, int converttimeout = 30000, bool minify = true);
 
         /// <summary>
@@ -69,10 +66,12 @@ namespace HtmlPdfPlus
         /// Perform HTML to PDF conversion from context data sources
         /// </summary>
         /// <param name="token">The <see cref="CancellationToken"/> to perform the conversion.</param>
-        /// <returns>An instance of <see cref="HtmlPdfResult{TOut}"/>.</returns>
-        /// <exception cref="ArgumentException">Thrown when the empty source Html or Url.</exception>
-        /// <exception cref="ArgumentException">Thrown when <typeparamref name="TOut"/> is invalid.</exception>
-        /// <exception cref="ArgumentException">Thrown when <see cref="IHtmlPdfServer{TIn, TOut}.ScopeRequest(byte[])"/> is invalid.</exception>
+        /// <returns>
+        /// An instance of <see cref="HtmlPdfResult{TOut}"/>. Any invalid request (empty source Html
+        /// or Url, a malformed <see cref="IHtmlPdfServer{TIn, TOut}.ScopeRequest(byte[])"/> payload,
+        /// an out-of-range page config value) is reported as a failure result with a structured
+        /// <see cref="ErrorInfo"/>/<see cref="ErrorCode"/> (see ADR-001) - never thrown.
+        /// </returns>
         Task<HtmlPdfResult<TOut>> Run(CancellationToken token = default);
     }
 }

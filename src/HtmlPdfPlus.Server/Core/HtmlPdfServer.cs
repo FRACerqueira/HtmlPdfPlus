@@ -53,7 +53,8 @@ namespace HtmlPdfPlus.Server.Core
             return new HtmlPdfHealthStatus(
                 PdfSrvBuilder.CurrentBrowser?.IsConnected ?? false,
                 PdfSrvBuilder.IsRecovering,
-                PdfSrvBuilder.BufferLength);
+                PdfSrvBuilder.BufferLength,
+                PdfSrvBuilder.IsPoolStarved);
         }
 
         /// <inheritdoc />
@@ -294,7 +295,7 @@ namespace HtmlPdfPlus.Server.Core
                 {
                     cts.Cancel(); // cancel pending task
                     LogMessage($"Error Generate PDF from browser after {sw.Elapsed} : {ex}");
-                    return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
+                    return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ClassifyGeneratePdfException(ex));
                 }
             }
 
@@ -372,6 +373,22 @@ namespace HtmlPdfPlus.Server.Core
             return new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout)(object)bytespdf, null);
         }
 
+        /// <summary>
+        /// Classifies an exception raised while navigating/rendering (<see cref="GeneratePDF"/>).
+        /// A live Playwright/browser failure (the page or its browser died mid-render - the exact
+        /// condition <see cref="HtmlPdfBuilder"/>'s automatic recovery exists for) is reported as
+        /// <see cref="ErrorCode.RenderFailed"/> and retryable, instead of falling through
+        /// <see cref="ErrorInfo.FromException(Exception)"/>'s default arm to a non-retryable
+        /// <see cref="ErrorCode.Internal"/> that gives a caller no reason to try again. Every other
+        /// failure kind keeps the generic classification.
+        /// </summary>
+        internal static ErrorInfo ClassifyGeneratePdfException(Exception ex)
+        {
+            return ex is PlaywrightException
+                ? new ErrorInfo(ErrorCode.RenderFailed, ex.Message, retryable: true)
+                : ErrorInfo.FromException(ex);
+        }
+
         private async Task<byte[]?> GeneratePDF(bool isurl, RequestHtmlPdf<Tin> request, long remaindtime, CancellationToken token)
         {
             IPage? page = null;
@@ -441,7 +458,13 @@ namespace HtmlPdfPlus.Server.Core
                 {
                     if (taskpdf.IsFaulted)
                     {
-                        resultpdf = [];
+                        // The browser/page died mid-render (e.g. a Chromium crash) - throw the real
+                        // exception instead of silently collapsing to an empty result, so it reaches
+                        // the catch below and gets classified via ClassifyGeneratePdfException
+                        // (PlaywrightException -> RenderFailed/retryable) deterministically, instead
+                        // of racily depending on whether a downstream pool-cleanup call happens to
+                        // also throw before generation gets bumped.
+                        throw taskpdf.Exception!.GetBaseException();
                     }
                 }
             }
@@ -461,8 +484,12 @@ namespace HtmlPdfPlus.Server.Core
                         // above could not abort it - it may still be running on this page.
                         // Replenish the pool immediately with a fresh page, and only close
                         // this one once that work actually settles, instead of closing a page
-                        // that is still in use underneath it.
-                        await PdfSrvBuilder!.ReplenishBufferAsync();
+                        // that is still in use underneath it. TryReplenishBufferAsync never
+                        // throws, so CloseWhenSettled always runs regardless of whether the
+                        // replenish itself succeeded - a pool-bookkeeping failure here must not
+                        // leave this still-running page permanently unscheduled for cleanup, nor
+                        // override whatever exception is already propagating from the try block.
+                        await PdfSrvBuilder!.TryReplenishBufferAsync();
                         PdfSrvBuilder!.CloseWhenSettled(page, taskpdf);
                     }
                     else
@@ -507,6 +534,15 @@ namespace HtmlPdfPlus.Server.Core
                 case LogLevel.Debug:
                     logMessageForDbg(PdfSrvBuilder.Log!, SourceAlias, message, null);
                     break;
+                case LogLevel.Warning:
+                    logMessageForWrn(PdfSrvBuilder.Log!, SourceAlias, message, null);
+                    break;
+                case LogLevel.Error:
+                    logMessageForErr(PdfSrvBuilder.Log!, SourceAlias, message, null);
+                    break;
+                case LogLevel.Critical:
+                    logMessageForCrt(PdfSrvBuilder.Log!, SourceAlias, message, null);
+                    break;
             }
         }
 
@@ -514,5 +550,8 @@ namespace HtmlPdfPlus.Server.Core
         private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
         private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
         private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForWrn = LoggerMessage.Define<string, string>(LogLevel.Warning, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForErr = LoggerMessage.Define<string, string>(LogLevel.Error, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForCrt = LoggerMessage.Define<string, string>(LogLevel.Critical, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
     }
 }

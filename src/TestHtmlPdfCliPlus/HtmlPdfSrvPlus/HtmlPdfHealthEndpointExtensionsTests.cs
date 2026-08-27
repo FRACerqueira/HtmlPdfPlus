@@ -48,6 +48,17 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         }
 
         [Fact]
+        public void HtmlPdfHealthStatus_IsUnhealthy_WhenPoolStarved_EvenIfConnectedAndNotRecovering()
+        {
+            // Unlike a momentarily saturated pool (AvailablePages == 0, still healthy - see the
+            // test above), a pool that came back from recovery with zero pages cannot
+            // self-correct on its own: no request can ever acquire a page in the first place to
+            // later return one, so it must not be reported as ready.
+            var status = new HtmlPdfHealthStatus(BrowserConnected: true, Recovering: false, AvailablePages: 0, PoolStarved: true);
+            Assert.False(status.Healthy);
+        }
+
+        [Fact]
         public async Task Given_HealthyBuilder_When_LiveAndReadyEndpointsCalled_Then_BothReturn200()
         {
             // Given: a real, freshly built browser/pool.

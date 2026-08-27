@@ -34,13 +34,32 @@ the HTTP contract directly needs to be updated together with the packages.
   exporter.
 - Automatic browser recovery: if the underlying Chromium process dies, the
   page pool detects it and respawns the browser instead of failing every
-  subsequent request.
+  subsequent request, retrying the relaunch itself (3 attempts, 1s/2s
+  backoff, ~93s worst case) instead of giving up after a single failure.
+- `HtmlPdfHealthStatus.PoolStarved`: a recovery that reconnects the browser
+  but cannot create a single usable page is now reported as unhealthy
+  (`/readyz` 503) instead of falsely reporting ready.
+- `ErrorCode.RenderFailed` is now actually produced (502, retryable) for a
+  browser/page failure mid-render, instead of falling through to a
+  non-retryable `Internal`/500 - the exact case automatic recovery exists to
+  make succeed on retry.
+- `Logger()` (client and server) now accepts `Warning`/`Error`/`Critical`,
+  and a fully-exhausted recovery failure is logged at `Error` so it survives
+  a host's default minimum log level - both used to be structurally capped
+  at `Information`/`Debug`, so a failure like this could be invisible by
+  default.
+- A `HostApplicationLifetime.ApplicationStopped` registration now disposes
+  the server's browser/pool as a backstop, in addition to normal DI-container
+  disposal, so hosting patterns that call `StopAsync()` without ever
+  disposing the container don't leak the Chromium process.
 - Java client sample (`samples/JavaClientSendHttp`) demonstrating the wire
   format from outside .NET with no build tool or dependency.
 - Samples for the new resilience features: `RetryAfterBackpressure` and
   `MetricsObserver`.
 
 ### Changed
+- **Breaking:** `Canceled` is now HTTP-mapped to 503 (was 400), matching its
+  `Retryable: true` semantics and staying distinct from `Timeout`'s 504.
 - **Breaking:** the HTTP response for a `byte[]` output is now the raw PDF
   body (`application/pdf`), not a JSON envelope with a base64
   string. Non-2xx responses now carry the structured `ErrorInfo` contract
@@ -67,6 +86,15 @@ the HTTP contract directly needs to be updated together with the packages.
 ### Fixed
 - A timeout race that could leave `HtmlPdfResult` `null` or falsely
   reported as successful.
+- `IHtmlPdfClient.Run(HttpClient, string endpoint, ...)`'s `endpoint`
+  parameter is now nullable, matching the implementation (and the 2-arg
+  overloads that already relied on passing `null` internally).
+
+### Removed
+- **Breaking:** `HtmlPdfResult<T>.DecompressOutputData()`. ADR-003 already
+  made the library's own `byte[]` output raw/uncompressed, so this method
+  had no correct use against real output - calling it on an actual PDF threw
+  a misleading "not a valid GZip stream" error instead of a useful one.
 
 ### Security
 - Decompressed request size is now capped, closing a zip-bomb vector in

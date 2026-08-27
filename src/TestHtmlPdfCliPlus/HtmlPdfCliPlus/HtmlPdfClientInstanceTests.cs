@@ -114,10 +114,14 @@ namespace TestHtmlPdfPlus.HtmlPdfCliPlus
             Assert.NotNull(_clientInstance);
         }
 
-        [Fact]
-        public void Logger_ShouldThrowArgumentException_WhenLogLevelIsInvalid()
+        [Theory]
+        [InlineData(LogLevel.Critical)]
+        [InlineData(LogLevel.Warning)]
+        [InlineData(LogLevel.Error)]
+        public void Logger_AcceptsElevatedLogLevels_WithoutThrowing(LogLevel level)
         {
-            Assert.Throws<ArgumentException>(() => _clientInstance.Logger(_mockLogger.Object, LogLevel.Error));
+            var result = _clientInstance.Logger(_mockLogger.Object, level);
+            Assert.NotNull(result);
         }
 
         [Fact]

@@ -120,10 +120,6 @@ namespace HtmlPdfPlus.Client.Core
             {
                 return this;
             }
-            if (logLevel is LogLevel.Critical or LogLevel.Error or LogLevel.Warning)
-            {
-                throw new ArgumentException($"Invalid log level {logLevel}");
-            }
             _logger = value;
             _logLevel = logLevel;
             return this;
@@ -428,19 +424,26 @@ namespace HtmlPdfPlus.Client.Core
             {
                 // Body wasn't a valid ErrorInfo - fall through to the generic error below.
             }
+            // The standard Retry-After header may carry a real backpressure hint even when a body
+            // was present - e.g. an intermediary (proxy/gateway) whose own generic error body
+            // happens to deserialize into a structurally valid ErrorInfo with no retry hint of its
+            // own. It must not be dropped just because *some* ErrorInfo was parsed.
+            var retryAfterSeconds = result.Headers.RetryAfter?.Delta is TimeSpan delta
+                ? (int)Math.Ceiling(delta.TotalSeconds)
+                : (int?)null;
             if (error is null)
             {
-                // No structured body (e.g. a proxy/load balancer returned the 503 itself, not the
-                // app) - the standard Retry-After header may still be present and is the most
-                // likely place a real backpressure signal shows up, so it must not be dropped here.
-                var retryAfterSeconds = result.Headers.RetryAfter?.Delta is TimeSpan delta
-                    ? (int)Math.Ceiling(delta.TotalSeconds)
-                    : (int?)null;
+                // No structured body at all (e.g. a proxy/load balancer returned the 503 itself,
+                // not the app).
                 error = new ErrorInfo(
                     ErrorCode.Unknown,
                     $"{result.StatusCode} : {result.ReasonPhrase}",
                     retryable: retryAfterSeconds is not null,
                     retryAfterSeconds: retryAfterSeconds);
+            }
+            else if (error.RetryAfterSeconds is null && retryAfterSeconds is not null)
+            {
+                error = new ErrorInfo(error.Code, error.Message, retryable: true, retryAfterSeconds: retryAfterSeconds);
             }
             return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, error);
         }

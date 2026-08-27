@@ -33,16 +33,16 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
         [InlineData(LogLevel.Critical)]
         [InlineData(LogLevel.Warning)]
         [InlineData(LogLevel.Error)]
-        public void Ensure_Run_Error_When_InvalidLogLevel(LogLevel level)
+        [InlineData(LogLevel.Information)]
+        [InlineData(LogLevel.Debug)]
+        [InlineData(LogLevel.Trace)]
+        public void Ensure_Logger_AcceptsAnyLogLevel_WithoutThrowing(LogLevel level)
         {
             var loggerfact = NullLoggerFactory.Instance;
 
-            IHtmlPdfSrvBuilder obj = new HtmlPdfBuilder(loggerfact);
-            Assert.Throws<ArgumentException>(() =>
-            {
-                obj.Logger(level);
-            });
-            ((IDisposable)obj).Dispose();
+            using var obj = new HtmlPdfBuilder(loggerfact);
+            obj.Logger(level);
+            Assert.Equal(level, obj.LevelLog);
         }
 
         [Fact]
@@ -231,6 +231,38 @@ namespace TestHtmlPdfPlus.HtmlPdfSrvPlus
             // Then: a health check reading IsRecovering after recovery has fully completed must
             // not report a permanently degraded instance.
             Assert.False(obj.IsRecovering);
+        }
+
+        [Fact]
+        public async Task Ensure_Pool_DoesNotOvershootPagesBuffer_When_InFlightPagesReturnAfterRecovery()
+        {
+            // Given: two pages checked out (buffer at 0) right before the browser dies.
+            using var obj = new HtmlPdfBuilder();
+            obj.PagesBuffer(2);
+            await obj.BuildAsync("Teste");
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            var page1 = await obj.AcquireAsync(cts.Token);
+            var page2 = await obj.AcquireAsync(cts.Token);
+
+            // When: the browser disconnects unexpectedly and recovery refills the pool for the
+            // NEW browser, then the two pages that were checked out from the OLD (now dead)
+            // browser are returned - exactly what GeneratePDF's `finally` does for requests that
+            // were mid-flight when the crash happened.
+            await obj.CurrentBrowser!.CloseAsync();
+            while (obj.CurrentBrowser is null || !obj.CurrentBrowser.IsConnected || obj.BufferLength < 2)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+                await Task.Delay(50, cts.Token);
+            }
+            Assert.Equal(2, obj.BufferLength);
+
+            await obj.RestoreAvailableBuffer(page1!);
+            await obj.RestoreAvailableBuffer(page2!);
+
+            // Then: returning pages from the dead generation must not add on top of the capacity
+            // recovery already restored for the current browser - the pool stays at PagesBuffer,
+            // it does not silently double.
+            Assert.Equal(2, obj.BufferLength);
         }
 
         [Theory]

@@ -24,7 +24,7 @@ public IHtmlPdfClient FromRazor<T>(string templatetext, T model)
 
 | exception | condition |
 | --- | --- |
-| ArgumentNullException | Thrown when the template or model is null. |
+| ArgumentNullException | Thrown when *templatetext* is null or empty. |
 
 ### See Also
 

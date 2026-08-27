@@ -34,10 +34,8 @@ namespace HtmlPdfPlus
         /// Set Logger integration.
         /// </summary>
         /// <param name="logger"><see cref="ILogger"/> instance.</param>
-        /// <param name="logLevel">Log level, valid levels are: None, Trace, Debug (default), Info. <see cref="LogLevel"/>.</param>
+        /// <param name="logLevel">Log level. Default is <see cref="LogLevel.Debug"/>. <see cref="LogLevel"/>.</param>
         /// <returns><see cref="IHtmlPdfClient"/> instance.</returns>
-        /// <exception cref="ArgumentException">Thrown when the loglevel is invalid.</exception>
-        /// 
         IHtmlPdfClient Logger(ILogger? logger, LogLevel logLevel = LogLevel.Debug);
 
         /// <summary>
@@ -64,7 +62,7 @@ namespace HtmlPdfPlus
         /// <param name="model">Data to apply to the template.</param>
         /// <typeparam name="T">Type of data model.</typeparam>
         /// <returns><see cref="IHtmlPdfClient"/> instance.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the template or model is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="templatetext"/> is null or empty.</exception>
         IHtmlPdfClient FromRazor<T>(string templatetext, T model);
 
         /// <summary>
@@ -101,11 +99,11 @@ namespace HtmlPdfPlus
         /// Submit the HTML to convert to PDF in byte[] via POST <see cref="HttpClient"/>.
         /// </summary>
         /// <param name="httpClient">Instance of <see cref="HttpClient"/>.</param>
-        /// <param name="endpoint">The endpoint for the HTTP client.</param>
+        /// <param name="endpoint">The endpoint for the HTTP client, or <c>null</c>/empty to POST to <see cref="HttpClient.BaseAddress"/> directly.</param>
         /// <param name="token"><see cref="CancellationToken"/> token.</param>
         /// <returns>Returns bytes[] from <see cref="HtmlPdfResult{T}"/> representing the asynchronous operation of converting HTML to PDF.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the empty Html source.</exception>
-        Task<HtmlPdfResult<byte[]>> Run(HttpClient httpClient, string endpoint, CancellationToken token = default);
+        Task<HtmlPdfResult<byte[]>> Run(HttpClient httpClient, string? endpoint, CancellationToken token = default);
 
         /// <summary>
         /// Submit the HTML to convert to PDF in custom output via the SubmitHtmlToPdf function.
@@ -120,7 +118,7 @@ namespace HtmlPdfPlus
         /// <param name="token"><see cref="CancellationToken"/> token.</param>
         /// <returns>Returns <see cref="HtmlPdfResult{TOut}"/> representing the asynchronous operation of converting HTML to PDF.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the empty Html source.</exception>
-        /// <exception cref="ArgumentNullException">Thrown when the submitHtmlToPdf function or customData is null.</exception>
+        /// <exception cref="ArgumentNullException">Thrown when the submitHtmlToPdf function is null.</exception>
         Task<HtmlPdfResult<TOut>> Run<TIn, TOut>(Func<byte[], CancellationToken, Task<HtmlPdfResult<TOut>>> submitHtmlToPdf, TIn? customData, CancellationToken token = default);
 
         /// <summary>
@@ -141,11 +139,11 @@ namespace HtmlPdfPlus
         /// <typeparam name="TIn">Type of input data.</typeparam>
         /// <typeparam name="TOut">Type of output data.</typeparam>
         /// <param name="httpClient">Instance of <see cref="HttpClient"/>.</param>
-        /// <param name="endpoint">The endpoint for the HTTP client.</param>
+        /// <param name="endpoint">The endpoint for the HTTP client, or <c>null</c>/empty to POST to <see cref="HttpClient.BaseAddress"/> directly.</param>
         /// <param name="customData">Input data, for customizing HTML before converting to PDF on the server.</param>
         /// <param name="token"><see cref="CancellationToken"/> token.</param>
         /// <returns>Returns <see cref="HtmlPdfResult{TOut}"/> representing the asynchronous operation of converting HTML to PDF.</returns>
         /// <exception cref="InvalidOperationException">Thrown when the empty Html source.</exception>
-        Task<HtmlPdfResult<TOut>> Run<TIn, TOut>(HttpClient httpClient, string endpoint, TIn? customData, CancellationToken token = default);
+        Task<HtmlPdfResult<TOut>> Run<TIn, TOut>(HttpClient httpClient, string? endpoint, TIn? customData, CancellationToken token = default);
     }
 }

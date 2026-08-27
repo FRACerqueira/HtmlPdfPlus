@@ -70,14 +70,14 @@ Returns bytes[] from HtmlPdfResult representing the asynchronous operation of co
 #### Submit the HTML to convert to PDF in byte[] via POST HttpClient.
 
 ```csharp
-public Task<HtmlPdfResult<byte[]>> Run(HttpClient httpClient, string endpoint, 
+public Task<HtmlPdfResult<byte[]>> Run(HttpClient httpClient, string? endpoint, 
     CancellationToken token = default)
 ```
 
 | parameter | description |
 | --- | --- |
 | httpClient | Instance of HttpClient. |
-| endpoint | The endpoint for the HTTP client. |
+| endpoint | The endpoint for the HTTP client, or `null`/empty to POST to BaseAddress directly. |
 | token | CancellationToken token. |
 
 ### Return Value
@@ -124,7 +124,7 @@ Returns HtmlPdfResult representing the asynchronous operation of converting HTML
 | exception | condition |
 | --- | --- |
 | InvalidOperationException | Thrown when the empty Html source. |
-| ArgumentNullException | Thrown when the submitHtmlToPdf function or customData is null. |
+| ArgumentNullException | Thrown when the submitHtmlToPdf function is null. |
 
 ### See Also
 
@@ -172,7 +172,7 @@ Returns HtmlPdfResult representing the asynchronous operation of converting HTML
 #### Submit the HTML to convert to PDF in custom output via POST HttpClient.
 
 ```csharp
-public Task<HtmlPdfResult<TOut>> Run<TIn, TOut>(HttpClient httpClient, string endpoint, 
+public Task<HtmlPdfResult<TOut>> Run<TIn, TOut>(HttpClient httpClient, string? endpoint, 
     TIn? customData, CancellationToken token = default)
 ```
 
@@ -181,7 +181,7 @@ public Task<HtmlPdfResult<TOut>> Run<TIn, TOut>(HttpClient httpClient, string en
 | TIn | Type of input data. |
 | TOut | Type of output data. |
 | httpClient | Instance of HttpClient. |
-| endpoint | The endpoint for the HTTP client. |
+| endpoint | The endpoint for the HTTP client, or `null`/empty to POST to BaseAddress directly. |
 | customData | Input data, for customizing HTML before converting to PDF on the server. |
 | token | CancellationToken token. |
 
