@@ -1,0 +1,37 @@
+<Solution>
+  <Folder Name="/Docker/">
+    <File Path="Dockerfile" />
+  </Folder>
+  <Folder Name="/Docs/">
+    <File Path="docs/swimlanes.io.AnyProcess.txt" />
+    <File Path="docs/swimlanes.io.Http.txt" />
+    <File Path="docs/swimlanes.io.OnlyServer.txt" />
+    <File Path="README.md" />
+    <File Path="src/README.txt" />
+  </Folder>
+  <Folder Name="/Docs/XmlDocMarkdown/">
+    <File Path="src/docs/assemblies/HtmlPdfPlus.Client.md" />
+    <File Path="src/docs/assemblies/HtmlPdfPlus.Server.md" />
+    <File Path="src/docs/assemblies/HtmlPdfPlus.Shared.md" />
+    <File Path="src/docs/docindex.md" />
+  </Folder>
+  <Folder Name="/Samples/">
+    <Project Path="samples/ConsoleHtmlToPdfPlus.ClientCustomSendHttp/ConsoleHtmlToPdfPlus.ClientCustomSendHttp.csproj" />
+    <Project Path="samples/ConsoleHtmlToPdfPlus.ClientSendHttp/ConsoleHtmlToPdfPlus.ClientSendHttp.csproj" />
+    <Project Path="samples/ConsoleHtmlToPdfPlus.ClientSendTcp/ConsoleHtmlToPdfPlus.ClientSendTcp.csproj" />
+    <Project Path="samples/ConsoleHtmlToPdfPlus.MetricsObserver/ConsoleHtmlToPdfPlus.MetricsObserver.csproj" />
+    <Project Path="samples/ConsoleHtmlToPdfPlus.OnlyAtServer/CustomHooks/ConsoleHtmlToPdfPlus.OnlyAtServerCustomHooks.csproj" />
+    <Project Path="samples/ConsoleHtmlToPdfPlus.OnlyAtServer/QuickStart/ConsoleHtmlToPdfPlus.OnlyAtServerQuickStart.csproj" />
+    <Project Path="samples/ConsoleHtmlToPdfPlus.RetryAfterBackpressure/ConsoleHtmlToPdfPlus.RetryAfterBackpressure.csproj" />
+    <Project Path="samples/TcpServerHtmlToPdf.GenericServer/TcpServerHtmlToPdf.GenericServer.csproj" />
+    <Project Path="samples/WebHtmlToPdf.CustomSaveFileServer/WebHtmlToPdf.CustomSaveFileServer.csproj" />
+    <Project Path="samples/WebHtmlToPdf.GenericServer/WebHtmlToPdf.GenericServer.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="src/TestHtmlPdfCliPlus/TestHtmlPdfPlus.csproj" />
+  </Folder>
+  <Project Path="src/HtmlPdfPlus.Client/HtmlPdfPlus.Client.csproj" />
+  <Project Path="src/HtmlPdfPlus.Server/HtmlPdfPlus.Server.csproj" />
+  <Project Path="src/HtmlPdfPlus.Shared/HtmlPdfPlus.Shared.csproj" />
+  <Project Path="src/XmlDocMarkdownGenerator/XmlDocMarkdownGenerator.csproj" />
+</Solution>
