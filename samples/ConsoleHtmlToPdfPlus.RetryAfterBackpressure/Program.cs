@@ -26,10 +26,8 @@ namespace ConsoleHtmlToPdfPlus.RetryAfterBackpressure
 
             var HostApp = CreateHostBuilder(args).Build();
 
-            //token to gracefull shutdown
             var applifetime = HostApp.Services.GetService<IHostApplicationLifetime>()!;
 
-            //instance of Html to Pdf Engine
             var PDFserver = HostApp!.Services.GetHtmlPdfService();
 
             Console.WriteLine($"Firing {Concurrency} concurrent requests against a pool of 1 page - expect some to hit PoolExhausted and retry");

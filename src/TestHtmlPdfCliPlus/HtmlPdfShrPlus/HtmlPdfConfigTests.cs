@@ -203,14 +203,5 @@ namespace TestHtmlPdfPlus.HtmlPdfShrPlus
             var exception = Assert.Throws<ArgumentException>(() => config.Scale(invalidScale));
             Assert.Equal("Scale amount must be between 0.1 and 2.", exception.Message);
         }
-    }// ***************************************************************************************
-     // MIT LICENCE
-     // The maintenance and evolution is maintained by the HtmlPdfPlus team
-     // https://github.com/FRACerqueira/HtmlPdfPlus
-     // ***************************************************************************************
-
-    namespace TestHtmlPdfPlus.HtmlPdfShrPlus
-    {
-
     }
 }

@@ -37,16 +37,12 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
 
             HostApp = CreateHostBuilder(args).Build();
 
-            // create client tcp
-            // set events
             ClientTcp.Events.Connected += ConnectedTcp;
             ClientTcp.Events.Disconnected += DisconnectedTcp;
             ClientTcp.Events.DataReceived += DataReceivedTcp;
 
-            //token to gracefull shutdown
             var applifetime = HostApp.Services.GetService<IHostApplicationLifetime>()!;
 
-            //create client instance and send to HtmlPdfPlus server via the custom TCP transport below
             Console.WriteLine($"HtmlPdfClient send Html to PDF Server via TCP");
 
             var pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
@@ -65,7 +61,6 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
 
             Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 
-            //performs writing to file after performing conversion
             if (pdfresult.IsSuccess)
             {
                 var fullpath = Path.Combine(PathToSamples, "html2pdfHtml.pdf");
@@ -113,7 +108,6 @@ namespace ConsoleHtmlToPdfPlus.ClientSendTcp
             {
                 using var cts = new CancellationTokenSource();
                 using var lnkcts = CancellationTokenSource.CreateLinkedTokenSource(token, cts.Token);
-                //enter Semaphore 
                 await SemaphoreSlim.WaitAsync(TimeoutWaitResponse, token);
                 ClientTcp.Connect();
                 ClientTcp.Send(requestdata);

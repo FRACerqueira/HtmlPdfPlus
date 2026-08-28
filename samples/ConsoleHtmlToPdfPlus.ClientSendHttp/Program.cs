@@ -26,13 +26,10 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
 
             HostApp = CreateHostBuilder(args).Build();
 
-             //token to gracefull shutdown
             var applifetime = HostApp.Services.GetService<IHostApplicationLifetime>()!;
 
-            //client http to endpoint    
             var clienthttp = HostApp!.Services.GetRequiredService<IHttpClientFactory>().CreateClient("HtmlPdfServer");
 
-            //create client instance and to HtmlPdfPlus server endpoint
             Console.WriteLine($"HtmlPdfClient send Html to PDF Server via http post");
 
             var pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
@@ -51,7 +48,6 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
 
             Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 
-            //performs writing to file after performing conversion
             if (pdfresult.IsSuccess)
             {
                 var fullpath = Path.Combine(PathToSamples, "html2pdfHtml.pdf");
@@ -66,7 +62,6 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
             Console.WriteLine("Press any key to next");
             Console.ReadKey();
 
-            //create client instance  and send to server
             Console.WriteLine($"HtmlPdfClient send TemplateRazor to PDF Server via http post");
 
             var lstprod = new List<Product>();
@@ -86,7 +81,6 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
 
             Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 
-            //performs writing to file after performing conversion
             if (pdfresult.IsSuccess)
             {
                 var fullpath = Path.Combine(PathToSamples, "html2pdfRazorTemplate.pdf");
@@ -101,7 +95,6 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
             Console.WriteLine("Press any key to next");
             Console.ReadKey();
 
-            //create client instance  and send to server
             Console.WriteLine($"HtmlPdfClient send Url to PDF Server via http post");
 
             pdfresult = await HtmlPdfClient.Create("HtmlPdfPlusClient")
@@ -113,7 +106,6 @@ namespace ConsoleHtmlToPdfPlus.ClientSendHttp
 
             Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 
-            //performs writing to file after performing conversion
             if (pdfresult.IsSuccess)
             {
                 var fullpath = Path.Combine(PathToSamples, "HtmlPdfPlus.pdf");

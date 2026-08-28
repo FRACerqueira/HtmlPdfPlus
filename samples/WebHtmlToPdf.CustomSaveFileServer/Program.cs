@@ -19,7 +19,6 @@ var app = builder.Build();
 
 var logger = app.Services.GetService<ILogger<Program>>();
 
-//Warmup HtmlPdfServerPlus on startup for better performance from the first request
 var WarmupTS = app.WarmupHtmlPdfService<DataSavePDF, string>();
 logger?.LogDebug("HtmlPdfServerPlus ready after {tm}", WarmupTS);
 
@@ -36,7 +35,6 @@ app.MapHtmlPdfEndpoints<DataSavePDF, string>(
         {
             return Task.FromResult(html);
         }
-        //performs replacement token substitution in the HTML source before performing the conversion
         var aux = html.Replace("[{FileName}]", inputparam.Filename);
         return Task.FromResult(aux);
     },
