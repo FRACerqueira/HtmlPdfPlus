@@ -12,18 +12,12 @@ public IHtmlPdfSrvBuilder Logger(LogLevel logLevel, string categoryName = "HtmlP
 
 | parameter | description |
 | --- | --- |
-| logLevel | Log level. The valid levels are: None, Trace, Debug (default), Info. LogLevel. |
+| logLevel | Log level. Default is Debug. LogLevel. |
 | categoryName | Name of category logger. Default is "HtmlPdfServer". |
 
 ### Return Value
 
 [`IHtmlPdfSrvBuilder`](../IHtmlPdfSrvBuilder.md) instance.
-
-### Exceptions
-
-| exception | condition |
-| --- | --- |
-| ArgumentException | Thrown when the log level or category name is invalid. |
 
 ### See Also
 

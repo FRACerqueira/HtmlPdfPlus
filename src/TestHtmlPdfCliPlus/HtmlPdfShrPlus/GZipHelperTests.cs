@@ -80,5 +80,26 @@ namespace TestHtmlPdfPlus.HtmlPdfShrPlus
                     () => GZipHelper.DecompressAsync(compressedData, maxOutputBytes: 100, CancellationToken.None));
                 Assert.Contains("exceeds the configured limit", exception.Message);
             }
+
+            [Fact]
+            public async Task DecompressAsync_PropagatesOperationCanceledException_WhenTokenIsCanceled()
+            {
+                // Arrange: a valid compressed payload and an already-canceled token, so the read
+                // loop's first ReadAsync observes the cancellation deterministically instead of
+                // racing a real async yield point.
+                var input = Encoding.UTF8.GetBytes(new string('a', 10_000));
+                var compressedData = await GZipHelper.CompressAsync(input, CancellationToken.None);
+                using var cts = new CancellationTokenSource();
+                cts.Cancel();
+
+                // Act & Assert: must propagate as an OperationCanceledException (Stream.ReadAsync
+                // actually throws the subclass TaskCanceledException for an already-canceled
+                // token, so ThrowsAnyAsync - not the exact-type ThrowsAsync - is the correct
+                // assertion here) so callers classify it as Canceled/retryable, instead of being
+                // wrapped into InvalidOperationException and misreported as a malformed/
+                // non-retryable request.
+                await Assert.ThrowsAnyAsync<OperationCanceledException>(
+                    () => GZipHelper.DecompressAsync(compressedData, cts.Token));
+            }
         }
 }

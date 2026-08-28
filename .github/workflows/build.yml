@@ -14,7 +14,7 @@ jobs:
         dotnet-version: '10.0.x' # SDK Version to use.
 
     - name: Build project
-      run: dotnet build HtmlPdfPlus.sln -c Release
+      run: dotnet build HtmlPdfPlus.slnx -c Release
 
     - name: Install Playwright browsers
       run: pwsh src/TestHtmlPdfCliPlus/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
@@ -38,7 +38,7 @@ jobs:
         dotnet-version: '10.0.x' # SDK Version to use.
 
     - name: Build project
-      run: dotnet build HtmlPdfPlus.sln -c Release
+      run: dotnet build HtmlPdfPlus.slnx -c Release
 
     - name: Install Playwright browsers
       run: pwsh src/TestHtmlPdfCliPlus/bin/Release/net10.0/playwright.ps1 install --with-deps chromium

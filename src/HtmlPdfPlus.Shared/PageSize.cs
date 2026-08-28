@@ -20,7 +20,6 @@ namespace HtmlPdfPlus
         /// </summary>
         public PageSize()
         {
-            // A4 SIZE
             Width = 210;
             Height = 297;
         }

@@ -5,7 +5,6 @@
 // ***************************************************************************************
 
 using System.Text.Json.Serialization;
-using HtmlPdfPlus.Shared.Core;
 
 namespace HtmlPdfPlus
 {
@@ -58,20 +57,5 @@ namespace HtmlPdfPlus
         /// Output custom data or PDF in byte[]
         /// </summary>
         public T? OutputData { get; internal set; }
-
-        /// <summary>
-        /// Decompress OutputData when type is byte[]
-        /// </summary>
-        /// <returns>The <see cref="HtmlPdfResult{T}"/> with OutputData Decompressed when type is byte[]</returns>
-        /// <exception cref="InvalidOperationException">OutputData is not byte[]</exception>
-        public HtmlPdfResult<T> DecompressOutputData()
-        {
-            if (OutputData is byte[] data)
-            {
-                OutputData = (T)(object)GZipHelper.DecompressAsync(data).Result;
-                return this;
-            }
-            throw new InvalidOperationException("OutputData is not byte[]");
-        }
     }
 }

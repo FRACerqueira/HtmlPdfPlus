@@ -33,9 +33,13 @@ namespace HtmlPdfPlus
         /// </summary>
         /// <param name="requestClient">The compressed byte[] data from the request HtmlPdfCliPlus client.</param>
         /// <param name="token">The <see cref="CancellationToken"/> to perform the conversion.</param>
-        /// <returns>An instance of <see cref="HtmlPdfResult{TOut}"/>.</returns>
-        /// <exception cref="ArgumentException">Thrown when <typeparamref name="TOut"/> is invalid.</exception>
-        /// <exception cref="ArgumentException">Thrown when <paramref name="requestClient"/> is invalid.</exception>
+        /// <returns>
+        /// An instance of <see cref="HtmlPdfResult{TOut}"/>. Any invalid request content (malformed
+        /// payload, missing Html, an out-of-range page config value, an already-expired deadline)
+        /// is reported as a failure result with a structured <see cref="ErrorInfo"/>/<see cref="ErrorCode"/>
+        /// (see ADR-001) - not thrown.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="requestClient"/> is null or empty.</exception>
         Task<HtmlPdfResult<TOut>> Run(byte[] requestClient, CancellationToken token = default);
     }
 }

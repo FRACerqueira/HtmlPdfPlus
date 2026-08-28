@@ -33,14 +33,11 @@ namespace TcpServerHtmlToPdf.GenericServer
             
             Console.WriteLine("Warmup HtmlPdfServerPlus with buffer");
 
-            //Warmup HtmlPdfServerPlus on startup for better performance from the first request
             var WarmupTS = HostApp.WarmupHtmlPdfService();
             Console.WriteLine($"HtmlPdfServerPlus ready after {WarmupTS}");
 
-            //token to gracefull shutdown
             var applifetime = HostApp.Services.GetService<IHostApplicationLifetime>()!;
 
-            //set tcp server and start listener 
             _ServerTCP = new SimpleTcpServer(_ListenerIp, _ListenerPort);
             _ServerTCP.Settings.NoDelay = true;
             _ServerTCP.Events.ClientConnected += ClientConnected;

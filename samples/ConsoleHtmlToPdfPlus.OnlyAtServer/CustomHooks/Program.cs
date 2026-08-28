@@ -24,29 +24,23 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerCustomHooks
 
             Console.WriteLine("Warmup HtmlPdfServerPlus with buffer");
 
-            //Warmup HtmlPdfServerPlus on startup for better performance from the first request
             var WarmupTS = HostApp.WarmupHtmlPdfService<string, string>();
             Console.WriteLine($"HtmlPdfServerPlus ready after {WarmupTS}");
 
-            //token to gracefull shutdown
             var applifetime = HostApp.Services.GetService<IHostApplicationLifetime>()!;
 
-            //instance of Html to Pdf Engine
             var PDFserver = HostApp!.Services.GetHtmlPdfService<string, string>();
 
-            //Performs conversion and custom operations on the server
             var pdfresult = await PDFserver
                 .ScopeData(Path.Combine(PathToSamples, "html2pdfHtml.pdf"))
                 .FromHtml(HtmlSample(), 5000)
                 .BeforePDF((html, _, _) =>
                 {
-                    //performs replacement token substitution in the HTML source before performing the conversion
                     var aux = html.Replace("[{MyTokenTemplate}]", "HTML to PDF Test");
                     return Task.FromResult(aux);
                 })
                 .AfterPDF(async (pdfbyte, filepath, token) =>
                 {
-                    //performs writing to file after performing conversion
                     await File.WriteAllBytesAsync(filepath!, pdfbyte!, token);
                     Console.WriteLine($"File PDF generate at {filepath}");
                     return filepath!;
@@ -79,7 +73,6 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerCustomHooks
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    //create an Html2Pdf ServerPlus service with input/output parameter being a file path
                     services.AddHtmlPdfService<string, string>((cfg) =>
                     {
                         cfg.DefaultConfig((cfg) =>

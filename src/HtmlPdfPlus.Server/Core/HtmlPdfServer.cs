@@ -53,7 +53,8 @@ namespace HtmlPdfPlus.Server.Core
             return new HtmlPdfHealthStatus(
                 PdfSrvBuilder.CurrentBrowser?.IsConnected ?? false,
                 PdfSrvBuilder.IsRecovering,
-                PdfSrvBuilder.BufferLength);
+                PdfSrvBuilder.BufferLength,
+                PdfSrvBuilder.IsPoolStarved);
         }
 
         /// <inheritdoc />
@@ -241,7 +242,7 @@ namespace HtmlPdfPlus.Server.Core
                 }
                 finally
                 {
-                    cts.Cancel(); // cancel pending task  
+                    cts.Cancel();
                 }
             }
 
@@ -281,7 +282,7 @@ namespace HtmlPdfPlus.Server.Core
                     // fired (that case returns null above, reported as PoolExhausted) - so this
                     // is the overall deadline or an external cancellation, same as BeforePDF/AfterPDF.
                     var reachedOverallTimeout = cts.IsCancellationRequested;
-                    cts.Cancel(); // cancel pending task
+                    cts.Cancel();
                     if (reachedOverallTimeout)
                     {
                         LogMessage($"Reached Timeout({requestHtmlPdf.Timeout})");
@@ -292,9 +293,9 @@ namespace HtmlPdfPlus.Server.Core
                 }
                 catch (Exception ex)
                 {
-                    cts.Cancel(); // cancel pending task
+                    cts.Cancel();
                     LogMessage($"Error Generate PDF from browser after {sw.Elapsed} : {ex}");
-                    return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ErrorInfo.FromException(ex));
+                    return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ClassifyGeneratePdfException(ex));
                 }
             }
 
@@ -361,7 +362,7 @@ namespace HtmlPdfPlus.Server.Core
                 }
                 finally
                 {
-                    cts.Cancel(); // cancel pending task  
+                    cts.Cancel();
                 }
                 LogMessage($"End Convert Html to PDF from Server with AfterPDF function at {DateTime.Now} after {sw.Elapsed}");
                 return result!;
@@ -370,6 +371,22 @@ namespace HtmlPdfPlus.Server.Core
             //(transport compression, if any, is standard Content-Encoding, not GZipHelper here).
             LogMessage($"End Convert Html to PDF from Server at {DateTime.Now} after {sw.Elapsed}");
             return new HtmlPdfResult<Tout>(true, false, sw.Elapsed, (Tout)(object)bytespdf, null);
+        }
+
+        /// <summary>
+        /// Classifies an exception raised while navigating/rendering (<see cref="GeneratePDF"/>).
+        /// A live Playwright/browser failure (the page or its browser died mid-render - the exact
+        /// condition <see cref="HtmlPdfBuilder"/>'s automatic recovery exists for) is reported as
+        /// <see cref="ErrorCode.RenderFailed"/> and retryable, instead of falling through
+        /// <see cref="ErrorInfo.FromException(Exception)"/>'s default arm to a non-retryable
+        /// <see cref="ErrorCode.Internal"/> that gives a caller no reason to try again. Every other
+        /// failure kind keeps the generic classification.
+        /// </summary>
+        internal static ErrorInfo ClassifyGeneratePdfException(Exception ex)
+        {
+            return ex is PlaywrightException
+                ? new ErrorInfo(ErrorCode.RenderFailed, ex.Message, retryable: true)
+                : ErrorInfo.FromException(ex);
         }
 
         private async Task<byte[]?> GeneratePDF(bool isurl, RequestHtmlPdf<Tin> request, long remaindtime, CancellationToken token)
@@ -441,7 +458,13 @@ namespace HtmlPdfPlus.Server.Core
                 {
                     if (taskpdf.IsFaulted)
                     {
-                        resultpdf = [];
+                        // The browser/page died mid-render (e.g. a Chromium crash) - throw the real
+                        // exception instead of silently collapsing to an empty result, so it reaches
+                        // the catch below and gets classified via ClassifyGeneratePdfException
+                        // (PlaywrightException -> RenderFailed/retryable) deterministically, instead
+                        // of racily depending on whether a downstream pool-cleanup call happens to
+                        // also throw before generation gets bumped.
+                        throw taskpdf.Exception!.GetBaseException();
                     }
                 }
             }
@@ -461,8 +484,17 @@ namespace HtmlPdfPlus.Server.Core
                         // above could not abort it - it may still be running on this page.
                         // Replenish the pool immediately with a fresh page, and only close
                         // this one once that work actually settles, instead of closing a page
-                        // that is still in use underneath it.
-                        await PdfSrvBuilder!.ReplenishBufferAsync();
+                        // that is still in use underneath it. ReplenishIfCurrentGenerationAsync
+                        // skips the replenish if this page's browser generation has since
+                        // crashed and been replaced (recovery's own refill already restored
+                        // that capacity - replenishing here too would silently overshoot
+                        // PagesBuffer, the same reason RestoreAvailableBuffer gates its own
+                        // replenish call). It never throws, so CloseWhenSettled always runs
+                        // regardless of whether the replenish itself ran or succeeded - a
+                        // pool-bookkeeping failure here must not leave this still-running page
+                        // permanently unscheduled for cleanup, nor override whatever exception
+                        // is already propagating from the try block.
+                        await PdfSrvBuilder!.ReplenishIfCurrentGenerationAsync(page);
                         PdfSrvBuilder!.CloseWhenSettled(page, taskpdf);
                     }
                     else
@@ -475,7 +507,7 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         /// <summary>
-        /// Clean-up code is implemented
+        /// Disposes the underlying <see cref="HtmlPdfBuilder"/> (browser and Playwright connection).
         /// </summary>
         public void Dispose()
         {
@@ -507,6 +539,15 @@ namespace HtmlPdfPlus.Server.Core
                 case LogLevel.Debug:
                     logMessageForDbg(PdfSrvBuilder.Log!, SourceAlias, message, null);
                     break;
+                case LogLevel.Warning:
+                    logMessageForWrn(PdfSrvBuilder.Log!, SourceAlias, message, null);
+                    break;
+                case LogLevel.Error:
+                    logMessageForErr(PdfSrvBuilder.Log!, SourceAlias, message, null);
+                    break;
+                case LogLevel.Critical:
+                    logMessageForCrt(PdfSrvBuilder.Log!, SourceAlias, message, null);
+                    break;
             }
         }
 
@@ -514,5 +555,8 @@ namespace HtmlPdfPlus.Server.Core
         private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
         private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
         private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForWrn = LoggerMessage.Define<string, string>(LogLevel.Warning, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForErr = LoggerMessage.Define<string, string>(LogLevel.Error, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForCrt = LoggerMessage.Define<string, string>(LogLevel.Critical, 0, "HtmlPdfSrvPlus({Source}) : {Message}");
     }
 }

@@ -28,9 +28,11 @@ if (!pdfresult.IsSuccess)
     switch (pdfresult.Error!.Code)
     {
         case ErrorCode.PoolExhausted: /* see the retry how-to below */ break;
-        case ErrorCode.Timeout or ErrorCode.Canceled: /* retryable */ break;
         case ErrorCode.InvalidRequest: /* fix the request, don't retry */ break;
-        default: /* log pdfresult.Error.Message */ break;
+        default:
+            if (pdfresult.Error.Retryable) { /* retryable - e.g. Timeout, Canceled, RenderFailed */ }
+            else { /* log pdfresult.Error.Message */ }
+            break;
     }
 }
 ```

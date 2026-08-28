@@ -16,9 +16,6 @@ namespace HtmlPdfPlus.Server.Core
     /// <summary>
     /// Represents a server context for converting HTML to PDF.
     /// </summary>
-    /// <remarks>
-    /// Constructor
-    /// </remarks>
     /// <param name="htmlPdfServer">Instance of <see cref="HtmlPdfServer{Tin, Tout}"/>.</param>
     /// <param name="inputparam">Input data, for customizing HTML before converting to PDF on the server.</param>
     /// <param name="requestClient">The compressed data from the request HtmlPdfCliPlus client.</param>
@@ -30,6 +27,12 @@ namespace HtmlPdfPlus.Server.Core
         private string _html = string.Empty;
         private RenderMode _mode = RenderMode.Html;
         private int _timeout = 30000;
+
+        /// <summary>
+        /// Exposes the currently registered HTML for tests that need to observe the effect of
+        /// <see cref="FromHtml"/>/<see cref="FromRazor{T}"/> (e.g. whether minification actually ran).
+        /// </summary>
+        internal string Html => _html;
 
         /// <inheritdoc />
         public IHtmlPdfServerContext<TIn, TOut> BeforePDF(Func<string, TIn?, CancellationToken, Task<string>> inputparam)
@@ -73,7 +76,7 @@ namespace HtmlPdfPlus.Server.Core
                 throw new ArgumentNullException(nameof(template), "template is null or empty");
             }
             var aux = RazorHelpper.CompileTemplate(template, model);
-            if (minify)
+            if (!minify)
             {
                 _html = aux;
             }
@@ -157,7 +160,7 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         /// <summary>
-        /// Clean-up code is implemented
+        /// Disposes the underlying <see cref="HtmlPdfServer{TIn, TOut}"/>.
         /// </summary>
         public void Dispose()
         {
@@ -189,6 +192,15 @@ namespace HtmlPdfPlus.Server.Core
                 case LogLevel.Debug:
                     logMessageForDbg(htmlPdfServer.PdfSrvBuilder.Log!, htmlPdfServer.SourceAlias, message, null);
                     break;
+                case LogLevel.Warning:
+                    logMessageForWrn(htmlPdfServer.PdfSrvBuilder.Log!, htmlPdfServer.SourceAlias, message, null);
+                    break;
+                case LogLevel.Error:
+                    logMessageForErr(htmlPdfServer.PdfSrvBuilder.Log!, htmlPdfServer.SourceAlias, message, null);
+                    break;
+                case LogLevel.Critical:
+                    logMessageForCrt(htmlPdfServer.PdfSrvBuilder.Log!, htmlPdfServer.SourceAlias, message, null);
+                    break;
             }
         }
 
@@ -196,6 +208,9 @@ namespace HtmlPdfPlus.Server.Core
         private static readonly Action<ILogger, string, string, Exception?> logMessageForInf = LoggerMessage.Define<string, string>(LogLevel.Information, 0, "HtmlPdfServerContext({Source}) : {Message}");
         private static readonly Action<ILogger, string, string, Exception?> logMessageForTrc = LoggerMessage.Define<string, string>(LogLevel.Trace, 0, "HtmlPdfServerContext({Source}) : {Message}");
         private static readonly Action<ILogger, string, string, Exception?> logMessageForDbg = LoggerMessage.Define<string, string>(LogLevel.Debug, 0, "HtmlPdfServerContext({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForWrn = LoggerMessage.Define<string, string>(LogLevel.Warning, 0, "HtmlPdfServerContext({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForErr = LoggerMessage.Define<string, string>(LogLevel.Error, 0, "HtmlPdfServerContext({Source}) : {Message}");
+        private static readonly Action<ILogger, string, string, Exception?> logMessageForCrt = LoggerMessage.Define<string, string>(LogLevel.Critical, 0, "HtmlPdfServerContext({Source}) : {Message}");
 
     }
 }

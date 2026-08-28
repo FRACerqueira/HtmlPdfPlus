@@ -17,14 +17,13 @@ public Task<HtmlPdfResult<TOut>> Run(byte[] requestClient, CancellationToken tok
 
 ### Return Value
 
-An instance of HtmlPdfResult.
+An instance of HtmlPdfResult. Any invalid request content (malformed payload, missing Html, an out-of-range page config value, an already-expired deadline) is reported as a failure result with a structured ErrorInfo/ErrorCode (see ADR-001) - not thrown.
 
 ### Exceptions
 
 | exception | condition |
 | --- | --- |
-| ArgumentException | Thrown when *TOut* is invalid. |
-| ArgumentException | Thrown when *requestClient* is invalid. |
+| ArgumentNullException | Thrown when *requestClient* is null or empty. |
 
 ### See Also
 

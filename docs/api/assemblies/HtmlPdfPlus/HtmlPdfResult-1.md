@@ -24,7 +24,6 @@ public sealed class HtmlPdfResult<T>
 | [Error](HtmlPdfResult-1/Error.md) { get; } | The structured description of the failure, if any. [`ErrorInfo`](./ErrorInfo.md) |
 | [IsSuccess](HtmlPdfResult-1/IsSuccess.md) { get; } | If the conversion was successful |
 | [OutputData](HtmlPdfResult-1/OutputData.md) { get; } | Output custom data or PDF in byte[] |
-| [DecompressOutputData](HtmlPdfResult-1/DecompressOutputData.md)() | Decompress OutputData when type is byte[] |
 
 ### See Also
 

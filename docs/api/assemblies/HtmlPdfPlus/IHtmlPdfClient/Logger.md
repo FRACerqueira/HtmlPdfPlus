@@ -13,17 +13,11 @@ public IHtmlPdfClient Logger(ILogger? logger, LogLevel logLevel = LogLevel.Debug
 | parameter | description |
 | --- | --- |
 | logger | ILogger instance. |
-| logLevel | Log level, valid levels are: None, Trace, Debug (default), Info. LogLevel. |
+| logLevel | Log level. Default is Debug. LogLevel. |
 
 ### Return Value
 
 [`IHtmlPdfClient`](../IHtmlPdfClient.md) instance.
-
-### Exceptions
-
-| exception | condition |
-| --- | --- |
-| ArgumentException | Thrown when the loglevel is invalid. |
 
 ### See Also
 

@@ -4,7 +4,6 @@ namespace XmlDocMarkdownGenerator
 {
     internal class Program
     {
-        //perform XmlDoc Markdown Generator
         static int Main()
         {
             if (Directory.Exists(@"..\..\..\..\..\docs\api\assemblies"))

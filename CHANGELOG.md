@@ -4,6 +4,69 @@ All notable changes to HtmlPdfPlus are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project
 uses [Semantic Versioning](https://semver.org/).
 
+## [2.1.0]
+
+A post-release hardening pass on 2.0.0's page pool and browser-recovery
+mechanism, found by a 3-round audit run after 2.0.0 shipped. No wire-format
+change - a 1.x-compatible 2.0.0 client/server pair stays compatible with
+2.1.0. One source-breaking removal (see **Removed**) is why this isn't a
+patch release.
+
+### Added
+- `HtmlPdfHealthStatus.PoolStarved`: a recovery that reconnects the browser
+  but cannot create a single usable page is now reported as unhealthy
+  (`/readyz` 503) instead of falsely reporting ready.
+- A `HostApplicationLifetime.ApplicationStopped` registration now disposes
+  the server's browser/pool as a backstop, in addition to normal DI-container
+  disposal, so hosting patterns that call `StopAsync()` without ever
+  disposing the container don't leak the Chromium process.
+
+### Changed
+- **Breaking:** `Canceled` is now HTTP-mapped to 503 (was 400 in 2.0.0),
+  matching its `Retryable: true` semantics and staying distinct from
+  `Timeout`'s 504.
+- `Logger()` (client and server) now accepts `Warning`/`Error`/`Critical`,
+  and a fully-exhausted recovery failure is logged at `Error` so it survives
+  a host's default minimum log level - both used to be structurally capped
+  at `Information`/`Debug`, so a failure like this could be invisible by
+  default.
+- Project version bumped to `2.1.0` via `<Version>` in the Client, Server
+  and Shared `.csproj` files.
+
+### Fixed
+- 2.0.0's automatic browser recovery gave up permanently after a single
+  failed relaunch attempt, with no further recovery possible for the rest
+  of the process's life. The relaunch now retries with backoff (3 attempts,
+  1s/2s, ~93s worst case) before staying degraded.
+- `ErrorCode.RenderFailed` is now actually produced (502, retryable) for a
+  browser/page failure mid-render, instead of falling through to a
+  non-retryable `Internal`/500 - the exact case automatic recovery exists to
+  make succeed on retry. Previously this only happened by accident, and the
+  same crash could just as easily surface as a non-retryable `Timeout`/504
+  depending on internal timing.
+- The page-pool's own return-path replenishment had no failure handling,
+  which could mask a request's real outcome (success or an unrelated
+  failure) behind a spurious pool-bookkeeping error, and leak a pooled page
+  on the stuck-render path. Both call sites are now guarded.
+- A narrow race let the pool mistag a freshly-relaunched browser's pages as
+  belonging to the previous (crashed) instance; a second, related gap let
+  the stuck-render return path overshoot the configured `PagesBuffer` after
+  a crash, unlike the ordinary return path. Both paths now share the same
+  browser-generation check.
+- A benign race between a failed and a concurrent successful pool replenish
+  could latch `PoolStarved`/`/readyz` unhealthy on a pool that could
+  actually still serve requests; all writers to that flag are now
+  serialized against a live pool-size check.
+- `IHtmlPdfClient.Run(HttpClient, string endpoint, ...)`'s `endpoint`
+  parameter is now nullable, matching the implementation (and the 2-arg
+  overloads that already relied on passing `null` internally).
+
+### Removed
+- **Breaking:** `HtmlPdfResult<T>.DecompressOutputData()`. ADR-003 already
+  made the library's own `byte[]` output raw/uncompressed, so this method
+  had no correct use against real output - calling it on an actual PDF threw
+  a misleading "not a valid GZip stream" error instead of a useful one.
+
 ## [2.0.0]
 
 A major version because two changes break wire compatibility with 1.x
@@ -130,6 +193,7 @@ the HTTP contract directly needs to be updated together with the packages.
 ## [0.2.0-beta]
 - Initial version.
 
-[2.0.0]: https://github.com/FRACerqueira/HtmlPdfPlus/compare/v1.0.1...HEAD
+[2.1.0]: https://github.com/FRACerqueira/HtmlPdfPlus/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/FRACerqueira/HtmlPdfPlus/compare/v1.0.1...v2.0.0
 [1.0.1]: https://github.com/FRACerqueira/HtmlPdfPlus/releases/tag/v1.0.1
 [1.0.0]: https://github.com/FRACerqueira/HtmlPdfPlus/releases/tag/v1.0.0

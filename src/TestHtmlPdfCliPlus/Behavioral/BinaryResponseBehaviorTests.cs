@@ -105,6 +105,43 @@ namespace TestHtmlPdfPlus.Behavioral
             Assert.Equal(30, result.Error.RetryAfterSeconds);
         }
 
+        [Fact]
+        public async Task Given_FailureResponse_When_BodyIsErrorInfoWithNoRetryHintButRetryAfterHeaderIsPresent_Then_RetryAfterSecondsIsStillSurfaced()
+        {
+            // Given: an intermediary (proxy/gateway) whose own generic error body happens to
+            // deserialize into a structurally valid ErrorInfo - Code defaults to Unknown,
+            // RetryAfterSeconds defaults to null - while the standard Retry-After header is also
+            // genuinely present on the same response.
+            var bodyWithNoRetryHint = JsonSerializer.Serialize(new ErrorInfo(ErrorCode.Unknown, "Service Unavailable"));
+            using var handler = new JsonBodyWithRetryAfterHandler(HttpStatusCode.ServiceUnavailable, bodyWithNoRetryHint, retryAfterSeconds: 30);
+            using var httpClient = new HttpClient(handler);
+
+            // When: Run is awaited via the HttpClient overload.
+            var result = await HtmlPdfClient.Create("behavioral-binary-response")
+                .FromHtml("<html><body>hi</body></html>")
+                .Run(httpClient, "http://localhost/GeneratePdf", CancellationToken.None);
+
+            // Then: a real Retry-After header must not be dropped just because *some* ErrorInfo
+            // was parsed - the body having no retry hint of its own doesn't mean none exists.
+            Assert.False(result.IsSuccess);
+            Assert.NotNull(result.Error);
+            Assert.True(result.Error!.Retryable);
+            Assert.Equal(30, result.Error.RetryAfterSeconds);
+        }
+
+        private sealed class JsonBodyWithRetryAfterHandler(HttpStatusCode statusCode, string body, int retryAfterSeconds) : HttpMessageHandler
+        {
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                var response = new HttpResponseMessage(statusCode)
+                {
+                    Content = new StringContent(body, Encoding.UTF8, "application/json")
+                };
+                response.Headers.RetryAfter = new RetryConditionHeaderValue(TimeSpan.FromSeconds(retryAfterSeconds));
+                return Task.FromResult(response);
+            }
+        }
+
         private sealed class RetryAfterHandler(HttpStatusCode statusCode, string body, int retryAfterSeconds) : HttpMessageHandler
         {
             protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)

@@ -61,15 +61,15 @@ sequenceDiagram
 
     Orchestrator->>HealthEndpoints: GET /readyz
     HealthEndpoints->>Server: GetHealthStatus()
-    Server-->>HealthEndpoints: HtmlPdfHealthStatus(BrowserConnected, Recovering, AvailablePages)
-    alt Browser connected and not recovering
+    Server-->>HealthEndpoints: HtmlPdfHealthStatus(BrowserConnected, Recovering, AvailablePages, PoolStarved)
+    alt Browser connected, not recovering, and pool not starved
         HealthEndpoints-->>Orchestrator: 200 OK + HtmlPdfHealthStatus
-    else Browser disconnected or mid-recovery
+    else Browser disconnected, mid-recovery, or pool starved
         HealthEndpoints-->>Orchestrator: 503 Service Unavailable + HtmlPdfHealthStatus
     end
 ```
 
-Liveness deliberately never inspects the browser/pool: a crashed browser is a readiness concern (pull this instance out of rotation while it self-heals), not a liveness one (restarting the whole process would only discard an in-progress auto-recovery). A momentarily empty pool is likewise still "ready" - that is what the backpressure signal above is for, not a readiness failure.
+Liveness deliberately never inspects the browser/pool: a crashed browser is a readiness concern (pull this instance out of rotation while it self-heals), not a liveness one (restarting the whole process would only discard an in-progress auto-recovery). A momentarily empty pool is likewise still "ready" - that is what the backpressure signal above is for, not a readiness failure. `PoolStarved` is the one exception: it means the most recent recovery reconnected the browser but couldn't create a single usable page. Unlike a momentarily saturated pool - which self-corrects as soon as any in-flight request returns its page - this state cannot self-correct on its own (no request can ever acquire a page in the first place to later return one), so it is reported as not-ready instead of being masked as ordinary backpressure.
 
 #### Metrics
 
@@ -79,7 +79,7 @@ Every instance publishes instruments under the `HtmlPdfPlus` meter via `System.D
 | --- | --- | --- | --- |
 | `htmlpdfplus.pool.available_pages` | Observable gauge | `sourcealias` | Current pool depth |
 | `htmlpdfplus.pool.acquire_wait` | Histogram (ms) | `sourcealias`, `outcome` (`acquired`/`pool_exhausted`/`canceled`) | Time spent waiting for a page |
-| `htmlpdfplus.request.duration` | Histogram (ms) | `sourcealias`, `success` | Render + hook time for requests that reached a render attempt |
+| `htmlpdfplus.request.duration` | Histogram (ms) | `sourcealias`, `success` | Elapsed time for any request that passed request-level validation - including a `PoolExhausted` or already-expired-deadline outcome where no render was actually attempted |
 | `htmlpdfplus.errors` | Counter | `sourcealias`, `error_code` | Failures by `ErrorCode`, including request-level validation failures |
 | `htmlpdfplus.browser.restarts` | Counter | `sourcealias` | Automatic browser relaunches after an unexpected disconnect |
 

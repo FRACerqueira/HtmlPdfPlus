@@ -66,7 +66,6 @@ namespace HtmlPdfPlus.Shared.Core
             }
             catch (InvalidDataException ex)
             {
-                // Log the exception
                 throw new InvalidOperationException("The input byte array is not a valid GZip stream.", ex);
             }
             catch (InvalidOperationException)
@@ -74,9 +73,15 @@ namespace HtmlPdfPlus.Shared.Core
                 // Our own size-limit rejection - propagate the specific message unchanged.
                 throw;
             }
+            catch (OperationCanceledException)
+            {
+                // A genuine cancellation (caller's token fired mid-loop) must propagate as-is so
+                // callers can classify it as Canceled/retryable, instead of being wrapped into an
+                // InvalidOperationException and misreported as a malformed/non-retryable request.
+                throw;
+            }
             catch (Exception ex)
             {
-                // Log the exception
                 throw new InvalidOperationException("Failed to decompress the input byte array.", ex);
             }
         }
@@ -100,7 +105,6 @@ namespace HtmlPdfPlus.Shared.Core
             }
             catch (Exception ex)
             {
-                // Handle or log the exception as needed
                 throw new InvalidOperationException("Failed to compress the input byte array.", ex);
             }
         }
