@@ -242,7 +242,7 @@ namespace HtmlPdfPlus.Server.Core
                 }
                 finally
                 {
-                    cts.Cancel(); // cancel pending task  
+                    cts.Cancel();
                 }
             }
 
@@ -282,7 +282,7 @@ namespace HtmlPdfPlus.Server.Core
                     // fired (that case returns null above, reported as PoolExhausted) - so this
                     // is the overall deadline or an external cancellation, same as BeforePDF/AfterPDF.
                     var reachedOverallTimeout = cts.IsCancellationRequested;
-                    cts.Cancel(); // cancel pending task
+                    cts.Cancel();
                     if (reachedOverallTimeout)
                     {
                         LogMessage($"Reached Timeout({requestHtmlPdf.Timeout})");
@@ -293,7 +293,7 @@ namespace HtmlPdfPlus.Server.Core
                 }
                 catch (Exception ex)
                 {
-                    cts.Cancel(); // cancel pending task
+                    cts.Cancel();
                     LogMessage($"Error Generate PDF from browser after {sw.Elapsed} : {ex}");
                     return new HtmlPdfResult<Tout>(false, false, sw.Elapsed, default, ClassifyGeneratePdfException(ex));
                 }
@@ -362,7 +362,7 @@ namespace HtmlPdfPlus.Server.Core
                 }
                 finally
                 {
-                    cts.Cancel(); // cancel pending task  
+                    cts.Cancel();
                 }
                 LogMessage($"End Convert Html to PDF from Server with AfterPDF function at {DateTime.Now} after {sw.Elapsed}");
                 return result!;
@@ -507,7 +507,7 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         /// <summary>
-        /// Clean-up code is implemented
+        /// Disposes the underlying <see cref="HtmlPdfBuilder"/> (browser and Playwright connection).
         /// </summary>
         public void Dispose()
         {

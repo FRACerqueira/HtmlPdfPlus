@@ -727,7 +727,7 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         /// <summary>
-        /// Clean-up code is implemented
+        /// Disposes the underlying Chromium browser and Playwright connection.
         /// </summary>
         public void Dispose()
         {

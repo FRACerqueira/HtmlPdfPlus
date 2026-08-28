@@ -222,15 +222,6 @@ namespace HtmlPdfPlus.Client.Core
             }
         }
 
-        /// <summary>
-        /// Submits the HTML to the server for conversion to PDF.
-        /// </summary>
-        /// <typeparam name="Tin">The type of the input parameter.</typeparam>
-        /// <typeparam name="Tout">The type of the output result.</typeparam>
-        /// <param name="submitHtmlToPdf">The function to submit HTML to PDF conversion.</param>
-        /// <param name="inputparam">The input parameter.</param>
-        /// <param name="token">The cancellation token.</param>
-        /// <returns>The result of the HTML to PDF conversion.</returns>
         private async Task<HtmlPdfResult<Tout>> SubmitAsync<Tin, Tout>(Func<byte[], CancellationToken, Task<HtmlPdfResult<Tout>>> submitHtmlToPdf, Tin? inputparam, CancellationToken token)
         {
             if (_html.Length == 0)
@@ -307,10 +298,6 @@ namespace HtmlPdfPlus.Client.Core
             return result;
         }
 
-        /// <summary>
-        /// Logs a message.
-        /// </summary>
-        /// <param name="message">The message to log.</param>
         private void LogMessage(string message)
         {
             if (_logger is null || !_logger.IsEnabled(_logLevel)) return;
@@ -346,12 +333,6 @@ namespace HtmlPdfPlus.Client.Core
             return content;
         }
 
-        /// <summary>
-        /// Creates the request send string.
-        /// </summary>
-        /// <typeparam name="T">The type of the input parameter.</typeparam>
-        /// <param name="inputparam">The input parameter.</param>
-        /// <returns>The request send in byte[].</returns>
         private async Task<byte[]> CreateRequestSend<T>(T? inputparam)
         {
             // Stamped as close to the actual send as possible, so a receiving server can
@@ -363,13 +344,6 @@ namespace HtmlPdfPlus.Client.Core
                 : await new RequestHtmlPdf<T>(_html, sourcealias, _pdfPageConfig, _timeout, inputparam, _mode, sentAtUtc).ToBytesCompress();
         }
 
-        /// <summary>
-        /// Handles the operation canceled exception.
-        /// </summary>
-        /// <typeparam name="Tout">The type of the output result.</typeparam>
-        /// <param name="oex">The operation canceled exception.</param>
-        /// <param name="sw">The stopwatch.</param>
-        /// <returns>The result of the HTML to PDF conversion.</returns>
         private HtmlPdfResult<Tout> HandleOperationCanceledException<Tout>(OperationCanceledException oex, Stopwatch sw)
         {
             if (oex.CancellationToken.IsCancellationRequested)
@@ -384,14 +358,6 @@ namespace HtmlPdfPlus.Client.Core
             }
         }
 
-        /// <summary>
-        /// Handles the HTTP response.
-        /// </summary>
-        /// <typeparam name="Tout">The type of the output result.</typeparam>
-        /// <param name="result">The HTTP response message.</param>
-        /// <param name="sw">The stopwatch.</param>
-        /// <param name="token">The cancellation token.</param>
-        /// <returns>The result of the HTML to PDF conversion.</returns>
         private static async Task<HtmlPdfResult<Tout>> HandleHttpResponse<Tout>(HttpResponseMessage result, Stopwatch sw, CancellationToken token)
         {
             if (result.StatusCode == System.Net.HttpStatusCode.OK)

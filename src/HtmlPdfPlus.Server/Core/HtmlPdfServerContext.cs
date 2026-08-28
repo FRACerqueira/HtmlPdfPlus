@@ -16,9 +16,6 @@ namespace HtmlPdfPlus.Server.Core
     /// <summary>
     /// Represents a server context for converting HTML to PDF.
     /// </summary>
-    /// <remarks>
-    /// Constructor
-    /// </remarks>
     /// <param name="htmlPdfServer">Instance of <see cref="HtmlPdfServer{Tin, Tout}"/>.</param>
     /// <param name="inputparam">Input data, for customizing HTML before converting to PDF on the server.</param>
     /// <param name="requestClient">The compressed data from the request HtmlPdfCliPlus client.</param>
@@ -163,7 +160,7 @@ namespace HtmlPdfPlus.Server.Core
         }
 
         /// <summary>
-        /// Clean-up code is implemented
+        /// Disposes the underlying <see cref="HtmlPdfServer{TIn, TOut}"/>.
         /// </summary>
         public void Dispose()
         {

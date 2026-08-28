@@ -26,13 +26,10 @@ namespace ConsoleHtmlToPdfPlus.ClientCustomSendHttp
 
             HostApp = CreateHostBuilder(args).Build();
 
-            //token to gracefull shutdown
             var applifetime = HostApp.Services.GetService<IHostApplicationLifetime>()!;
 
-            //client http to endpoint    
             var clienthttp = HostApp!.Services.GetRequiredService<IHttpClientFactory>().CreateClient("HtmlPdfServer");
 
-             //create client instance  and send to server
             Console.WriteLine($"HtmlPdfClient send TemplateRazor to Server save PDF and replace custom-token at cloud like gcp/azure via http post");
 
             var lstprod = new List<Product>();
@@ -59,7 +56,6 @@ namespace ConsoleHtmlToPdfPlus.ClientCustomSendHttp
 
             Console.WriteLine($"HtmlPdfClient IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 
-            //Shwo result
             if (pdfresult.IsSuccess)
             {
                  Console.WriteLine($"File PDF generate at {pdfresult.OutputData}");

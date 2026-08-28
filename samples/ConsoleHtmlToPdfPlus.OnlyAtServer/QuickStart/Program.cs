@@ -23,15 +23,12 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerQuickStart
 
             Console.WriteLine("Warmup HtmlPdfServerPlus with buffer");
 
-            //token to gracefull shutdown
             var applifetime = HostApp.Services.GetService<IHostApplicationLifetime>()!;
 
-            //instance of Html to Pdf Engine and Warmup HtmlPdfServerPlus
             var PDFserver = HostApp!.Services.GetHtmlPdfService();
 
             Console.WriteLine($"HtmlPdfServerPlus ready");
 
-            //Performs conversion on the server
             var pdfresult = await PDFserver
                 .ScopeData()
                 .FromHtml(HtmlSample(),5000)
@@ -39,7 +36,6 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerQuickStart
 
             Console.WriteLine($"HtmlPdfServer IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 
-            //performs writing to file after performing conversion
             if (pdfresult.IsSuccess)
             {
                 var fullpath = Path.Combine(PathToSamples, "html2pdfHtml.pdf");
@@ -51,15 +47,13 @@ namespace ConsoleHtmlToPdfPlus.OnlyAtServerQuickStart
                 Console.WriteLine($"HtmlPdfServer error: {pdfresult.Error}");
             }
 
-            //Performs conversion on the server
-             pdfresult = await PDFserver
+            pdfresult = await PDFserver
                 .ScopeData()
                 .FromUrl(new Uri("https://github.com/FRACerqueira/HtmlPdfPlus"), 5000)
                 .Run(applifetime.ApplicationStopping);
 
             Console.WriteLine($"HtmlPdfServer IsSuccess {pdfresult.IsSuccess} after {pdfresult.ElapsedTime}");
 
-            //performs writing to file after performing conversion
             if (pdfresult.IsSuccess)
             {
                 var fullpath = Path.Combine(PathToSamples, "HtmlPdfPlus.pdf");

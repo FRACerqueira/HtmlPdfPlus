@@ -16,7 +16,6 @@ var app = builder.Build();
 
 var logger = app.Services.GetService<ILogger<Program>>();
 
-//Warmup HtmlPdfServerPlus on startup for better performance from the first request
 var WarmupTS = app.WarmupHtmlPdfService();
 logger?.LogDebug("HtmlPdfServerPlus ready after {tm}", WarmupTS);
 
